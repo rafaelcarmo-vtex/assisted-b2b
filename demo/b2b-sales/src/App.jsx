@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import Header from './components/Header/Header'
 import StoreFront from './components/StoreFront/StoreFront'
@@ -6,60 +6,6 @@ import OrderBuilder from './components/OrderBuilder/OrderBuilder'
 import FloatingToggle from './components/FloatingToggle/FloatingToggle'
 import './App.css'
 
-const PASSWORD = 'borabora'
-
-function PasswordGate({ onUnlock }) {
-  const [input, setInput] = useState('')
-  const [error, setError] = useState(false)
-  const [shake, setShake] = useState(false)
-
-  function handleSubmit(e) {
-    e.preventDefault()
-    if (input === PASSWORD) {
-      sessionStorage.setItem('unlocked', '1')
-      onUnlock()
-    } else {
-      setError(true)
-      setShake(true)
-      setTimeout(() => setShake(false), 500)
-      setInput('')
-    }
-  }
-
-  return (
-    <div style={{
-      position: 'fixed', inset: 0, display: 'flex', alignItems: 'center',
-      justifyContent: 'center', background: '#F7F7F7', zIndex: 9999,
-    }}>
-      <form onSubmit={handleSubmit} style={{
-        display: 'flex', flexDirection: 'column', alignItems: 'center',
-        gap: '16px', animation: shake ? 'gateShake 0.4s ease' : 'none',
-      }}>
-        <span style={{ fontSize: '28px', marginBottom: '4px' }}>🔒</span>
-        <p style={{ fontSize: '15px', fontWeight: 600, color: '#1F1F1F', margin: 0 }}>Enter password to continue</p>
-        <input
-          type="password"
-          value={input}
-          onChange={e => { setInput(e.target.value); setError(false) }}
-          placeholder="Password"
-          autoFocus
-          style={{
-            padding: '10px 16px', borderRadius: '10px', fontSize: '15px', width: '220px',
-            border: `1.5px solid ${error ? '#E03E3E' : '#D0D0D0'}`,
-            outline: 'none', textAlign: 'center', background: '#fff',
-          }}
-        />
-        {error && <p style={{ fontSize: '13px', color: '#E03E3E', margin: '-8px 0 0' }}>Incorrect password</p>}
-        <button type="submit" style={{
-          padding: '10px 32px', borderRadius: '10px', background: '#000', color: '#fff',
-          border: 'none', fontSize: '14px', fontWeight: 600, cursor: 'pointer', width: '220px',
-        }}>
-          Enter
-        </button>
-      </form>
-    </div>
-  )
-}
 
 function BuyerHome() {
   const location  = useLocation()
@@ -187,21 +133,15 @@ function BuyerHome() {
 }
 
 function App() {
-  const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem('unlocked') === '1')
-
   useEffect(() => {
     function handleReset(e) {
       if ((e.key === 'r' || e.key === 'R') && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-        sessionStorage.removeItem('unlocked')
         localStorage.removeItem('quoteRevised')
-        setUnlocked(false)
       }
     }
     window.addEventListener('keydown', handleReset)
     return () => window.removeEventListener('keydown', handleReset)
   }, [])
-
-  if (!unlocked) return <PasswordGate onUnlock={() => setUnlocked(true)} />
 
   return (
     <BrowserRouter>
