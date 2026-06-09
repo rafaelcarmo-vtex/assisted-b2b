@@ -94,7 +94,7 @@ export default defineConfig(({ command, mode }) => {
   }
 
   return {
-    base: '/assisted-b2b/handoffs/sales-rep-phase-1/',
+    base: '/assisted-b2b/handoffs/sales-rep-phase-1/dist/',
     server: {
       port: 3003,
       host: '0.0.0.0',

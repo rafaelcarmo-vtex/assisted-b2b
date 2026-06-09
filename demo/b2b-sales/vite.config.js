@@ -43,6 +43,6 @@ function staticHtmlMiddleware() {
 }
 
 export default defineConfig({
-  base: '/assisted-b2b/demo/b2b-sales/',
+  base: '/assisted-b2b/demo/b2b-sales/dist/',
   plugins: [staticHtmlMiddleware(), react()],
 })
