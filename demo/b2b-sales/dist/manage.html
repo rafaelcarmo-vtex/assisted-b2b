@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage – Demo Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,0" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    button, input, select, textarea { font-family: inherit; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    body {
+      animation: fadeIn 0.18s ease both;
+      font-family: 'Inter', sans-serif;
+      background: #FFFFFF;
+      color: #1F1F1F;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      user-select: none;
+    }
+
+    /* ── Top header ── */
+    .top-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: 56px;
+      background: #FFFFFF;
+      border-bottom: 1px solid #EBEBEB;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0366DD;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .start-shopping-btn {
+      background: none;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: #1F1F1F;
+      cursor: pointer;
+      padding: 6px 0;
+    }
+    .start-shopping-btn:hover { color: #0366DD; }
+
+    .user-avatar-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #1F1F1F;
+      border: none;
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── Page wrapper ── */
+    .page {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 40px 32px 60px;
+    }
+
+    /* ── Page title row ── */
+    .page-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .page-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #1F1F1F;
+      letter-spacing: -0.03em;
+    }
+
+    .page-title-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #6B6B6B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+    .icon-btn:hover { background: #EBEBEB; }
+
+    .add-btn {
+      height: 32px;
+      width: 32px;
+      border-radius: 100px;
+      background: #0366DD;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 0 2px;
+      transition: width 0.2s ease;
+      text-decoration: none;
+    }
+    .add-btn:hover {
+      width: 140px;
+      padding: 0 5px 0 0;
+    }
+    .add-btn .material-symbols-outlined {
+      font-size: 20px;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .add-btn-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      overflow: hidden;
+      max-width: 0;
+      opacity: 0;
+      padding-left: 0;
+      transition: max-width 0.2s ease, opacity 0.15s ease, padding-left 0.2s ease;
+    }
+    .add-btn:hover .add-btn-label {
+      max-width: 140px;
+      opacity: 1;
+      padding-left: 6px;
+    }
+
+    /* ── Two-column grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: #FFFFFF;
+      border: 1px solid #E5E5E5;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    /* ── Account card (left) ── */
+    .account-card-body {
+      padding: 28px 0 12px;
+    }
+
+    .account-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 32px 14px;
+      overflow: hidden;
+    }
+    .account-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+
+    .account-company {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1F1F1F;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+      padding: 0 32px;
+    }
+
+    .account-divider {
+      display: none;
+    }
+
+    .account-nav {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .account-nav-item {
+      display: block;
+      padding: 10px 24px;
+      margin: 1px 8px;
+      font-size: 13.5px;
+      color: #3D3D3D;
+      font-weight: 400;
+      border-radius: 100px;
+      transition: background 0.12s;
+    }
+    .account-nav-item:hover { background: #F5F5F5; color: #1F1F1F; }
+
+    .account-card-footer {
+      border-top: 1px solid #EBEBEB;
+      height: 68px;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    .account-card-footer:hover { background: #FAFAFA; }
+
+    .account-footer-link {
+      font-size: 13px;
+      color: #0366DD;
+      font-weight: 500;
+    }
+
+    .account-footer-arrow {
+      color: #A0A0A0;
+      font-size: 18px;
+    }
+
+    /* ── Right column ── */
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      height: 100%;
+    }
+
+    .right-col .card {
+      flex: 1;
+    }
+
+    /* ── Section card (right) ── */
+    .right-col .card {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .right-col .section-footer {
+      margin-top: auto;
+    }
+
+    .section-header {
+      padding: 24px 32px 20px;
+      font-size: 20px;
+      font-weight: 600;
+      color: #1F1F1F;
+      letter-spacing: -0.02em;
+    }
+
+    .section-row {
+      display: flex;
+      align-items: center;
+      padding: 10px 24px;
+      margin: 1px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .section-row:hover { background: #F0F0F0; }
+
+    .section-row-label {
+      font-size: 13.5px;
+      color: #3D3D3D;
+      font-weight: 400;
+      flex: 1;
+    }
+
+    .section-footer {
+      border-top: 1px solid #EBEBEB;
+      height: 68px;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    .section-footer:hover { background: #FAFAFA; }
+
+    .section-footer-link {
+      font-size: 13px;
+      color: #0366DD;
+      font-weight: 500;
+    }
+
+    .section-footer-arrow {
+      color: #0366DD;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Top Header ── -->
+  <header class="top-header">
+    <a href="/" class="logo">Demo Store</a>
+    <div class="header-right">
+      <button class="start-shopping-btn" type="button" onclick="window.location.href='/'">Start shopping</button>
+    </div>
+  </header>
+
+  <!-- ── Page ── -->
+  <div class="page">
+
+    <!-- Title row -->
+    <div class="page-title-row">
+      <h1 class="page-title">Stellar</h1>
+      <div class="page-title-actions">
+        <button class="icon-btn" type="button" aria-label="More options">
+          <span class="material-symbols-outlined" style="font-size:20px;">more_vert</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid">
+
+      <!-- Left: Account card -->
+      <div class="card">
+        <div class="account-card-body">
+          <div class="account-avatar"><img src="/logo-stellarglobal.png" alt="Stellar Global" /></div>
+          <div class="account-company">Stellar Global</div>
+          <div class="account-divider"></div>
+          <nav class="account-nav">
+            <a href="#" class="account-nav-item">Profile</a>
+            <a href="#" class="account-nav-item">Addresses</a>
+            <a href="#" class="account-nav-item">Payment methods</a>
+            <a href="#" class="account-nav-item">Credit cards</a>
+            <a href="#" class="account-nav-item">Collections</a>
+            <a href="#" class="account-nav-item">PO numbers</a>
+            <a href="#" class="account-nav-item">Cost centers</a>
+            <a href="#" class="account-nav-item">Releases</a>
+          </nav>
+        </div>
+        <div class="account-card-footer">
+          <span class="account-footer-link">Manage contract settings</span>
+          <span class="material-symbols-outlined account-footer-arrow">chevron_right</span>
+        </div>
+      </div>
+
+      <!-- Right: sections -->
+      <div class="right-col">
+
+        <!-- Organization -->
+        <div class="card">
+          <div class="section-header">Organization</div>
+          <div class="section-row">
+            <span class="section-row-label">Users</span>
+          </div>
+          <div class="section-row">
+            <span class="section-row-label">Roles</span>
+          </div>
+          <div class="section-row">
+            <span class="section-row-label">Organizational units</span>
+          </div>
+          <div class="section-footer">
+            <span class="section-footer-link">Manage organization settings</span>
+            <span class="material-symbols-outlined section-footer-arrow">chevron_right</span>
+          </div>
+        </div>
+
+        <!-- Finance and compliance -->
+        <div class="card">
+          <div class="section-header">Finance and compliance</div>
+          <div class="section-row">
+            <span class="section-row-label">Budgets</span>
+          </div>
+          <div class="section-row">
+            <span class="section-row-label">Buying policies</span>
+          </div>
+          <div class="section-footer">
+            <span class="section-footer-link">Manage finance and compliance settings</span>
+            <span class="material-symbols-outlined section-footer-arrow">chevron_right</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- reset-session-r -->
+  <script>
+    document.addEventListener('keydown', function(e) {
+      if ((e.key === 'r' || e.key === 'R') && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        sessionStorage.removeItem('unlocked');
+        localStorage.removeItem('quoteRevised');
+        window.location.href = '/storefrontb2b';
+      }
+    });
+  </script>
+
+</body>
+</html>

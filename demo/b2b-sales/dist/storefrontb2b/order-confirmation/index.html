@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmed – Demo Store</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,0" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes checkPop { 0% { transform: scale(0.5); opacity: 0; } 70% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: #1F1F1F;
+      background: #FFFFFF;
+      -webkit-font-smoothing: antialiased;
+      animation: fadeIn 0.2s ease both;
+    }
+    a { text-decoration: none; color: inherit; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; user-select: none; }
+
+    /* ── Header ── */
+    .header {
+      position: sticky; top: 0; z-index: 100; background: #FFFFFF;
+      border-bottom: 1px solid #EBEBEB;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px; padding: 0 40px;
+    }
+    .header-logo { font-size: 20px; font-weight: 700; color: #0366DD; letter-spacing: -0.02em; }
+    .header-logo:hover { color: #0155B7; }
+    .header-right { display: flex; align-items: center; gap: 20px; }
+    .header-back { font-size: 13px; font-weight: 500; color: #0366DD; cursor: pointer; }
+    .header-back:hover { text-decoration: underline; }
+    .header-avatar { width: 32px; height: 32px; border-radius: 50%; background: #1a1a1a; color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+
+    /* ── Layout ── */
+    .page { max-width: 760px; margin: 0 auto; padding: 48px 24px 80px; animation: slideUp 0.3s ease both; }
+
+    /* ── Check icon ── */
+    .check-wrap {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: #E6F4EC; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      animation: checkPop 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.1s both;
+    }
+    .check-wrap .material-symbols-outlined { font-size: 26px; color: #1D8348; font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
+
+    /* ── Heading ── */
+    .confirm-title { font-size: 26px; font-weight: 600; color: #1F1F1F; line-height: 1.25; margin-bottom: 16px; letter-spacing: -0.02em; }
+    .confirm-meta { display: flex; flex-direction: column; gap: 6px; margin-bottom: 32px; }
+    .confirm-meta-row { font-size: 13px; color: #707070; }
+    .confirm-meta-row strong { color: #1F1F1F; font-weight: 600; }
+    .confirm-meta-row a { color: #0366DD; }
+    .confirm-meta-row a:hover { text-decoration: underline; }
+
+    /* ── Divider ── */
+    .divider { border: none; border-top: 1px solid #EBEBEB; margin: 28px 0; }
+
+    /* ── Section ── */
+    .section-title { font-size: 16px; font-weight: 600; color: #1F1F1F; margin-bottom: 4px; letter-spacing: -0.01em; }
+    .section-subtitle { font-size: 13px; color: #707070; margin-bottom: 14px; }
+
+    /* ── Delivery group ── */
+    .delivery-group { margin-bottom: 28px; }
+    .delivery-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 4px 0; }
+    .delivery-toggle { font-size: 13px; color: #0366DD; display: flex; align-items: center; gap: 4px; user-select: none; }
+    .delivery-items { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+    .delivery-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #F2F2F2; }
+    .delivery-item:last-child { border-bottom: none; }
+    .delivery-item-img { width: 44px; height: 44px; border-radius: 8px; background: #F7F7F7; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+    .delivery-item-img img { width: 100%; height: 100%; object-fit: contain; }
+    .delivery-item-body { flex: 1; min-width: 0; }
+    .delivery-item-name { font-size: 13px; font-weight: 500; color: #1F1F1F; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .delivery-item-meta { font-size: 12px; color: #9A9A9A; margin-top: 2px; }
+    .delivery-item-price { font-size: 13px; font-weight: 600; color: #1F1F1F; white-space: nowrap; }
+
+    /* ── Two-col grid ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .info-block-label { font-size: 12px; font-weight: 600; color: #9A9A9A; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 10px; }
+    .info-avatar { width: 28px; height: 28px; border-radius: 50%; background: #E6F4EC; color: #1D8348; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; margin-right: 8px; }
+    .info-name { font-size: 13px; font-weight: 600; color: #1F1F1F; display: flex; align-items: center; margin-bottom: 4px; }
+    .info-line { font-size: 13px; color: #707070; margin-bottom: 2px; }
+
+    /* ── Totals ── */
+    .totals-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .totals-row { display: flex; justify-content: space-between; font-size: 13px; color: #707070; }
+    .totals-row.total { font-size: 16px; font-weight: 700; color: #1F1F1F; padding-top: 14px; border-top: 1px solid #EBEBEB; }
+    .totals-row .label { color: inherit; }
+
+    /* ── Payment ── */
+    .payment-row { display: flex; align-items: center; gap: 10px; }
+    .card-chip { background: #F2F6FF; border: 1px solid #D6E4F7; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 600; color: #0366DD; display: inline-flex; align-items: center; gap: 6px; }
+    .card-chip .material-symbols-outlined { font-size: 16px; }
+
+    /* ── CTA ── */
+    .cta-row { display: flex; gap: 12px; margin-top: 32px; }
+    .btn-primary { flex: 1; height: 44px; border-radius: 100px; border: none; background: #0366DD; color: #fff; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.14s; }
+    .btn-primary:hover { background: #0155B7; }
+    .btn-secondary { flex: 1; height: 44px; border-radius: 100px; border: 1.5px solid #D6D6D6; background: #fff; color: #0366DD; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: border-color 0.14s; }
+    .btn-secondary:hover { border-color: #0366DD; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <a href="/storefrontb2b" class="header-logo">Demo Store</a>
+    <div class="header-right">
+      <a href="/storefrontb2b" class="header-back">Back to shopping</a>
+      <div class="header-avatar">S</div>
+    </div>
+  </header>
+
+  <main class="page">
+
+    <!-- Check + title -->
+    <div class="check-wrap">
+      <span class="material-symbols-outlined">check</span>
+    </div>
+
+    <h1 class="confirm-title">Donald,<br>your order has been confirmed.</h1>
+
+    <div class="confirm-meta">
+      <div class="confirm-meta-row">An email confirmation will be sent to: <strong>d.green@stellar.com</strong></div>
+      <div class="confirm-meta-row">Policy applied: <strong>Budget Allocation Compliance Policy</strong></div>
+      <div class="confirm-meta-row">Order ID: <strong>ORD-2023-XYZ-789</strong></div>
+      <div class="confirm-meta-row"><a href="#">View order details</a></div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Package 1 -->
+    <div class="delivery-group">
+      <div class="delivery-header" onclick="toggleGroup('pkg1')">
+        <div>
+          <div class="section-title">Express Delivery — Package 1</div>
+          <div class="section-subtitle">Boston Boylston St · Get it tomorrow</div>
+        </div>
+        <span class="delivery-toggle" id="pkg1-toggle">
+          5 items <span class="material-symbols-outlined" id="pkg1-icon" style="font-size:18px;transition:transform 0.2s;">expand_less</span>
+        </span>
+      </div>
+      <div class="delivery-items" id="pkg1">
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/TV.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">LG QNED55 4K – Hotel Series</div>
+            <div class="delivery-item-meta">TV-55-QNED-HTL · Qty 8</div>
+          </div>
+          <div class="delivery-item-price">$4,632.00</div>
+        </div>
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/Frigobar.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">Minibar Refrigerator 40L – Premium</div>
+            <div class="delivery-item-meta">MNB-40L-PRM · Qty 10</div>
+          </div>
+          <div class="delivery-item-price">$3,656.60</div>
+        </div>
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/Cofre.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">Digital Safe – Laptop Size (14")</div>
+            <div class="delivery-item-meta">SF-LPT-14-DG · Qty 15</div>
+          </div>
+          <div class="delivery-item-price">$2,895.45</div>
+        </div>
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/Termostato%20inteligente.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">Smart Thermostat Wi-Fi – HVAC Control</div>
+            <div class="delivery-item-meta">THM-WIFI-HVC · Qty 18</div>
+          </div>
+          <div class="delivery-item-price">$4,336.74</div>
+        </div>
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/Access%20points%20Wi-Fi%20corporativos.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">Access Point Wi-Fi 6 Dual Band – Enterprise</div>
+            <div class="delivery-item-meta">AP-W6-DB-ENT · Qty 6</div>
+          </div>
+          <div class="delivery-item-price">$1,989.30</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Package 2 -->
+    <div class="delivery-group">
+      <div class="delivery-header" onclick="toggleGroup('pkg2')">
+        <div>
+          <div class="section-title">Standard Delivery — Package 2</div>
+          <div class="section-subtitle">Multiple locations · 3–6 business days</div>
+        </div>
+        <span class="delivery-toggle" id="pkg2-toggle">
+          5 items <span class="material-symbols-outlined" id="pkg2-icon" style="font-size:18px;transition:transform 0.2s;">expand_less</span>
+        </span>
+      </div>
+      <div class="delivery-items" id="pkg2">
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/TV.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">Smart TV 43" Full HD – Standard Room</div>
+            <div class="delivery-item-meta">TV-43-FHD-STD · Qty 16</div>
+          </div>
+          <div class="delivery-item-price">$6,704.00</div>
+        </div>
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/Frigobar.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">Minibar Slim 20L – Compact Room</div>
+            <div class="delivery-item-meta">MNB-20L-SLM · Qty 12</div>
+          </div>
+          <div class="delivery-item-price">$3,280.44</div>
+        </div>
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/Cofre.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">Digital Safe – Standard In-Room</div>
+            <div class="delivery-item-meta">SF-STD-INR · Qty 10</div>
+          </div>
+          <div class="delivery-item-price">$1,360.70</div>
+        </div>
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/TV.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">Articulating TV Mount 32–65"</div>
+            <div class="delivery-item-meta">MNT-ART-3265 · Qty 24</div>
+          </div>
+          <div class="delivery-item-price">$1,918.80</div>
+        </div>
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/Access%20points%20Wi-Fi%20corporativos.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">Access Point Wi-Fi 5 – Corporate</div>
+            <div class="delivery-item-meta">AP-W5-CORP · Qty 8</div>
+          </div>
+          <div class="delivery-item-price">$1,872.00</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- User & Recipient -->
+    <div class="two-col" style="margin-bottom: 28px;">
+      <div>
+        <div class="info-block-label">User information</div>
+        <div class="info-name"><span class="info-avatar">D</span>Donald Green</div>
+        <div class="info-line">d.green@stellar.com</div>
+        <div class="info-line">Stellar Global</div>
+      </div>
+      <div>
+        <div class="info-block-label">Recipient information</div>
+        <div class="info-name" style="margin-left:0;">Donald Green</div>
+        <div class="info-line">d.green@stellar.com</div>
+        <div class="info-line">(617) 412-9053</div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Accounting -->
+    <div style="margin-bottom: 28px;">
+      <div class="info-block-label">Accounting fields</div>
+      <div class="info-line" style="margin-bottom:4px;"><strong style="color:#1F1F1F;">Release:</strong> Operations and Facilities</div>
+      <div class="info-line"><strong style="color:#1F1F1F;">PO Number:</strong> 2024-OPS-4471</div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Payment & totals -->
+    <div class="two-col">
+      <div>
+        <div class="info-block-label">Payment method</div>
+        <div class="payment-row">
+          <div class="card-chip">
+            <span class="material-symbols-outlined">credit_card</span>
+            Card IM 5100
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="info-block-label">Order total</div>
+        <div class="totals-rows">
+          <div class="totals-row"><span class="label">Items (112)</span><span>$25,854.54</span></div>
+          <div class="totals-row"><span class="label">Shipping</span><span>$24.80</span></div>
+          <div class="totals-row"><span class="label">Estimated tax</span><span>$5,952.47</span></div>
+          <div class="totals-row total"><span class="label">Total</span><span>$31,831.81</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTAs -->
+    <div class="cta-row">
+      <button class="btn-secondary" onclick="window.location.href='/storefrontb2b/account/quotes'">View Quotes</button>
+      <button class="btn-primary" onclick="window.location.href='/storefrontb2b'">Continue Shopping</button>
+    </div>
+
+  </main>
+
+  <script>
+    function toggleGroup(id) {
+      var el = document.getElementById(id);
+      var icon = document.getElementById(id + '-icon');
+      var visible = el.style.display !== 'none';
+      el.style.display = visible ? 'none' : 'flex';
+      icon.textContent = visible ? 'expand_more' : 'expand_less';
+    }
+  </script>
+  <!-- reset-session-r -->
+  <script>
+    document.addEventListener('keydown', function(e) {
+      if ((e.key === 'r' || e.key === 'R') && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        sessionStorage.removeItem('unlocked');
+        localStorage.removeItem('quoteRevised');
+        window.location.href = '/storefrontb2b';
+      }
+    });
+  </script>
+
+</body>
+</html>

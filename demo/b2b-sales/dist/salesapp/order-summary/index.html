@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Summary – Demo Store</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,0" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    button, input { font-family: inherit; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: #1F1F1F;
+      background: #FFFFFF;
+      -webkit-font-smoothing: antialiased;
+      animation: fadeIn 0.18s ease both;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      user-select: none;
+    }
+
+    /* ── Header ──────────────────────────────────────── */
+    .os-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #FFFFFF;
+      border-bottom: 1px solid #EBEBEB;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      padding: 0 24px;
+    }
+    .os-header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .os-back-btn {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #1F1F1F;
+      transition: background 0.12s;
+    }
+    .os-back-btn:hover { background: #F5F5F5; }
+    .os-header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .os-account-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 36px;
+      padding: 0 12px 0 4px;
+      background: #FFFFFF;
+      border: 1.5px solid #D6D6D6;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #1F1F1F;
+    }
+    .os-account-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .os-account-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+    .os-close-btn {
+      width: 34px;
+      height: 34px;
+      border: none;
+      background: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #707070;
+      transition: background 0.12s;
+    }
+    .os-close-btn:hover { background: #F5F5F5; }
+
+    /* ── Page layout ─────────────────────────────────── */
+    .os-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px 60px;
+      align-items: start;
+    }
+
+    /* ── Left column ─────────────────────────────────── */
+    .os-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .os-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1F1F1F;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+    .os-date {
+      font-size: 13px;
+      color: #858585;
+      margin-bottom: 24px;
+    }
+
+    /* ── Info cards row ──────────────────────────────── */
+    .os-info-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .os-card {
+      background: #FFFFFF;
+      border: 1px solid #EBEBEB;
+      border-radius: 16px;
+      padding: 20px;
+    }
+    .os-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .os-card-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .os-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #F5F5F5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #3D3D3D;
+    }
+    .os-card-icon .material-symbols-outlined { font-size: 20px; }
+    .os-card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1F1F1F;
+    }
+    .os-edit-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: #0366DD;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    .os-edit-link:hover { text-decoration: underline; }
+    .os-card-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .os-field-row {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .os-field-label {
+      font-size: 12px;
+      color: #858585;
+      font-weight: 400;
+    }
+    .os-field-value {
+      font-size: 13px;
+      font-weight: 500;
+      color: #1F1F1F;
+    }
+    .os-toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      padding-top: 14px;
+      border-top: 1px solid #F0F0F0;
+    }
+    .os-toggle {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+    .os-toggle input { opacity: 0; width: 0; height: 0; }
+    .os-toggle-track {
+      position: absolute;
+      inset: 0;
+      background: #0366DD;
+      border-radius: 100px;
+      transition: background 0.2s;
+    }
+    .os-toggle-thumb {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 16px;
+      height: 16px;
+      background: #FFFFFF;
+      border-radius: 50%;
+    }
+    .os-toggle-label {
+      font-size: 13px;
+      color: #3D3D3D;
+    }
+
+    /* ── Package cards ───────────────────────────────── */
+    .os-package-card {
+      background: #FFFFFF;
+      border: 1px solid #EBEBEB;
+      border-radius: 16px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .os-package-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 18px 20px;
+      border-bottom: 1px solid #F5F5F5;
+    }
+    .os-package-header-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .os-package-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #F5F5F5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #3D3D3D;
+      margin-top: 2px;
+    }
+    .os-package-icon .material-symbols-outlined { font-size: 20px; }
+    .os-package-info { display: flex; flex-direction: column; gap: 4px; }
+    .os-package-name { font-size: 15px; font-weight: 600; color: #1F1F1F; }
+    .os-package-meta { font-size: 13px; color: #858585; }
+    .os-package-meta span { color: #0366DD; cursor: pointer; margin-left: 4px; }
+    .os-package-deadline { font-size: 13px; color: #3D3D3D; }
+    .os-package-deadline strong { font-weight: 500; }
+
+    .os-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid #F5F5F5;
+    }
+    .os-item-row:last-child { border-bottom: none; }
+    .os-item-left { display: flex; align-items: center; gap: 12px; }
+    .os-item-img {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      background: #F5F5F5;
+      object-fit: contain;
+      display: block;
+      flex-shrink: 0;
+    }
+    .os-item-name { font-size: 13px; font-weight: 500; color: #1F1F1F; }
+    .os-item-sku { font-size: 12px; color: #858585; margin-top: 2px; }
+    .os-item-right { text-align: right; }
+    .os-item-price { font-size: 13px; font-weight: 500; color: #1F1F1F; }
+    .os-item-qty { font-size: 12px; color: #858585; margin-top: 2px; }
+
+    /* ── Sidebar ─────────────────────────────────────── */
+    .os-sidebar {
+      position: sticky;
+      top: 72px;
+      background: #FFFFFF;
+      border: 1px solid #EBEBEB;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .os-sidebar-section {
+      padding: 16px 20px;
+      border-bottom: 1px solid #F0F0F0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .os-sidebar-section:last-of-type { border-bottom: none; }
+    .os-sidebar-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1F1F1F;
+    }
+    .os-sidebar-add {
+      font-size: 13px;
+      font-weight: 500;
+      color: #0366DD;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+    .os-sidebar-add:hover { text-decoration: underline; }
+
+    .os-summary-block {
+      padding: 20px;
+      border-top: 1px solid #F0F0F0;
+    }
+    .os-summary-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1F1F1F;
+      margin-bottom: 14px;
+    }
+    .os-summary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 13px;
+      color: #3D3D3D;
+    }
+    .os-summary-row.free { color: #1A8A3C; font-weight: 500; }
+    .os-summary-divider { height: 1px; background: #F0F0F0; margin: 14px 0; }
+    .os-summary-total {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 15px;
+      font-weight: 600;
+      color: #1F1F1F;
+    }
+
+    .os-pay-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: calc(100% - 40px);
+      margin: 16px 20px 20px;
+      height: 48px;
+      background: #0366DD;
+      color: #FFFFFF;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: background 0.14s;
+    }
+    .os-pay-btn:hover { background: #0155B7; }
+
+    @media (max-width: 860px) {
+      .os-layout { grid-template-columns: 1fr; }
+      .os-sidebar { position: static; }
+      .os-info-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="os-header">
+    <div class="os-header-left">
+      <button class="os-back-btn" onclick="history.back()" aria-label="Back">
+        <span class="material-symbols-outlined" style="font-size:20px;">arrow_back</span>
+      </button>
+    </div>
+    <div class="os-header-right">
+      <div class="os-account-pill">
+        <span class="os-account-avatar"><img src="/logo-stellarglobal.png" alt="Stellar Global" /></span>
+        Stellar Global
+      </div>
+      <button class="os-close-btn" onclick="history.back()" aria-label="Close">
+        <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Page ── -->
+  <div class="os-layout">
+
+    <!-- ── Left column ── -->
+    <div class="os-left">
+      <h1 class="os-title">Order Summary</h1>
+      <p class="os-date" id="osDate"></p>
+
+      <!-- Customer + Company -->
+      <div class="os-info-row">
+
+        <!-- Customer data -->
+        <div class="os-card">
+          <div class="os-card-header">
+            <div class="os-card-header-left">
+              <div class="os-card-icon">
+                <span class="material-symbols-outlined">person</span>
+              </div>
+              <span class="os-card-title">Buyer data</span>
+            </div>
+            <button class="os-edit-link">Edit</button>
+          </div>
+          <div class="os-card-fields">
+            <div class="os-field-row">
+              <span class="os-field-label">Full name:</span>
+              <span class="os-field-value">Donald Green</span>
+            </div>
+            <div class="os-field-row">
+              <span class="os-field-label">Email:</span>
+              <span class="os-field-value">d.green@stellar.com</span>
+            </div>
+            <div class="os-field-row">
+              <span class="os-field-label">Phone:</span>
+              <span class="os-field-value">(617) 555-0124</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Company data -->
+        <div class="os-card">
+          <div class="os-card-header">
+            <div class="os-card-header-left">
+              <div class="os-card-icon">
+                <span class="material-symbols-outlined">apartment</span>
+              </div>
+              <span class="os-card-title">Company data</span>
+            </div>
+            <button class="os-edit-link">Edit</button>
+          </div>
+          <div class="os-card-fields">
+            <div class="os-field-row">
+              <span class="os-field-label">Company name:</span>
+              <span class="os-field-value">Stellar Global Inc.</span>
+            </div>
+            <div class="os-field-row">
+              <span class="os-field-label">Trade name:</span>
+              <span class="os-field-value">Stellar Global</span>
+            </div>
+            <div class="os-field-row">
+              <span class="os-field-label">EIN:</span>
+              <span class="os-field-value">47-8312904</span>
+            </div>
+            <div class="os-field-row">
+              <span class="os-field-label">Business phone:</span>
+              <span class="os-field-value">(617) 555-0100</span>
+            </div>
+            <div class="os-field-row">
+              <span class="os-field-label">Sector:</span>
+              <span class="os-field-value">Operations and facilities</span>
+            </div>
+          </div>
+          <div class="os-toggle-row">
+            <label class="os-toggle">
+              <input type="checkbox" checked />
+              <span class="os-toggle-track"></span>
+              <span class="os-toggle-thumb"></span>
+            </label>
+            <span class="os-toggle-label">Bill in the name of this company</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Package 1: Express – Boston Boylston St -->
+      <div class="os-package-card">
+        <div class="os-package-header">
+          <div class="os-package-header-left">
+            <div class="os-package-icon">
+              <span class="material-symbols-outlined">local_shipping</span>
+            </div>
+            <div class="os-package-info">
+              <span class="os-package-name">Delivery – Package 1</span>
+              <span class="os-package-meta">Location: Boston Boylston St, 02116 <span>Edit</span></span>
+              <span class="os-package-deadline">Deadline: <strong>Express (1–2 business days)</strong></span>
+            </div>
+          </div>
+          <button class="os-edit-link">Change</button>
+        </div>
+        <div class="os-item-row">
+          <div class="os-item-left">
+            <img class="os-item-img" src="/items/TV.png" alt="" />
+            <div>
+              <div class="os-item-name">Smart TV 55" UHD 4K – Hotel Series</div>
+              <div class="os-item-sku">HTV-55UHD-HSR</div>
+            </div>
+          </div>
+          <div class="os-item-right">
+            <div class="os-item-price">$4,932.40</div>
+            <div class="os-item-qty">×8 · 5% off</div>
+          </div>
+        </div>
+        <div class="os-item-row">
+          <div class="os-item-left">
+            <img class="os-item-img" src="/items/Frigobar.png" alt="" />
+            <div>
+              <div class="os-item-name">Minibar Refrigerator 40L – Premium</div>
+              <div class="os-item-sku">HMB-40L-PRE</div>
+            </div>
+          </div>
+          <div class="os-item-right">
+            <div class="os-item-price">$3,656.60</div>
+            <div class="os-item-qty">×10 · 6% off</div>
+          </div>
+        </div>
+        <div class="os-item-row">
+          <div class="os-item-left">
+            <img class="os-item-img" src="/items/Cofre.png" alt="" />
+            <div>
+              <div class="os-item-name">Digital Safe – Laptop Size (14")</div>
+              <div class="os-item-sku">HCF-LPT-14</div>
+            </div>
+          </div>
+          <div class="os-item-right">
+            <div class="os-item-price">$2,895.45</div>
+            <div class="os-item-qty">×15 · 3% off</div>
+          </div>
+        </div>
+        <div class="os-item-row">
+          <div class="os-item-left">
+            <img class="os-item-img" src="/items/Termostato%20inteligente.png" alt="" />
+            <div>
+              <div class="os-item-name">Smart Thermostat Wi-Fi – HVAC Control</div>
+              <div class="os-item-sku">HTT-WIFI-HVC</div>
+            </div>
+          </div>
+          <div class="os-item-right">
+            <div class="os-item-price">$4,335.66</div>
+            <div class="os-item-qty">×18 · 7% off</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Package 2: Standard – Cambridge Harvard Sq -->
+      <div class="os-package-card">
+        <div class="os-package-header">
+          <div class="os-package-header-left">
+            <div class="os-package-icon">
+              <span class="material-symbols-outlined">local_shipping</span>
+            </div>
+            <div class="os-package-info">
+              <span class="os-package-name">Delivery – Package 2</span>
+              <span class="os-package-meta">Location: Cambridge Harvard Sq, 02138 <span>Edit</span></span>
+              <span class="os-package-deadline">Deadline: <strong>Standard (3–4 business days)</strong></span>
+            </div>
+          </div>
+          <button class="os-edit-link">Change</button>
+        </div>
+        <div class="os-item-row">
+          <div class="os-item-left">
+            <img class="os-item-img" src="/items/TV.png" alt="" />
+            <div>
+              <div class="os-item-name">Smart TV 43" Full HD – Standard Room</div>
+              <div class="os-item-sku">HTV-43FHD-STD</div>
+            </div>
+          </div>
+          <div class="os-item-right">
+            <div class="os-item-price">$5,118.60</div>
+            <div class="os-item-qty">×12 · 5% off</div>
+          </div>
+        </div>
+        <div class="os-item-row">
+          <div class="os-item-left">
+            <img class="os-item-img" src="/items/Suporte.png" alt="" />
+            <div>
+              <div class="os-item-name">Articulating TV Mount 32–65"</div>
+              <div class="os-item-sku">HSP-ART-6532</div>
+            </div>
+          </div>
+          <div class="os-item-right">
+            <div class="os-item-price">$1,708.80</div>
+            <div class="os-item-qty">×20 · 4% off</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Package 3: Standard – Springfield + Worcester -->
+      <div class="os-package-card">
+        <div class="os-package-header">
+          <div class="os-package-header-left">
+            <div class="os-package-icon">
+              <span class="material-symbols-outlined">local_shipping</span>
+            </div>
+            <div class="os-package-info">
+              <span class="os-package-name">Delivery – Package 3</span>
+              <span class="os-package-meta">Location: Springfield Elm St, 01103 <span>Edit</span></span>
+              <span class="os-package-deadline">Deadline: <strong>Standard (5–6 business days)</strong></span>
+            </div>
+          </div>
+          <button class="os-edit-link">Change</button>
+        </div>
+        <div class="os-item-row">
+          <div class="os-item-left">
+            <img class="os-item-img" src="/items/Frigobar.png" alt="" />
+            <div>
+              <div class="os-item-name">Minibar Slim 20L – Compact Room</div>
+              <div class="os-item-sku">HMB-20L-SLM</div>
+            </div>
+          </div>
+          <div class="os-item-right">
+            <div class="os-item-price">$2,142.72</div>
+            <div class="os-item-qty">×8 · 4% off</div>
+          </div>
+        </div>
+        <div class="os-item-row">
+          <div class="os-item-left">
+            <img class="os-item-img" src="/items/Cofre.png" alt="" />
+            <div>
+              <div class="os-item-name">Digital Safe – Standard In-Room</div>
+              <div class="os-item-sku">HCF-STD-IR</div>
+            </div>
+          </div>
+          <div class="os-item-right">
+            <div class="os-item-price">$2,890.60</div>
+            <div class="os-item-qty">×20 · 3% off</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Package 4: Pickup -->
+      <div class="os-package-card">
+        <div class="os-package-header">
+          <div class="os-package-header-left">
+            <div class="os-package-icon">
+              <span class="material-symbols-outlined">storefront</span>
+            </div>
+            <div class="os-package-info">
+              <span class="os-package-name">Pickup – Package 4</span>
+              <span class="os-package-meta">Location: Boston Boylston St, 02116 <span>Edit</span></span>
+              <span class="os-package-deadline">Deadline: <strong>Ready in 2–3 business days</strong></span>
+            </div>
+          </div>
+          <button class="os-edit-link">Change</button>
+        </div>
+        <div class="os-item-row">
+          <div class="os-item-left">
+            <img class="os-item-img" src="/items/Access%20points%20Wi-Fi%20corporativos.png" alt="" />
+            <div>
+              <div class="os-item-name">Access Point Wi-Fi 6 Dual Band – Enterprise</div>
+              <div class="os-item-sku">HAP-W6DB-ENT</div>
+            </div>
+          </div>
+          <div class="os-item-right">
+            <div class="os-item-price">$1,989.30</div>
+            <div class="os-item-qty">×6 · 5% off</div>
+          </div>
+        </div>
+        <div class="os-item-row">
+          <div class="os-item-left">
+            <img class="os-item-img" src="/items/Access%20points%20Wi-Fi%20corporativos.png" alt="" />
+            <div>
+              <div class="os-item-name">Access Point Wi-Fi 5 – Corporate</div>
+              <div class="os-item-sku">HAP-W5-CRP</div>
+            </div>
+          </div>
+          <div class="os-item-right">
+            <div class="os-item-price">$1,420.25</div>
+            <div class="os-item-qty">×5 · 5% off</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end os-left -->
+
+    <!-- ── Sidebar ── -->
+    <div class="os-sidebar">
+
+      <div class="os-sidebar-section">
+        <span class="os-sidebar-label">Promo code</span>
+        <button class="os-sidebar-add">Add</button>
+      </div>
+      <div class="os-sidebar-section">
+        <span class="os-sidebar-label">Notes</span>
+        <button class="os-sidebar-add">Add</button>
+      </div>
+
+      <div class="os-summary-block">
+        <div class="os-summary-title">Order summary</div>
+        <div class="os-summary-row">
+          <span>Items (10)</span>
+          <span>$31,090.38</span>
+        </div>
+        <div class="os-summary-row">
+          <span>Shipping</span>
+          <span>$24.80</span>
+        </div>
+        <div class="os-summary-row">
+          <span>MA State Tax (6.25%)</span>
+          <span>$1,943.15</span>
+        </div>
+        <div class="os-summary-row">
+          <span>Boston City Tax (3.75%)</span>
+          <span>$667.85</span>
+        </div>
+        <div class="os-summary-divider"></div>
+        <div class="os-summary-total">
+          <span>Total</span>
+          <span>$33,726.18</span>
+        </div>
+      </div>
+
+      <button class="os-pay-btn" onclick="window.location.href='/salesapp/order-confirmation'">
+        Place Order
+      </button>
+    </div>
+
+  </div><!-- end os-layout -->
+
+  <script>
+    // Set current date/time
+    var now = new Date();
+    var opts = { month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+    document.getElementById('osDate').textContent = now.toLocaleString('en-US', opts);
+  </script>
+</body>
+</html>

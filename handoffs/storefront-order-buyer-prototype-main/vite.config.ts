@@ -94,6 +94,7 @@ export default defineConfig(({ command, mode }) => {
   }
 
   return {
+    base: '/assisted-b2b/handoffs/storefront-order-buyer-prototype-main/',
     server: {
       port: 3002,
       host: '0.0.0.0',

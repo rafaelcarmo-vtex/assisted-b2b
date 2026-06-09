@@ -94,6 +94,7 @@ export default defineConfig(({ command, mode }) => {
   }
 
   return {
+    base: '/assisted-b2b/handoffs/quotes-buyer-phase-1/',
     server: {
       port: 3001,
       host: '0.0.0.0',

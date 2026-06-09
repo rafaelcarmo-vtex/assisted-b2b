@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment – Demo Store</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,0" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    button, input { font-family: inherit; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: #1F1F1F;
+      background: #FFFFFF;
+      -webkit-font-smoothing: antialiased;
+      animation: fadeIn 0.18s ease both;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      user-select: none;
+    }
+
+    /* ── Layout ───────────────────────────────────────── */
+    .checkout-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      min-height: calc(100vh - 64px);
+      background: #FFFFFF;
+      max-width: 1280px;
+      margin: 0 auto;
+      gap: 60px;
+      padding: 0 48px;
+    }
+
+    /* ── Left panel ───────────────────────────────────── */
+    .checkout-left {
+      display: flex;
+      flex-direction: column;
+      padding: 40px 0 0;
+      background: #FFFFFF;
+      max-width: 840px;
+    }
+
+    .checkout-logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      position: relative;
+    }
+    .checkout-logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0366DD;
+      letter-spacing: -0.02em;
+    }
+    .checkout-more-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #707070;
+      transition: background 0.12s;
+      flex-shrink: 0;
+    }
+    .checkout-more-btn:hover { background: #F0F0F0; }
+    @keyframes dropdownIn {
+      from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0)   scale(1); }
+    }
+    .checkout-dropdown {
+      position: absolute;
+      top: 36px;
+      right: 0;
+      background: #FFFFFF;
+      border: 1px solid #E5E5E5;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+      padding: 6px;
+      min-width: max-content;
+      z-index: 100;
+      display: none;
+      transform-origin: top right;
+    }
+    .checkout-dropdown.open {
+      display: block;
+      animation: dropdownIn 0.15s cubic-bezier(0.2,0,0,1) both;
+    }
+    .checkout-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 9px 12px;
+      border: none;
+      background: none;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      color: #1F1F1F;
+      cursor: pointer;
+      border-radius: 8px;
+      text-align: left;
+      transition: background 0.12s;
+    }
+    .checkout-dropdown-item:hover { background: #F5F5F5; }
+    .checkout-dropdown-item .material-symbols-outlined { font-size: 17px; color: #707070; }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      margin-bottom: 28px;
+    }
+
+    .bc-link { color: #0366DD; font-weight: 500; }
+    .bc-link:hover { text-decoration: underline; }
+    .bc-sep { color: #ADADAD; font-size: 14px; }
+    .bc-current { color: #1F1F1F; font-weight: 500; }
+
+    .payment-title {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 32px;
+    }
+
+    /* ── Section ──────────────────────────────────────── */
+    .section { margin-bottom: 28px; }
+
+    .section-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #707070;
+      margin-bottom: 12px;
+    }
+
+    /* ── Saved cards grid ─────────────────────────────── */
+    .cards-grid {
+      display: flex;
+      gap: 12px;
+    }
+
+    .card-option {
+      flex: 0 0 148px;
+      height: 148px;
+      border: 1.5px solid #E0E0E0;
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: border-color 0.14s, background 0.14s;
+      background: #FFFFFF;
+    }
+
+    .card-option:hover {
+      border-color: #ADADAD;
+    }
+
+    .card-option.selected {
+      border-color: #0366DD;
+      border-width: 2px;
+      background: #F5F9FF;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .card-icon-wrap {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1.5px solid #E0E0E0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .card-option.selected .card-icon-wrap {
+      border-color: #0366DD;
+    }
+
+    .card-icon {
+      font-size: 18px;
+      color: #ADADAD;
+    }
+
+    .card-option.selected .card-icon {
+      color: #0366DD;
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+
+    .card-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #3D3D3D;
+    }
+
+    /* Card brand logos */
+    .brand-logo { width: 32px; height: 32px; display: block; object-fit: contain; }
+
+    /* ── Other options ────────────────────────────────── */
+    .other-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 72px;
+      padding: 0 16px;
+      border: 1.5px solid #E0E0E0;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #1F1F1F;
+      cursor: pointer;
+      transition: border-color 0.14s, background 0.14s;
+      background: #FFFFFF;
+      max-width: 468px;
+    }
+
+    .other-option:hover { border-color: #ADADAD; background: #FAFAFA; }
+
+    .other-option-icon { font-size: 20px; color: #707070; }
+
+    /* ── Form fields ──────────────────────────────────── */
+    .form-fields { display: flex; flex-direction: column; gap: 12px; max-width: 468px; margin-bottom: 32px; }
+
+    .field-group { display: flex; flex-direction: column; gap: 4px; }
+
+    .field-label { font-size: 12px; font-weight: 500; color: #707070; }
+
+    .field-input {
+      height: 48px;
+      border: 1.5px solid #D6D6D6;
+      border-radius: 10px;
+      padding: 0 16px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #1F1F1F;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      background: #FFFFFF;
+      width: 100%;
+    }
+
+    .field-input:focus { border-color: #0366DD; box-shadow: 0 0 0 3px rgba(3,102,221,0.10); }
+
+    .field-select-row {
+      min-height: 56px;
+      border: 1.5px solid #D6D6D6;
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .field-placeholder { font-size: 14px; color: #ADADAD; }
+    .field-select-link { font-size: 14px; font-weight: 500; color: #0366DD; }
+    .field-select-link:hover { text-decoration: underline; }
+
+    /* ── Footer ───────────────────────────────────────── */
+    .checkout-footer {
+      margin-top: auto;
+      padding: 32px 0 28px;
+      border-top: 1px solid #F0F0F0;
+    }
+
+    .footer-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: #ADADAD;
+    }
+
+    .footer-pay-icons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pay-icon {
+      height: 28px;
+      padding: 4px 8px;
+      border: 1px solid #E0E0E0;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #FFFFFF;
+    }
+
+    .pay-icon img { height: 16px; width: auto; display: block; }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 16px;
+    }
+
+    .footer-links a {
+      font-size: 12px;
+      color: #ADADAD;
+      transition: color 0.14s;
+    }
+
+    .footer-links a:hover { color: #707070; }
+
+    /* ── Right panel ──────────────────────────────────── */
+    .checkout-right {
+      background: #FFFFFF;
+      border: 1px solid #EBEBEB;
+      border-radius: 16px;
+      padding: 32px 28px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: sticky;
+      top: 40px;
+      max-height: calc(100vh - 80px);
+      overflow-y: auto;
+      align-self: start;
+      margin: 40px 0 0 0;
+    }
+
+    .summary-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .summary-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1F1F1F;
+      letter-spacing: -0.01em;
+    }
+
+    .summary-items-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: #0366DD;
+    }
+
+    .summary-items-link:hover { text-decoration: underline; }
+
+    .summary-section { margin-bottom: 0; }
+
+    .summary-section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1F1F1F;
+      margin-bottom: 12px;
+    }
+
+    .summary-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .summary-change {
+      font-size: 13px;
+      font-weight: 500;
+      color: #0366DD;
+    }
+
+    .summary-change:hover { text-decoration: underline; }
+
+    /* User info */
+    .user-info-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .user-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+
+    .user-company {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1F1F1F;
+    }
+
+    .user-details p {
+      font-size: 13px;
+      color: #3D3D3D;
+      line-height: 1.6;
+    }
+
+    /* Divider */
+    .summary-divider {
+      height: 1px;
+      background: #E5E5E5;
+      margin: 16px 0;
+    }
+
+    /* Delivery */
+    .delivery-ship-to {
+      font-size: 13px;
+      font-weight: 500;
+      color: #1F1F1F;
+      margin-bottom: 12px;
+    }
+
+    .delivery-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .delivery-icon {
+      font-size: 20px;
+      color: #707070;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .delivery-item-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .delivery-item-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: #1F1F1F;
+    }
+
+    .delivery-item-sub {
+      font-size: 12px;
+      color: #707070;
+    }
+
+    /* Totals */
+    .summary-totals {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #3D3D3D;
+    }
+
+    .summary-total-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 15px;
+      font-weight: 600;
+      color: #1F1F1F;
+      padding-top: 12px;
+      border-top: 1px solid #E5E5E5;
+    }
+
+    /* Action buttons */
+    .summary-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .btn-request-quote {
+      height: 40px;
+      border: 1.5px solid #D6D6D6;
+      border-radius: 100px;
+      background: #FFFFFF;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      color: #0366DD;
+      cursor: pointer;
+      transition: border-color 0.14s, background 0.14s;
+    }
+
+    .btn-request-quote:hover { border-color: #0366DD; background: #F0F6FF; }
+
+    .btn-place-order {
+      height: 40px;
+      border: none;
+      border-radius: 100px;
+      background: #0366DD;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      color: #FFFFFF;
+      cursor: pointer;
+      transition: background 0.14s;
+    }
+
+    .btn-place-order:hover { background: #0155B7; }
+
+    /* Right footer */
+    .right-footer {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding-top: 16px;
+    }
+
+    .rfoot-icon {
+      height: 28px;
+      padding: 4px 8px;
+      border: 1px solid #D6D6D6;
+      border-radius: 4px;
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rfoot-icon img { height: 16px; width: auto; display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Full-width header ── -->
+  <header style="position:sticky;top:0;z-index:100;background:#FFFFFF;border-bottom:1px solid #EBEBEB;display:flex;align-items:center;justify-content:space-between;height:64px;padding:0 40px;">
+    <a href="#" onclick="showClearCartModal();return false;" style="font-size:20px;font-weight:700;color:#0366DD;letter-spacing:-0.02em;text-decoration:none;">Demo Store</a>
+    <div style="display:flex;align-items:center;gap:20px;">
+      <a href="#" onclick="showClearCartModal();return false;" style="font-size:13px;font-weight:500;color:#0366DD;text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Back to shopping</a>
+      <div style="width:32px;height:32px;border-radius:50%;background:#1a1a1a;overflow:hidden;display:flex;align-items:center;justify-content:center;"><img src="/logo-stellarglobal.png" alt="Stellar Global" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" /></div>
+    </div>
+  </header>
+
+  <div class="checkout-layout">
+
+    <!-- ── Left panel ── -->
+    <main class="checkout-left">
+      <nav class="breadcrumb">
+        <a href="/storefrontb2b/cart" class="bc-link">Cart</a>
+        <span class="bc-sep">›</span>
+        <a href="#" class="bc-link">Delivery</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Payment</span>
+        <span style="flex:1;"></span>
+        <div style="position:relative;">
+          <button class="checkout-more-btn" onclick="toggleCheckoutMenu()" aria-label="More options">
+            <span class="material-symbols-outlined" style="font-size:20px;">more_vert</span>
+          </button>
+          <div class="checkout-dropdown" id="checkoutDropdown">
+            <button class="checkout-dropdown-item" onclick="sessionStorage.setItem('pendingToast','cart-saved');window.location.href='/storefrontb2b'">
+              <span class="material-symbols-outlined">bookmark</span>Save for Later (Draft)
+            </button>
+            <button class="checkout-dropdown-item" onclick="closeCheckoutMenu()">
+              <span class="material-symbols-outlined">link</span>Share payment link
+            </button>
+            <button class="checkout-dropdown-item" onclick="closeCheckoutMenu()" style="color:#D31A15;">
+              <span class="material-symbols-outlined" style="color:#D31A15;">delete</span>Discard quote
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <h1 class="payment-title">Payment</h1>
+
+      <!-- Quote lock banner -->
+      <div id="quote-lock-toast" class="hidden">
+        <span id="quote-lock-toast-icon" class="material-symbols-outlined" style="font-size:18px;">info</span>
+        <span id="quote-lock-toast-msg">This order is based on a revised quote and is <strong>read-only</strong>. Payment method and delivery options reflect the commercial terms agreed upon and cannot be changed.</span>
+        <button id="quote-lock-toast-close" onclick="document.getElementById('quote-lock-toast').classList.add('hidden')" aria-label="Close">
+          <span class="material-symbols-outlined" style="font-size:18px;">close</span>
+        </button>
+      </div>
+
+      <!-- Saved cards -->
+      <section class="section">
+        <p class="section-label">Saved cards</p>
+        <div class="cards-grid">
+          <div class="card-option selected" onclick="selectCard(this)">
+            <div class="card-top">
+              <img class="brand-logo" src="/Payment%20methods/Visa.svg" alt="Visa" />
+              <div class="card-icon-wrap"><span class="material-symbols-outlined card-icon" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 20">corporate_fare</span></div>
+            </div>
+            <div class="card-name">Card IM 5100</div>
+          </div>
+          <div class="card-option" onclick="selectCard(this)">
+            <div class="card-top">
+              <img class="brand-logo" src="/Payment%20methods/MasterCard.svg" alt="Mastercard" />
+              <div class="card-icon-wrap"><span class="material-symbols-outlined card-icon">person</span></div>
+            </div>
+            <div class="card-name">Card IM 1812</div>
+          </div>
+          <div class="card-option" onclick="selectCard(this)">
+            <div class="card-top">
+              <img class="brand-logo" src="/Payment%20methods/DinersClub.svg" alt="Diners Club" />
+              <div class="card-icon-wrap"><span class="material-symbols-outlined card-icon">person</span></div>
+            </div>
+            <div class="card-name">Card IM 1717</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Other options -->
+      <section class="section">
+        <p class="section-label">Other options</p>
+        <div class="other-option">
+          <span class="material-symbols-outlined other-option-icon">credit_card</span>
+          <span>Credit card</span>
+        </div>
+        <div class="other-option" style="margin-top:10px">
+          <span class="material-symbols-outlined other-option-icon">receipt</span>
+          <span>Invoice</span>
+        </div>
+      </section>
+
+      <!-- Form fields -->
+      <p class="section-label" style="margin-bottom:12px;margin-top:4px">Order fields</p>
+      <div class="form-fields">
+        <div class="field-select-row">
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <span style="font-size:12px;font-weight:500;color:#707070">PO number</span>
+            <span style="font-size:14px;color:#1F1F1F">LS-PO1</span>
+          </div>
+          <a href="#" class="field-select-link">Change</a>
+        </div>
+        <div class="field-select-row">
+          <span class="field-placeholder">Release</span>
+          <a href="#" class="field-select-link">Select</a>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="checkout-footer">
+        <div class="footer-top">
+          <span class="footer-copy">© 2026 Demo Store, LLC. All Rights Reserved.</span>
+          <div class="footer-pay-icons">
+            <div class="pay-icon"><img src="/Payment%20methods/Visa.svg" alt="Visa" /></div>
+            <div class="pay-icon"><img src="/Payment%20methods/MasterCard.svg" alt="Mastercard" /></div>
+            <div class="pay-icon"><img src="/Payment%20methods/DinersClub.svg" alt="Diners Club" /></div>
+          </div>
+        </div>
+        <div class="footer-links">
+          <a href="#">Terms of use</a>
+          <a href="#">Privacy Notice</a>
+          <a href="#">CA Notice at Collection</a>
+          <a href="#">Your CA Privacy Rights</a>
+          <a href="#">DAA Industry Opt Out</a>
+        </div>
+      </footer>
+    </main>
+
+    <!-- ── Right panel ── -->
+    <aside class="checkout-right">
+      <div class="summary-header">
+        <span class="summary-title">Order summary</span>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <a href="/storefrontb2b/cart" class="summary-items-link">10 items</a>
+          <span style="color:#D6D6D6;font-size:14px;">|</span>
+          <a href="#" onclick="showClearCartModal();return false;" class="summary-items-link" style="color:#0366DD;">Clear cart</a>
+        </div>
+      </div>
+
+      <!-- User information -->
+      <div class="summary-section">
+        <div class="summary-section-title">User information</div>
+        <div class="user-info-row">
+          <div class="user-avatar"><img src="/logo-stellarglobal.png" alt="Stellar Global" /></div>
+          <span class="user-company">Stellar Global</span>
+        </div>
+        <div class="user-details">
+          <p>Donald Green</p>
+          <p>(617) 555-0124</p>
+          <p>d.green@stellar.com</p>
+        </div>
+      </div>
+
+      <div class="summary-divider"></div>
+
+      <!-- Delivery -->
+      <div class="summary-section">
+        <div class="summary-section-header">
+          <span class="summary-section-title">Delivery</span>
+          <a href="/storefrontb2b/cart" class="summary-change">Change</a>
+        </div>
+        <p class="delivery-ship-to">Boston Boylston St, 02116</p>
+        <div class="delivery-item">
+          <span class="material-symbols-outlined delivery-icon">local_shipping</span>
+          <div class="delivery-item-info">
+            <p class="delivery-item-title">Express Delivery — Package 1</p>
+            <p class="delivery-item-sub">1–2 business days · $12.40</p>
+          </div>
+        </div>
+        <div class="delivery-item">
+          <span class="material-symbols-outlined delivery-icon">package_2</span>
+          <div class="delivery-item-info">
+            <p class="delivery-item-title">Standard Delivery — Package 2</p>
+            <p class="delivery-item-sub">3–6 business days · $12.40</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-divider"></div>
+
+      <!-- Totals -->
+      <div class="summary-totals">
+        <div class="summary-line"><span>Subtotal</span><span>$24,569.54</span></div>
+        <div class="summary-line"><span>Shipping</span><span>$24.80</span></div>
+        <div class="summary-line"><span>Taxes</span><span>$5,656.69</span></div>
+        <div class="summary-total-line"><span>Total</span><span>$30,251.03</span></div>
+      </div>
+
+      <div class="summary-actions">
+        <button class="btn-request-quote" type="button" onclick="openRFQDrawer()">Request a quote</button>
+        <button class="btn-place-order" type="button" onclick="window.location.href='/storefrontb2b/order-confirmation'">Place order</button>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- ── RFQ Drawer ── -->
+  <style>
+    #rfq-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.32); z-index:1000; opacity:0; transition:opacity 0.28s ease; }
+    #rfq-overlay.open { opacity:1; }
+    #rfq-drawer { position:fixed; top:0; right:0; width:480px; height:100%; background:#FFFFFF; z-index:1001; display:flex; flex-direction:column; box-shadow:-4px 0 24px rgba(0,0,0,0.10); transform:translateX(100%); transition:transform 0.28s cubic-bezier(0.2,0,0,1); }
+    #rfq-drawer.open { transform:translateX(0); }
+    @keyframes rfqSpin { to { transform: rotate(360deg); } }
+    .rfq-spinner { width:16px; height:16px; border:2px solid rgba(255,255,255,0.4); border-top-color:#FFFFFF; border-radius:50%; animation:rfqSpin 0.7s linear infinite; flex-shrink:0; }
+  </style>
+  <div id="rfq-overlay" onclick="closeRFQDrawer()"></div>
+  <div id="rfq-drawer">
+    <!-- Header -->
+    <div style="height:64px;display:flex;align-items:center;padding:0 60px;border-bottom:1px solid #F0F0F0;flex-shrink:0;position:relative;">
+      <span style="font-size:16px;font-weight:600;color:#1F1F1F;letter-spacing:-0.01em">Request Quote</span>
+      <button onclick="closeRFQDrawer()" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:8px;color:#5C5C5C;transition:background 0.14s;" onmouseover="this.style.background='#F5F5F5'" onmouseout="this.style.background='transparent'" aria-label="Close">
+        <span class="material-symbols-outlined" style="font-size:20px">close</span>
+      </button>
+    </div>
+    <!-- Body: form -->
+    <div id="rfq-form-body" style="flex:1;overflow-y:auto;padding:32px 60px;">
+      <div style="margin-bottom:24px;">
+        <div style="position:relative;">
+          <label style="position:absolute;top:10px;left:16px;font-size:11px;font-weight:500;color:#707070;pointer-events:none;">Quote Name</label>
+          <input id="rfq-name" type="text" value="ORD-2023-XYZ-789" style="width:100%;height:60px;padding:22px 16px 8px;border:1.5px solid #D6D6D6;border-radius:10px;font-family:inherit;font-size:14px;color:#1F1F1F;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#0366DD'" onblur="this.style.borderColor='#D6D6D6'" />
+        </div>
+      </div>
+      <div>
+        <p style="font-size:14px;font-weight:500;color:#1F1F1F;margin-bottom:10px;">Add Note</p>
+        <textarea id="rfq-note" maxlength="500" oninput="updateCharCount(this);updateSubmitBtn()" style="width:100%;height:160px;border:1.5px solid #D6D6D6;border-radius:10px;padding:14px 16px;font-family:inherit;font-size:14px;color:#1F1F1F;resize:none;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#0366DD'" onblur="this.style.borderColor='#D6D6D6'"></textarea>
+        <p id="rfq-char-count" style="font-size:12px;color:#ADADAD;margin-top:6px;">500 characters left</p>
+      </div>
+    </div>
+    <!-- Footer: form -->
+    <div id="rfq-form-footer" style="height:80px;padding:0 60px;border-top:1px solid #F0F0F0;display:flex;align-items:center;justify-content:flex-end;gap:12px;flex-shrink:0;">
+      <button id="rfq-save-later" class="btn-request-quote" style="padding:0 24px;" onclick="saveRFQLater()">Save for Later</button>
+      <button id="rfq-submit" onclick="submitRFQ()" style="height:40px;padding:0 28px;border:none;border-radius:100px;background:#D6D6D6;font-family:inherit;font-size:14px;font-weight:600;color:#FFFFFF;cursor:not-allowed;transition:background 0.14s;display:flex;align-items:center;justify-content:center;gap:8px;min-width:100px;">Request a Quote</button>
+    </div>
+    <!-- Body: success (hidden) -->
+    <div id="rfq-success-body" style="display:none;flex:1;overflow-y:auto;padding:32px 60px;flex-direction:column;justify-content:center;">
+      <div style="margin-bottom:24px;">
+        <img src="/check.svg" alt="Success" style="width:56px;height:56px;display:block;" />
+      </div>
+      <p style="font-size:24px;font-weight:600;color:#1F1F1F;line-height:32px;margin-bottom:12px;letter-spacing:-0.04em;">Your quote request has been successfully submitted!</p>
+      <p style="font-size:14px;color:#3D3D3D;line-height:1.4;margin-bottom:24px;">Your request is under review. You can track it in Quotes.</p>
+      <div style="border:1px solid #E5E5E5;border-radius:12px;overflow:hidden;margin-bottom:28px;">
+        <div style="display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid #F0F0F0;">
+          <span style="font-size:13px;font-weight:600;color:#1F1F1F;flex:1;">Quote request</span>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="width:7px;height:7px;border-radius:50%;background:#E8920A;flex-shrink:0;display:inline-block;"></span>
+            <span style="font-size:13px;color:#1F1F1F;white-space:nowrap;">Requested</span>
+          </div>
+          <button style="background:none;border:none;cursor:pointer;color:#707070;padding:0;display:flex;align-items:center;border-radius:4px;"><span class="material-symbols-outlined" style="font-size:18px;">more_horiz</span></button>
+        </div>
+        <div style="padding:14px;display:flex;flex-direction:column;gap:5px;">
+          <div style="font-size:13px;color:#707070;">Submitted 17 Apr 2026 03h59 PM</div>
+          <div style="font-size:13px;color:#707070;">10 items · $30,251.03</div>
+          <div style="font-size:13px;color:#707070;">Assigned to <strong style="color:#1F1F1F;">To be assigned</strong></div>
+          <div style="font-size:13px;color:#707070;">Expected response within <strong style="color:#1F1F1F;">2 business days</strong></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button onclick="window.location.href='/storefrontb2b'" style="flex:1;height:40px;border:1.5px solid #D6D6D6;border-radius:100px;background:#FFFFFF;font-family:inherit;font-size:14px;font-weight:600;color:#0366DD;cursor:pointer;transition:border-color 0.14s;" onmouseover="this.style.borderColor='#0366DD'" onmouseout="this.style.borderColor='#D6D6D6'">Back to Shopping</button>
+        <button onclick="window.location.href='/storefrontb2b/account/quotes'" style="flex:1;height:40px;border:none;border-radius:100px;background:#0366DD;font-family:inherit;font-size:14px;font-weight:600;color:#FFFFFF;cursor:pointer;transition:background 0.14s;" onmouseover="this.style.background='#0155B7'" onmouseout="this.style.background='#0366DD'">Go to Quotes</button>
+      </div>
+    </div>
+    <!-- Body: save for later success (hidden) -->
+    <div id="rfq-saved-body" style="display:none;flex:1;overflow-y:auto;padding:32px 60px;flex-direction:column;justify-content:center;">
+      <div style="margin-bottom:24px;">
+        <div style="width:56px;height:56px;border-radius:50%;border:2px solid #E0E0E0;display:flex;align-items:center;justify-content:center;">
+          <span class="material-symbols-outlined" style="font-size:28px;color:#0366DD;">bookmark</span>
+        </div>
+      </div>
+      <p style="font-size:24px;font-weight:600;color:#1F1F1F;line-height:32px;margin-bottom:12px;letter-spacing:-0.04em;">Your quote has been saved</p>
+      <p style="font-size:14px;color:#3D3D3D;line-height:1.6;margin-bottom:28px;">Your quote has been saved for later. You can review and edit it anytime in Quotes.<br><br><strong>This quote has not been sent to a sales representative.</strong></p>
+      <div style="display:flex;gap:10px;">
+        <button onclick="window.location.href='/storefrontb2b'" style="flex:1;height:40px;border:1.5px solid #D6D6D6;border-radius:100px;background:#FFFFFF;font-family:inherit;font-size:14px;font-weight:600;color:#0366DD;cursor:pointer;transition:border-color 0.14s;" onmouseover="this.style.borderColor='#0366DD'" onmouseout="this.style.borderColor='#D6D6D6'">Back to Shopping</button>
+        <button onclick="window.location.href='/storefrontb2b/account/quotes'" style="flex:1;height:40px;border:none;border-radius:100px;background:#0366DD;font-family:inherit;font-size:14px;font-weight:600;color:#FFFFFF;cursor:pointer;transition:background 0.14s;" onmouseover="this.style.background='#0155B7'" onmouseout="this.style.background='#0366DD'">Go to Quotes</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleCheckoutMenu() {
+      var dd = document.getElementById('checkoutDropdown');
+      dd.classList.toggle('open');
+    }
+    function closeCheckoutMenu() {
+      document.getElementById('checkoutDropdown').classList.remove('open');
+    }
+    document.addEventListener('click', function(e) {
+      var btn = document.querySelector('.checkout-more-btn');
+      var dd = document.getElementById('checkoutDropdown');
+      if (dd && btn && !btn.contains(e.target) && !dd.contains(e.target)) {
+        dd.classList.remove('open');
+      }
+    });
+
+    function selectCard(el) {
+      document.querySelectorAll('.card-option').forEach(function(c) { c.classList.remove('selected'); });
+      el.classList.add('selected');
+    }
+
+    // Lock page when arriving from a quote conversion
+    document.addEventListener('DOMContentLoaded', function() {
+      if (sessionStorage.getItem('quoteToCart') === 'revised') {
+        document.querySelector('.checkout-layout').classList.add('quote-locked');
+        var toast = document.getElementById('quote-lock-toast');
+        toast.classList.remove('hidden');
+        toast.style.display = 'flex';
+        toast.style.animation = 'none';
+      }
+    });
+
+    function closeRFQDrawer() {
+      document.getElementById('rfq-overlay').classList.remove('open');
+      document.getElementById('rfq-drawer').classList.remove('open');
+      setTimeout(function() {
+        document.getElementById('rfq-overlay').style.display = 'none';
+      }, 280);
+    }
+
+    function updateCharCount(el) {
+      var left = 500 - el.value.length;
+      document.getElementById('rfq-char-count').textContent = left + ' characters left';
+    }
+
+    function updateSubmitBtn() {
+      var note = document.getElementById('rfq-note').value.trim();
+      var btn = document.getElementById('rfq-submit');
+      if (note.length > 0) {
+        btn.style.background = '#0366DD';
+        btn.style.cursor = 'pointer';
+      } else {
+        btn.style.background = '#D6D6D6';
+        btn.style.cursor = 'not-allowed';
+      }
+    }
+
+    function saveRFQLater() {
+      document.getElementById('rfq-form-body').style.display = 'none';
+      document.getElementById('rfq-form-footer').style.display = 'none';
+      document.getElementById('rfq-saved-body').style.display = 'flex';
+    }
+
+    function submitRFQ() {
+      var note = document.getElementById('rfq-note').value.trim();
+      if (!note.length) return;
+      var btn = document.getElementById('rfq-submit');
+      btn.style.width = btn.offsetWidth + 'px';
+      btn.disabled = true;
+      btn.style.cursor = 'not-allowed';
+      btn.innerHTML = '<span class="rfq-spinner"></span>';
+      setTimeout(function() {
+        document.getElementById('rfq-form-body').style.display = 'none';
+        document.getElementById('rfq-form-footer').style.display = 'none';
+        var success = document.getElementById('rfq-success-body');
+        success.style.display = 'flex';
+      }, 1500);
+    }
+
+    function openRFQDrawer() {
+      // reset to form state
+      document.getElementById('rfq-form-body').style.display = 'block';
+      document.getElementById('rfq-form-footer').style.display = 'flex';
+      document.getElementById('rfq-success-body').style.display = 'none';
+      document.getElementById('rfq-saved-body').style.display = 'none';
+      var btn = document.getElementById('rfq-submit');
+      btn.disabled = false;
+      btn.innerHTML = 'Request a Quote';
+      btn.style.background = '#D6D6D6';
+      btn.style.cursor = 'not-allowed';
+      document.getElementById('rfq-note').value = '';
+      document.getElementById('rfq-char-count').textContent = '500 characters left';
+      document.getElementById('rfq-overlay').style.display = 'block';
+      requestAnimationFrame(function() {
+        document.getElementById('rfq-overlay').classList.add('open');
+        document.getElementById('rfq-drawer').classList.add('open');
+      });
+    }
+  </script>
+
+  <!-- ── Quote Lock Toast ── -->
+  <style>
+    #quote-lock-toast {
+      display: none;
+      background: #FFF3E0;
+      border: 1px solid #F59E0B;
+      color: #7C4A00;
+      font-family: inherit;
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 12px 14px 12px 16px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    #quote-lock-toast.hidden { display: none !important; }
+    #quote-lock-toast-icon { color: #E07B00; flex-shrink: 0; margin-top: 1px; }
+    #quote-lock-toast-msg { flex: 1; }
+    #quote-lock-toast-close { background: none; border: none; cursor: pointer; color: #A0622A; opacity: 0.7; padding: 0; display: flex; align-items: center; flex-shrink: 0; }
+    #quote-lock-toast-close:hover { opacity: 1; }
+
+    /* Locked state */
+    .quote-locked .card-option { pointer-events: none; opacity: 0.45; }
+    .quote-locked .card-option.selected { opacity: 0.7; }
+    .quote-locked .other-option { pointer-events: none; opacity: 0.45; }
+    .quote-locked .summary-change { pointer-events: none; opacity: 0.35; }
+    .quote-locked .summary-items-link { pointer-events: none; color: #707070; }
+    .quote-locked .btn-request-quote { display: none; }
+    .quote-locked .bc-link { pointer-events: none; color: #ADADAD; }
+    .quote-locked .checkout-more-btn { pointer-events: none; opacity: 0.4; }
+  </style>
+
+
+  <!-- ── Clear Cart Modal ── -->
+  <style>
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.96) translateY(6px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    #clear-cart-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.32);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    #clear-cart-overlay.open {
+      opacity: 1;
+    }
+    #clear-cart-dialog {
+      background: #FFFFFF;
+      border-radius: 20px;
+      padding: 32px 32px 28px;
+      width: 360px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.16);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      animation: modalIn 0.22s cubic-bezier(0.2, 0, 0, 1) both;
+    }
+    #clear-cart-dialog h2 {
+      font-size: 17px;
+      font-weight: 600;
+      color: #1F1F1F;
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+    #clear-cart-dialog p {
+      font-size: 14px;
+      color: #707070;
+      margin: 0 0 12px;
+      line-height: 1.5;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .modal-btn-keep {
+      flex: 1;
+      height: 40px;
+      border: 1.5px solid #D6D6D6;
+      border-radius: 100px;
+      background: #FFFFFF;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      color: #0366DD;
+      cursor: pointer;
+      transition: border-color 0.14s, background 0.14s;
+    }
+    .modal-btn-keep:hover { border-color: #0366DD; background: #F0F6FF; }
+    .modal-btn-clear {
+      flex: 1;
+      height: 40px;
+      border: none;
+      border-radius: 100px;
+      background: #0366DD;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      color: #FFFFFF;
+      cursor: pointer;
+      transition: background 0.14s;
+    }
+    .modal-btn-clear:hover { background: #0155B7; }
+
+    .link-clear-cart {
+      font-size: 13px;
+      font-weight: 500;
+      color: #707070;
+      text-decoration: none;
+      text-align: center;
+      cursor: pointer;
+    }
+    .link-clear-cart:hover { color: #1F1F1F; text-decoration: underline; }
+  </style>
+
+  <div id="clear-cart-overlay" onclick="if(event.target===this)hideClearCartModal()">
+    <div id="clear-cart-dialog">
+      <h2>Clear cart?</h2>
+      <p>All items will be removed and you'll return to the store.</p>
+      <div class="modal-actions">
+        <button class="modal-btn-keep" onclick="hideClearCartModal()">Keep cart</button>
+        <button class="modal-btn-clear" onclick="confirmClearCart()">Clear cart</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showClearCartModal() {
+      var overlay = document.getElementById('clear-cart-overlay');
+      overlay.style.display = 'flex';
+      requestAnimationFrame(function() { overlay.classList.add('open'); });
+    }
+    function hideClearCartModal() {
+      var overlay = document.getElementById('clear-cart-overlay');
+      overlay.classList.remove('open');
+      setTimeout(function() { overlay.style.display = 'none'; }, 200);
+    }
+    function confirmClearCart() {
+      window.location.href = '/storefrontb2b';
+    }
+  </script>
+
+  <!-- ── FloatingToggle ── -->
+  <style>
+    @keyframes ftFadeIn{from{opacity:0}to{opacity:1}}
+    #floatingToggle{position:fixed;z-index:9999;background:rgba(255,255,255,0.18);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-radius:9999px;border:1px solid rgba(255,255,255,0.35);box-shadow:0 2px 8px rgba(0,0,0,0.12),inset 0 1px 0 rgba(255,255,255,0.5);user-select:none;cursor:grab;font-family:Inter,system-ui,sans-serif;padding:3px;animation:ftFadeIn 0.18s 0.06s ease both;}
+    #floatingToggle:active{cursor:grabbing;}
+    #ftTrack{display:flex;flex-direction:row;position:relative;}
+    #ftPill{position:absolute;top:0;height:100%;border-radius:9999px;background:rgba(255,255,255,0.65);backdrop-filter:blur(16px) saturate(200%);-webkit-backdrop-filter:blur(16px) saturate(200%);box-shadow:inset 0 1px 0 rgba(255,255,255,0.9),0 2px 8px rgba(0,0,0,0.10);transition:left 0.3s cubic-bezier(0.25,1.1,0.4,1),width 0.3s cubic-bezier(0.25,1.1,0.4,1);pointer-events:none;}
+    .ft-btn{display:flex;flex-direction:column;align-items:center;padding:6px 14px;border:none;border-radius:9999px;background:transparent;cursor:pointer;font-family:inherit;white-space:nowrap;position:relative;z-index:1;}
+    .ft-label{font-size:12px;font-weight:500;color:rgba(0,0,0,0.5);line-height:1.2;transition:color 0.2s ease;}
+    .ft-label.active{color:rgba(0,0,0,0.85);}
+    .ft-btn:hover .ft-label{color:rgba(0,0,0,0.75);}
+  </style>
+  <div id="floatingToggle"><div id="ftTrack"><span id="ftPill"></span><button class="ft-btn" id="ftBuyerBtn"><span class="ft-label active" id="ftBuyerLabel">Buyer</span></button><button class="ft-btn" id="ftSalesBtn"><span class="ft-label" id="ftSalesLabel">Sales Rep</span></button></div></div>
+  <script>
+    (function(){
+      const el=document.getElementById('floatingToggle'),pill=document.getElementById('ftPill'),buyerBtn=document.getElementById('ftBuyerBtn'),salesBtn=document.getElementById('ftSalesBtn'),MARGIN=20;
+      function initPos(){const w=el.offsetWidth,h=el.offsetHeight;el.style.left=((window.innerWidth-w)/2)+'px';el.style.top=(window.innerHeight-h-32)+'px';updatePill(buyerBtn);}
+      function updatePill(b){pill.style.width=b.offsetWidth+'px';pill.style.left=b.offsetLeft+'px';pill.style.opacity='1';}
+      let dragging=false,hasMoved=false,startMouse={x:0,y:0},offset={x:0,y:0};
+      el.addEventListener('mousedown',function(e){if(e.target.closest('.ft-btn'))return;dragging=true;hasMoved=false;startMouse={x:e.clientX,y:e.clientY};const r=el.getBoundingClientRect();offset={x:e.clientX-r.left,y:e.clientY-r.top};e.preventDefault();});
+      document.addEventListener('mousemove',function(e){if(!dragging)return;hasMoved=true;let x=e.clientX-offset.x,y=e.clientY-offset.y;const w=el.offsetWidth,h=el.offsetHeight;x=Math.max(MARGIN,Math.min(window.innerWidth-w-MARGIN,x));y=Math.max(MARGIN,Math.min(window.innerHeight-h-MARGIN,y));el.style.left=x+'px';el.style.top=y+'px';});
+      document.addEventListener('mouseup',function(){dragging=false;});
+      buyerBtn.addEventListener('click',function(){updatePill(buyerBtn);document.getElementById('ftBuyerLabel').classList.add('active');document.getElementById('ftSalesLabel').classList.remove('active');const overlay=document.createElement('div');overlay.style.cssText='position:fixed;inset:0;background:#fff;opacity:0;z-index:9998;transition:opacity 0.15s ease;pointer-events:none;';document.body.appendChild(overlay);requestAnimationFrame(function(){overlay.style.opacity='1';});setTimeout(function(){window.location.href='/storefrontb2b';},180);});
+      salesBtn.addEventListener('click',function(){updatePill(salesBtn);document.getElementById('ftSalesLabel').classList.add('active');document.getElementById('ftBuyerLabel').classList.remove('active');const overlay=document.createElement('div');overlay.style.cssText='position:fixed;inset:0;background:#fff;opacity:0;z-index:9998;transition:opacity 0.15s ease;pointer-events:none;';document.body.appendChild(overlay);requestAnimationFrame(function(){overlay.style.opacity='1';});setTimeout(function(){window.location.href='/salesapp/home';},180);});
+      window.addEventListener('resize',function(){const r=el.getBoundingClientRect();const w=el.offsetWidth,h=el.offsetHeight;let x=r.left,y=r.top;x=Math.max(MARGIN,Math.min(window.innerWidth-w-MARGIN,x));y=Math.max(MARGIN,Math.min(window.innerHeight-h-MARGIN,y));el.style.left=x+'px';el.style.top=y+'px';});
+      requestAnimationFrame(initPos);
+    })();
+  </script>
+  <!-- reset-session-r -->
+  <script>
+    document.addEventListener('keydown', function(e) {
+      if ((e.key === 'r' || e.key === 'R') && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        sessionStorage.removeItem('unlocked');
+        localStorage.removeItem('quoteRevised');
+        window.location.href = '/storefrontb2b';
+      }
+    });
+  </script>
+
+</body>
+</html>
