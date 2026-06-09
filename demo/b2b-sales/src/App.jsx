@@ -144,7 +144,7 @@ function App() {
   }, [])
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/assisted-b2b/demo/b2b-sales/dist">
       <Routes>
         <Route path="/" element={<Navigate to="/storefrontb2b" replace />} />
         <Route path="/storefrontb2b" element={<BuyerHome />} />

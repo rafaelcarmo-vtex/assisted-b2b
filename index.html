@@ -70,6 +70,7 @@
       text-decoration: none;
       color: inherit;
       transition: border-color 0.15s, background 0.15s;
+      gap: 16px;
     }
 
     a.card:hover {
@@ -90,12 +91,58 @@
       display: block;
     }
 
+    .card-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .card-collab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .card-collab.loaded {
+      opacity: 1;
+    }
+
+    .card-collab img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid #333;
+    }
+
+    .card-collab-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 1px;
+    }
+
+    .card-collab-name {
+      font-size: 12px;
+      color: #aaa;
+      white-space: nowrap;
+    }
+
+    .card-collab-date {
+      font-size: 11px;
+      color: #555;
+      white-space: nowrap;
+    }
+
     .card-tag {
       font-size: 11px;
       font-weight: 500;
       padding: 4px 10px;
       border-radius: 20px;
       letter-spacing: 0.5px;
+      flex-shrink: 0;
     }
 
     .tag-demo {
@@ -128,12 +175,15 @@
   <section>
     <h2>Demo</h2>
     <div class="cards">
-      <a class="card" href="./demo/b2b-sales/dist/index.html">
+      <a class="card" href="./demo/b2b-sales/dist/index.html" data-gh-path="demo/b2b-sales">
         <div class="card-info">
           <h3>B2B Sales App</h3>
           <span>Sales Rep POV</span>
         </div>
-        <span class="card-tag tag-demo">Demo</span>
+        <div class="card-right">
+          <div class="card-collab"></div>
+          <span class="card-tag tag-demo">Demo</span>
+        </div>
       </a>
     </div>
   </section>
@@ -141,31 +191,93 @@
   <section>
     <h2>Handoffs</h2>
     <div class="cards">
-      <a class="card" href="./handoffs/quotes-buyer-phase-1/dist/index.html">
+      <a class="card" href="./handoffs/quotes-buyer-phase-1/dist/index.html" data-gh-path="handoffs/quotes-buyer-phase-1">
         <div class="card-info">
           <h3>Quotes Buyer Phase 1</h3>
           <span>Buyer POV</span>
         </div>
-        <span class="card-tag tag-handoff">Handoff</span>
+        <div class="card-right">
+          <div class="card-collab"></div>
+          <span class="card-tag tag-handoff">Handoff</span>
+        </div>
       </a>
-      <a class="card" href="./handoffs/storefront-order-buyer-prototype-main/dist/index.html">
+      <a class="card" href="./handoffs/storefront-order-buyer-prototype-main/dist/index.html" data-gh-path="handoffs/storefront-order-buyer-prototype-main">
         <div class="card-info">
           <h3>Storefront Order Buyer</h3>
           <span>Buyer POV</span>
         </div>
-        <span class="card-tag tag-handoff">Handoff</span>
+        <div class="card-right">
+          <div class="card-collab"></div>
+          <span class="card-tag tag-handoff">Handoff</span>
+        </div>
       </a>
-      <a class="card" href="./handoffs/sales-rep-phase-1/dist/index.html">
+      <a class="card" href="./handoffs/sales-rep-phase-1/dist/index.html" data-gh-path="handoffs/sales-rep-phase-1">
         <div class="card-info">
           <h3>Sales Rep Phase 1</h3>
           <span>Sales Rep POV</span>
         </div>
-        <span class="card-tag tag-handoff">Handoff</span>
+        <div class="card-right">
+          <div class="card-collab"></div>
+          <span class="card-tag tag-handoff">Handoff</span>
+        </div>
       </a>
     </div>
   </section>
 
   <footer>assisted-b2b · rafaelcarmo-vtex</footer>
+
+  <script>
+    const REPO = 'rafaelcarmo-vtex/assisted-b2b'
+
+    function timeAgo(dateStr) {
+      const diff = (Date.now() - new Date(dateStr)) / 1000
+      if (diff < 60) return 'just now'
+      if (diff < 3600) return `${Math.floor(diff / 60)}m ago`
+      if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`
+      if (diff < 2592000) return `${Math.floor(diff / 86400)}d ago`
+      if (diff < 31536000) return `${Math.floor(diff / 2592000)}mo ago`
+      return `${Math.floor(diff / 31536000)}y ago`
+    }
+
+    async function loadCollab(card) {
+      const path = card.dataset.ghPath
+      const collab = card.querySelector('.card-collab')
+      try {
+        const res = await fetch(
+          `https://api.github.com/repos/${REPO}/commits?path=${path}&per_page=1`
+        )
+        if (!res.ok) return
+        const [commit] = await res.json()
+        if (!commit) return
+
+        // Use git config name (e.g. rafaelcarmo-vtex) for display
+        const name = commit.commit.author.name || commit.author?.login
+        // Fetch correct avatar from GitHub users API by name
+        let avatar = `https://github.com/${name}.png`
+        try {
+          const userRes = await fetch(`https://api.github.com/users/${name}`)
+          if (userRes.ok) {
+            const user = await userRes.json()
+            if (user.avatar_url) avatar = user.avatar_url + '&s=48'
+          }
+        } catch (_) {}
+        const date = commit.commit.author.date
+
+        collab.innerHTML = `
+          <div class="card-collab-info">
+            <span class="card-collab-name">${name}</span>
+            <span class="card-collab-date">${timeAgo(date)}</span>
+          </div>
+          <img src="${avatar}&s=48" alt="${name}" title="${name}" />
+        `
+        collab.classList.add('loaded')
+      } catch (e) {
+        // silently fail — GitHub API rate limit or offline
+      }
+    }
+
+    document.querySelectorAll('a.card[data-gh-path]').forEach(loadCollab)
+  </script>
 
 </body>
 </html>
