@@ -20,5 +20,13 @@
   </head>
   <body>
     <div id="root"></div>
+  <script>
+    document.addEventListener("keydown", function(e) {
+      var tag = document.activeElement && document.activeElement.tagName;
+      if ((e.key === "i" || e.key === "I") && !e.metaKey && !e.ctrlKey && !e.altKey && tag !== "INPUT" && tag !== "TEXTAREA") {
+        window.location = "/assisted-b2b/";
+      }
+    });
+  </script>
   </body>
 </html>

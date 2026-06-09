@@ -171,6 +171,25 @@
       padding-top: 48px;
       font-size: 12px;
       color: #444;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .key {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border: 1px solid #3a3a3a;
+      border-bottom-width: 2px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #555;
+      background: #1a1a1a;
+      line-height: 1;
     }
   </style>
 </head>
@@ -236,7 +255,10 @@
     </div>
   </section>
 
-  <footer>assisted-b2b · rafaelcarmo-vtex</footer>
+  <footer>
+    <span class="key">I</span>
+    <span>para voltar ao index</span>
+  </footer>
 
   <script>
     const REPO = 'rafaelcarmo-vtex/assisted-b2b'
