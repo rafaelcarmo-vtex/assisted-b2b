@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmed – Demo Store</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,0" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes checkPop { 0% { transform: scale(0.5); opacity: 0; } 70% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: #1F1F1F;
+      background: #FFFFFF;
+      -webkit-font-smoothing: antialiased;
+      animation: fadeIn 0.2s ease both;
+    }
+    a { text-decoration: none; color: inherit; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; user-select: none; }
+
+    /* ── Header ── */
+    .header {
+      position: sticky; top: 0; z-index: 100; background: #FFFFFF;
+      border-bottom: 1px solid #EBEBEB;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px; padding: 0 24px;
+    }
+    .header-back-btn {
+      width: 36px; height: 36px; border: none; background: none; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: #1F1F1F; transition: background 0.12s;
+    }
+    .header-back-btn:hover { background: #F5F5F5; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .header-close-btn {
+      width: 36px; height: 36px; border: none; background: none; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: #1F1F1F; transition: background 0.12s; flex-shrink: 0;
+    }
+    .header-close-btn:hover { background: #F5F5F5; }
+    .account-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      height: 36px; padding: 0 12px 0 4px;
+      background: #FFFFFF; border: 1.5px solid #D6D6D6; border-radius: 100px;
+      font-size: 13px; font-weight: 500; color: #1F1F1F;
+    }
+    .account-avatar {
+      width: 26px; height: 26px; border-radius: 50%; background: #1a1a1a;
+      overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .account-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+
+    /* ── Layout ── */
+    .page { max-width: 760px; margin: 0 auto; padding: 48px 24px 80px; animation: slideUp 0.3s ease both; }
+
+    /* ── Check icon ── */
+    .check-wrap {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: #E6F4EC; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      animation: checkPop 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.1s both;
+    }
+    .check-wrap .material-symbols-outlined { font-size: 26px; color: #1D8348; font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
+
+    /* ── Heading ── */
+    .confirm-title { font-size: 26px; font-weight: 600; color: #1F1F1F; line-height: 1.25; margin-bottom: 16px; letter-spacing: -0.02em; }
+    .confirm-meta { display: flex; flex-direction: column; gap: 6px; margin-bottom: 32px; }
+    .confirm-meta-row { font-size: 13px; color: #707070; }
+    .confirm-meta-row strong { color: #1F1F1F; font-weight: 600; }
+    .confirm-meta-row a { color: #0366DD; }
+    .confirm-meta-row a:hover { text-decoration: underline; }
+
+    /* ── Divider ── */
+    .divider { border: none; border-top: 1px solid #EBEBEB; margin: 28px 0; }
+
+    /* ── Section ── */
+    .section-title { font-size: 16px; font-weight: 600; color: #1F1F1F; margin-bottom: 4px; letter-spacing: -0.01em; }
+    .section-subtitle { font-size: 13px; color: #707070; margin-bottom: 14px; }
+
+    /* ── Delivery group ── */
+    .delivery-group { margin-bottom: 28px; }
+    .delivery-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 4px 0; }
+    .delivery-toggle { font-size: 13px; color: #0366DD; display: flex; align-items: center; gap: 4px; user-select: none; }
+    .delivery-items { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+    .delivery-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #F2F2F2; }
+    .delivery-item:last-child { border-bottom: none; }
+    .delivery-item-img { width: 44px; height: 44px; border-radius: 8px; background: #F7F7F7; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+    .delivery-item-img img { width: 100%; height: 100%; object-fit: contain; }
+    .delivery-item-body { flex: 1; min-width: 0; }
+    .delivery-item-name { font-size: 13px; font-weight: 500; color: #1F1F1F; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .delivery-item-meta { font-size: 12px; color: #9A9A9A; margin-top: 2px; }
+    .delivery-item-price { font-size: 13px; font-weight: 600; color: #1F1F1F; white-space: nowrap; }
+
+    /* ── Two-col grid ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .info-block-label { font-size: 12px; font-weight: 600; color: #9A9A9A; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 10px; }
+    .info-avatar { width: 28px; height: 28px; border-radius: 50%; background: #E6F4EC; color: #1D8348; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; margin-right: 8px; overflow: hidden; }
+    .info-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+    .info-name { font-size: 13px; font-weight: 600; color: #1F1F1F; display: flex; align-items: center; margin-bottom: 4px; }
+    .info-line { font-size: 13px; color: #707070; margin-bottom: 2px; }
+
+    /* ── Totals ── */
+    .totals-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .totals-row { display: flex; justify-content: space-between; font-size: 13px; color: #707070; }
+    .totals-row.total { font-size: 16px; font-weight: 700; color: #1F1F1F; padding-top: 14px; border-top: 1px solid #EBEBEB; }
+    .totals-row .label { color: inherit; }
+
+    /* ── Payment ── */
+    .payment-row { display: flex; align-items: center; gap: 10px; }
+    .card-chip { background: #F2F6FF; border: 1px solid #D6E4F7; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 600; color: #0366DD; display: inline-flex; align-items: center; gap: 6px; }
+    .card-chip .material-symbols-outlined { font-size: 16px; }
+
+    /* ── CTA ── */
+    .cta-row { display: flex; gap: 12px; margin-top: 32px; }
+    .btn-primary { flex: 1; height: 44px; border-radius: 100px; border: none; background: #0366DD; color: #fff; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.14s; }
+    .btn-primary:hover { background: #0155B7; }
+    .btn-secondary { flex: 1; height: 44px; border-radius: 100px; border: 1.5px solid #D6D6D6; background: #fff; color: #0366DD; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: border-color 0.14s; }
+    .btn-secondary:hover { border-color: #0366DD; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div style="width:36px;"></div>
+    <div class="header-right">
+      <div class="account-pill">
+        <span class="account-avatar"><img src="/logo-stellarglobal.png" alt="Stellar Global" /></span>
+        Stellar Global
+      </div>
+      <button class="header-close-btn" onclick="window.location.href='/salesapp/home'" aria-label="Close">
+        <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="page">
+
+    <!-- Check + title -->
+    <div class="check-wrap">
+      <span class="material-symbols-outlined">check</span>
+    </div>
+
+    <h1 class="confirm-title">Order placed successfully!</h1>
+
+    <div class="confirm-meta">
+      <div class="confirm-meta-row">A confirmation will be sent to: <strong>d.green@stellar.com</strong></div>
+      <div class="confirm-meta-row">Sales Rep: <strong>Andrew Miller</strong></div>
+      <div class="confirm-meta-row">Order ID: <strong>ORD-2024-SGA-0891</strong></div>
+      <div class="confirm-meta-row"><a href="#">View order details</a></div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Package 1 -->
+    <div class="delivery-group">
+      <div class="delivery-header" onclick="toggleGroup('pkg1')">
+        <div>
+          <div class="section-title">Express Delivery — Package 1</div>
+          <div class="section-subtitle">Boston Boylston St, 02116 · 1–2 business days</div>
+        </div>
+        <span class="delivery-toggle" id="pkg1-toggle">
+          4 items <span class="material-symbols-outlined" id="pkg1-icon" style="font-size:18px;transition:transform 0.2s;">expand_less</span>
+        </span>
+      </div>
+      <div class="delivery-items" id="pkg1">
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/TV.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">Smart TV 55" UHD 4K – Hotel Series</div>
+            <div class="delivery-item-meta">HTV-55UHD-HSR · Qty 8 · 5% off</div>
+          </div>
+          <div class="delivery-item-price">$4,932.40</div>
+        </div>
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/Frigobar.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">Minibar Refrigerator 40L – Premium</div>
+            <div class="delivery-item-meta">HMB-40L-PRE · Qty 10 · 6% off</div>
+          </div>
+          <div class="delivery-item-price">$3,656.60</div>
+        </div>
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/Cofre.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">Digital Safe – Laptop Size (14")</div>
+            <div class="delivery-item-meta">HCF-LPT-14 · Qty 15 · 3% off</div>
+          </div>
+          <div class="delivery-item-price">$2,895.45</div>
+        </div>
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/Termostato%20inteligente.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">Smart Thermostat Wi-Fi – HVAC Control</div>
+            <div class="delivery-item-meta">HTT-WIFI-HVC · Qty 18 · 7% off</div>
+          </div>
+          <div class="delivery-item-price">$4,335.66</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Package 2 -->
+    <div class="delivery-group">
+      <div class="delivery-header" onclick="toggleGroup('pkg2')">
+        <div>
+          <div class="section-title">Standard Delivery — Package 2</div>
+          <div class="section-subtitle">Cambridge Harvard Sq, 02138 · 3–4 business days</div>
+        </div>
+        <span class="delivery-toggle" id="pkg2-toggle">
+          2 items <span class="material-symbols-outlined" id="pkg2-icon" style="font-size:18px;transition:transform 0.2s;">expand_less</span>
+        </span>
+      </div>
+      <div class="delivery-items" id="pkg2">
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/TV.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">Smart TV 43" Full HD – Standard Room</div>
+            <div class="delivery-item-meta">HTV-43FHD-STD · Qty 12 · 5% off</div>
+          </div>
+          <div class="delivery-item-price">$5,118.60</div>
+        </div>
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/Suporte.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">Articulating TV Mount 32–65"</div>
+            <div class="delivery-item-meta">HSP-ART-6532 · Qty 20 · 4% off</div>
+          </div>
+          <div class="delivery-item-price">$1,708.80</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Package 3 -->
+    <div class="delivery-group">
+      <div class="delivery-header" onclick="toggleGroup('pkg3')">
+        <div>
+          <div class="section-title">Standard Delivery — Package 3</div>
+          <div class="section-subtitle">Springfield Elm St, 01103 · 5–6 business days</div>
+        </div>
+        <span class="delivery-toggle" id="pkg3-toggle">
+          2 items <span class="material-symbols-outlined" id="pkg3-icon" style="font-size:18px;transition:transform 0.2s;">expand_less</span>
+        </span>
+      </div>
+      <div class="delivery-items" id="pkg3">
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/Frigobar.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">Minibar Slim 20L – Compact Room</div>
+            <div class="delivery-item-meta">HMB-20L-SLM · Qty 8 · 4% off</div>
+          </div>
+          <div class="delivery-item-price">$2,142.72</div>
+        </div>
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/Cofre.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">Digital Safe – Standard In-Room</div>
+            <div class="delivery-item-meta">HCF-STD-IR · Qty 20 · 3% off</div>
+          </div>
+          <div class="delivery-item-price">$2,890.60</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Package 4: Pickup -->
+    <div class="delivery-group">
+      <div class="delivery-header" onclick="toggleGroup('pkg4')">
+        <div>
+          <div class="section-title">Pickup — Package 4</div>
+          <div class="section-subtitle">Boston Boylston St, 02116 · Ready in 2–3 business days</div>
+        </div>
+        <span class="delivery-toggle" id="pkg4-toggle">
+          2 items <span class="material-symbols-outlined" id="pkg4-icon" style="font-size:18px;transition:transform 0.2s;">expand_less</span>
+        </span>
+      </div>
+      <div class="delivery-items" id="pkg4">
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/Access%20points%20Wi-Fi%20corporativos.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">Access Point Wi-Fi 6 Dual Band – Enterprise</div>
+            <div class="delivery-item-meta">HAP-W6DB-ENT · Qty 6 · 5% off</div>
+          </div>
+          <div class="delivery-item-price">$1,989.30</div>
+        </div>
+        <div class="delivery-item">
+          <div class="delivery-item-img"><img src="/items/Access%20points%20Wi-Fi%20corporativos.png" alt="" /></div>
+          <div class="delivery-item-body">
+            <div class="delivery-item-name">Access Point Wi-Fi 5 – Corporate</div>
+            <div class="delivery-item-meta">HAP-W5-CRP · Qty 5 · 5% off</div>
+          </div>
+          <div class="delivery-item-price">$1,420.25</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Buyer & Recipient -->
+    <div class="two-col" style="margin-bottom: 28px;">
+      <div>
+        <div class="info-block-label">Buyer information</div>
+        <div class="info-name">
+          <span class="info-avatar" style="background:#1a1a1a;"><img src="/logo-stellarglobal.png" alt="Stellar Global" /></span>
+          Donald Green
+        </div>
+        <div class="info-line">d.green@stellar.com</div>
+        <div class="info-line">Stellar Global</div>
+        <div class="info-line">(617) 555-0124</div>
+      </div>
+      <div>
+        <div class="info-block-label">Sales Rep</div>
+        <div class="info-name" style="margin-left:0;">Andrew Miller</div>
+        <div class="info-line">a.miller@demostore.com</div>
+        <div class="info-line">Operations and facilities</div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Accounting -->
+    <div style="margin-bottom: 28px;">
+      <div class="info-block-label">Accounting</div>
+      <div class="info-line" style="margin-bottom:4px;"><strong style="color:#1F1F1F;">PO Number:</strong> LS-PO1</div>
+      <div class="info-line"><strong style="color:#1F1F1F;">Sector:</strong> Operations and facilities</div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Order total -->
+    <div>
+      <div class="info-block-label">Order total</div>
+      <div class="totals-rows">
+        <div class="totals-row"><span class="label">Items (10)</span><span>$31,090.38</span></div>
+        <div class="totals-row"><span class="label">Shipping</span><span>$24.80</span></div>
+        <div class="totals-row"><span class="label">MA State Tax (6.25%)</span><span>$1,943.15</span></div>
+        <div class="totals-row"><span class="label">Boston City Tax (3.75%)</span><span>$667.85</span></div>
+        <div class="totals-row total"><span class="label">Total</span><span>$33,726.18</span></div>
+      </div>
+    </div>
+
+    <!-- CTAs -->
+    <div class="cta-row">
+      <button class="btn-secondary" onclick="window.location.href='/salesapp/home'">Back to Sales App</button>
+      <button class="btn-primary" onclick="window.location.href='/salesapp/home'">New Order</button>
+    </div>
+
+  </main>
+
+  <script>
+    function toggleGroup(id) {
+      var el = document.getElementById(id);
+      var icon = document.getElementById(id + '-icon');
+      var toggle = document.getElementById(id + '-toggle');
+      var isOpen = el.style.display !== 'none';
+      el.style.display = isOpen ? 'none' : 'flex';
+      icon.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+  </script>
+</body>
+</html>

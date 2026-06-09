@@ -1,0 +1,14 @@
+{
+  "rewrites": [
+    { "source": "/salesapp/home", "destination": "/salesapp/home/index.html" },
+    { "source": "/salesapp/cart", "destination": "/salesapp/cart/index.html" },
+    { "source": "/salesapp/explore", "destination": "/salesapp/explore/index.html" },
+    { "source": "/storefrontb2b/cart", "destination": "/storefrontb2b/cart/index.html" },
+    { "source": "/storefrontb2b/checkout", "destination": "/storefrontb2b/checkout/index.html" },
+    { "source": "/storefrontb2b/account/quotes", "destination": "/storefrontb2b/account/quotes/index.html" },
+    { "source": "/storefrontb2b/order-confirmation", "destination": "/storefrontb2b/order-confirmation/index.html" },
+    { "source": "/salesapp/order-summary", "destination": "/salesapp/order-summary/index.html" },
+    { "source": "/salesapp/order-confirmation", "destination": "/salesapp/order-confirmation/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

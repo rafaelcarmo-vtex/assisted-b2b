@@ -1,0 +1,668 @@
+.header {
+  background-color: #ffffff;
+  border-bottom: 1px solid #EBEBEB;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* ── Top row ──────────────────────────────────────────────── */
+
+.topRow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 24px;
+  min-height: 68px;
+  width: 100%;
+}
+
+.logoWrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0366DD;
+  text-decoration: none;
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+
+/* Search */
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #D6D6D6;
+  border-radius: 100px;
+  background: #ffffff;
+  padding: 0 4px 0 14px;
+  height: 40px;
+  gap: 8px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+
+.searchBar:focus-within {
+  border-color: #0366DD;
+  box-shadow: 0 0 0 3px rgba(3, 102, 221, 0.10);
+}
+
+.searchIcon {
+  color: #ADADAD;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: var(--font-family);
+  font-size: 14px;
+  color: #1F1F1F;
+  background: transparent;
+}
+
+.searchInput::placeholder {
+  color: #ADADAD;
+}
+
+.searchBulkBtn {
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 100px;
+  border: none;
+  background: #ffffff;
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 500;
+  color: #3D3D3D;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.searchBulkBtn:hover {
+  background-color: #F5F5F5;
+  border-color: #D6D6D6;
+}
+
+.searchBulkBtnActive {
+  background-color: #F0F6FF;
+  color: #0366DD;
+}
+
+/* ── Bulk search ──────────────────────────────────────────────── */
+
+.searchWrap {
+  position: relative;
+  width: 400px;
+  flex-shrink: 0;
+}
+
+.searchBarBulkOpen {
+  border-color: #0366DD;
+  box-shadow: 0 0 0 3px rgba(3, 102, 221, 0.10);
+}
+
+.bulkPanel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #E5E5E5;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.10);
+  padding: 12px;
+  z-index: 300;
+  animation: bulkFadeIn 0.15s ease both;
+}
+
+@keyframes bulkFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.bulkDropZone {
+  border: 1.5px dashed #D0D0D0;
+  border-radius: 12px;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.bulkDropZone > a {
+  margin-top: 6px;
+}
+
+.bulkDropZone:hover {
+  border-color: #0366DD;
+  background: #FAFCFF;
+}
+
+.bulkIllustration {
+  margin-bottom: 4px;
+}
+
+.bulkTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1F1F1F;
+  text-align: center;
+}
+
+.bulkSelectBtn {
+  height: 36px;
+  padding: 0 20px;
+  border-radius: 100px;
+  border: 1.5px solid #D6D6D6;
+  background: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0366DD;
+  cursor: pointer;
+  transition: border-color 0.14s, background 0.14s;
+  margin-top: 2px;
+}
+
+.bulkSelectBtn:hover {
+  border-color: #0366DD;
+  background: #F0F6FF;
+}
+
+.bulkTemplateLink {
+  font-size: 13px;
+  font-weight: 500;
+  color: #0366DD;
+  text-decoration: none;
+}
+
+.bulkTemplateLink:hover {
+  text-decoration: underline;
+}
+
+/* Account area */
+
+.accountArea {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+/* Stellar Global — same pill style as "Identify customer" but with S avatar */
+.accountBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 14px 0 4px;
+  background: #ffffff;
+  color: #3D3D3D;
+  border: 1.5px solid #D6D6D6;
+  border-radius: 100px;
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: border-color 0.14s, background 0.14s, color 0.14s;
+}
+
+.accountBtn:hover {
+  border-color: #ADADAD;
+  background: #F5F5F5;
+  color: #1F1F1F;
+}
+
+.accountAvatar img,
+.drawerAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.accountAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.accountName {
+  font-size: 13px;
+}
+
+.cartBtn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #3D3D3D;
+  transition: background 0.14s, color 0.14s;
+}
+
+.cartBtn:hover {
+  background: #F5F5F5;
+  color: #1F1F1F;
+}
+
+.cartBtn .material-symbols-outlined {
+  font-size: 24px;
+}
+
+.cartCount {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  background: #0366DD;
+  border-radius: 100px;
+  border: 2px solid #ffffff;
+  font-family: var(--font-family);
+  font-size: 10px;
+  font-weight: 600;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* ── Bottom row (nav + info) ────────────────────────────────── */
+
+.bottomRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 44px;
+  border-top: 1px solid #F5F5F5;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Nav links */
+
+.nav {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  gap: 24px;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0;
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 500;
+  color: #858585;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color 0.14s, border-color 0.14s;
+  cursor: pointer;
+}
+
+.navLink:hover {
+  color: #1F1F1F;
+}
+
+.navLinkActive {
+  color: #1F1F1F;
+  border-bottom-color: #1F1F1F;
+}
+
+.navLinkSale {
+  color: #D31A15;
+}
+
+.navLinkSale:hover {
+  color: #B40202;
+}
+
+/* Delivery info — matches Sales Rep ni-* style */
+
+.deliveryInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.niItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.niLbl {
+  font-size: 13px;
+  font-weight: 400;
+  color: #707070;
+  white-space: nowrap;
+}
+
+.niVal {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 500;
+  color: #0366DD;
+  white-space: nowrap;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 3px 7px;
+  border-radius: 6px;
+  margin: -3px -7px;
+  transition: color 0.14s, background 0.14s;
+}
+
+.niVal:hover {
+  background: #F5F5F5;
+}
+
+.niVal:active {
+  background: #EBEBEB;
+}
+
+.niVal :global(.material-symbols-outlined) {
+  font-size: 15px;
+}
+
+.niSep {
+  color: #D6D6D6;
+  font-size: 16px;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+/* ── Account Drawer ─────────────────────────────────────────── */
+
+.drawerOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 200;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 480px;
+  background: #ffffff;
+  z-index: 201;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.28s cubic-bezier(0.2, 0, 0, 1);
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.10);
+}
+
+.drawerOpen {
+  transform: translateX(0);
+}
+
+.drawerLeft {
+  right: auto;
+  left: 0;
+  transform: translateX(-100%);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.10);
+}
+
+.drawerLeft.drawerOpen {
+  transform: translateX(0);
+}
+
+.drawerCover {
+  height: 140px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(232,237,248,0.4) 0%, rgba(214,223,245,0.4) 100%);
+  position: relative;
+  overflow: visible;
+}
+
+.drawerClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #5C5C5C;
+  transition: background 0.14s;
+  z-index: 1;
+}
+
+.drawerClose:hover {
+  background: #F5F5F5;
+}
+
+.drawerClose .material-symbols-outlined {
+  font-size: 20px;
+}
+
+.drawerBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 60px 24px;
+}
+
+/* Identity block */
+
+.drawerIdentity {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 32px;
+  padding-top: 44px;
+}
+
+.drawerAvatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: absolute;
+  bottom: -28px;
+  border: 2px solid #ffffff;
+  left: 60px;
+}
+
+.drawerIdentityRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.drawerCompany {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1F1F1F;
+  letter-spacing: -0.03em;
+}
+
+.drawerSwitchBtn {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1.5px solid #D6D6D6;
+  background: #ffffff;
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 500;
+  color: #0366DD;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.14s;
+}
+
+.drawerSwitchBtn:hover {
+  background: #F5F8FF;
+}
+
+/* Nav items */
+
+.drawerNav {
+  display: flex;
+  flex-direction: column;
+}
+
+.drawerNavItem {
+  display: block;
+  padding: 10px 12px;
+  margin: 0 -12px;
+  font-size: 15px;
+  font-weight: 400;
+  color: #1F1F1F;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.15s, color 0.14s;
+}
+
+.drawerNavItem:hover {
+  background-color: #F5F5F5;
+  color: #1F1F1F;
+}
+
+/* Footer */
+
+.drawerFooter {
+  padding: 24px 60px 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.drawerFooterBox {
+  border: 1px solid #E0E0E0;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.drawerFooterRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.drawerFooterRow:last-child {
+  border-bottom: none;
+}
+
+.drawerFooterLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1F1F1F;
+}
+
+.drawerFooterLabel .material-symbols-outlined {
+  font-size: 20px !important;
+  color: #0366DD;
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+}
+
+.drawerManageLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0366DD;
+  text-decoration: none;
+}
+
+.drawerManageLink .material-symbols-outlined {
+  font-size: 20px !important;
+}
+
+.drawerUserInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.drawerUserName {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1F1F1F;
+}
+
+.drawerUserEmail {
+  font-size: 12px;
+  color: #707070;
+}
+
+.drawerLogout {
+  font-size: 13px;
+  font-weight: 500;
+  color: #0366DD;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.drawerLogout:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>assisted-b2b</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0d0d0d;
+      color: #f0f0f0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 64px 24px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      color: #fff;
+    }
+
+    header p {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #888;
+      max-width: 480px;
+      line-height: 1.6;
+    }
+
+    section {
+      width: 100%;
+      max-width: 720px;
+      margin-bottom: 48px;
+    }
+
+    section h2 {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 16px;
+    }
+
+    .cards {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    a.card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      padding: 20px 24px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    a.card:hover {
+      background: #222;
+      border-color: #444;
+    }
+
+    .card-info h3 {
+      font-size: 15px;
+      font-weight: 500;
+      color: #f0f0f0;
+    }
+
+    .card-info span {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+      display: block;
+    }
+
+    .card-tag {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .tag-demo {
+      background: #1a2e1a;
+      color: #4caf50;
+      border: 1px solid #2d4a2d;
+    }
+
+    .tag-handoff {
+      background: #1a1e2e;
+      color: #6a9fd8;
+      border: 1px solid #2a3050;
+    }
+
+    footer {
+      margin-top: auto;
+      padding-top: 48px;
+      font-size: 12px;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>assisted-b2b</h1>
+    <p>Shared space for Sales App & B2B navigable prototypes — demos and handoffs for flows like Quotes, Order Entry, and beyond.</p>
+  </header>
+
+  <section>
+    <h2>Demo</h2>
+    <div class="cards">
+      <a class="card" href="./demo/b2b-sales/dist/index.html">
+        <div class="card-info">
+          <h3>B2B Sales App</h3>
+          <span>Sales Rep POV</span>
+        </div>
+        <span class="card-tag tag-demo">Demo</span>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Handoffs</h2>
+    <div class="cards">
+      <a class="card" href="./handoffs/quotes-buyer-phase-1/index.html">
+        <div class="card-info">
+          <h3>Quotes Buyer Phase 1</h3>
+          <span>Buyer POV</span>
+        </div>
+        <span class="card-tag tag-handoff">Handoff</span>
+      </a>
+      <a class="card" href="./handoffs/storefront-order-buyer-prototype-main/index.html">
+        <div class="card-info">
+          <h3>Storefront Order Buyer</h3>
+          <span>Buyer POV</span>
+        </div>
+        <span class="card-tag tag-handoff">Handoff</span>
+      </a>
+      <a class="card" href="./handoffs/sales-rep-phase-1/index.html">
+        <div class="card-info">
+          <h3>Sales Rep Phase 1</h3>
+          <span>Sales Rep POV</span>
+        </div>
+        <span class="card-tag tag-handoff">Handoff</span>
+      </a>
+    </div>
+  </section>
+
+  <footer>assisted-b2b · rafaelcarmo-vtex</footer>
+
+</body>
+</html>

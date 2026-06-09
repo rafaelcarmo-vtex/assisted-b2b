@@ -1,0 +1,41 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --font-family: 'Inter', system-ui, sans-serif;
+
+  /* Neutral */
+  --color-neutral-0:   #FFFFFF;
+  --color-neutral-50:  #F5F5F5;
+  --color-neutral-100: #EBEBEB;
+  --color-neutral-200: #E0E0E0;
+  --color-neutral-400: #ADADAD;
+  --color-neutral-600: #5C5C5C;
+  --color-neutral-700: #3D3D3D;
+  --color-neutral-900: #1F1F1F;
+  --color-neutral-950: #000000;
+
+  /* Light Blue (brand) */
+  --color-blue-700: #0366DD;
+  --color-blue-500: #157BF4;
+  --color-blue-100: #CBE9FF;
+  --color-blue-50:  #E1F3FF;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: 14px;
+  color: var(--color-neutral-900);
+  background-color: var(--color-neutral-50);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  user-select: none;
+  line-height: 1;
+}

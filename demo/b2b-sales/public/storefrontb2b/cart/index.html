@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cart – Demo Store</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,0" rel="stylesheet" />
+
+  <style>
+    /* ─── Reset ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    button, input, select, textarea { font-family: inherit; }
+    html { scroll-behavior: smooth; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    body {
+      animation: fadeIn 0.18s ease both;
+      font-family: 'Inter', sans-serif;
+      background: #FFFFFF;
+      color: #1F1F1F;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      user-select: none;
+    }
+
+    /* ─── Header ─────────────────────────────────────── */
+    /* ── Header (matches buyer storefront) ─────────── */
+    .header { position: sticky; top: 0; z-index: 100; background: #FFFFFF; border-bottom: 1px solid #EBEBEB; }
+    .header-top { display: flex; align-items: center; height: 68px; padding: 0 24px; gap: 0; }
+    .header-logo-wrap { flex: 1; display: flex; align-items: center; }
+    .header-logo { font-size: 22px; font-weight: 700; color: #0366DD; text-decoration: none; letter-spacing: -0.02em; white-space: nowrap; flex-shrink: 0; }
+    .header-logo:hover { color: #0155B7; }
+    .header-search { position: relative; width: 400px; flex-shrink: 0; }
+    .search-bar {
+      display: flex; align-items: center; gap: 8px;
+      background: #FFFFFF; border: 1.5px solid #D6D6D6;
+      border-radius: 100px; height: 40px; padding: 0 4px 0 14px;
+      transition: border-color 0.15s, box-shadow 0.15s; width: 100%;
+    }
+    .search-bar.bulk-open { border-color: #0366DD; box-shadow: 0 0 0 3px rgba(3,102,221,0.10); }
+    .search-bar:focus-within { border-color: #0366DD; box-shadow: 0 0 0 3px rgba(3,102,221,0.10); }
+    .search-bar .search-icon { font-size: 20px; color: #ADADAD; flex-shrink: 0; }
+    .search-bar input { flex: 1; border: none; background: none; font-size: 14px; color: #1F1F1F; outline: none; }
+    .search-bar input::placeholder { color: #ADADAD; }
+    .btn-bulk { height: 28px; padding: 0 12px; border-radius: 100px; border: none; background: #FFFFFF; font-size: 12px; font-weight: 500; color: #3D3D3D; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: background 0.14s; }
+    .btn-bulk:hover { background: #F5F5F5; }
+    .btn-bulk.active { background: #F0F6FF; color: #0366DD; }
+    /* Bulk panel */
+    .bulk-panel { position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.10); padding: 12px; z-index: 300; animation: bulkFadeIn 0.15s ease both; }
+    @keyframes bulkFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+    .bulk-drop-zone { border: 1.5px dashed #D0D0D0; border-radius: 12px; padding: 32px 24px; display: flex; flex-direction: column; align-items: center; gap: 10px; transition: border-color 0.15s, background 0.15s; }
+    .bulk-drop-zone:hover { border-color: #0366DD; background: #FAFCFF; }
+    .bulk-title { font-size: 14px; font-weight: 600; color: #1F1F1F; text-align: center; }
+    .bulk-select-btn { height: 36px; padding: 0 20px; border-radius: 100px; border: 1.5px solid #D6D6D6; background: #FFFFFF; font-size: 13px; font-weight: 600; color: #0366DD; cursor: pointer; transition: border-color 0.14s, background 0.14s; margin-top: 2px; }
+    .bulk-select-btn:hover { border-color: #0366DD; background: #F0F6FF; }
+    .bulk-template-link { font-size: 13px; font-weight: 500; color: #0366DD; text-decoration: none; }
+    .bulk-template-link:hover { text-decoration: underline; }
+    /* Account drawer */
+    .header-account { display: flex; align-items: center; gap: 8px; flex: 1; justify-content: flex-end; }
+    .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.25); z-index: 200; animation: fadeIn 0.2s ease; }
+    .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 480px; background: #FFFFFF; z-index: 201; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.28s cubic-bezier(0.2,0,0,1); box-shadow: -4px 0 24px rgba(0,0,0,0.10); }
+    .drawer.open { transform: translateX(0); }
+    .drawer-cover { height: 140px; flex-shrink: 0; background: linear-gradient(135deg, rgba(232,237,248,0.4) 0%, rgba(214,223,245,0.4) 100%); position: relative; overflow: visible; }
+    .drawer-close { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; border: none; background: transparent; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #5C5C5C; transition: background 0.14s; z-index: 1; }
+    .drawer-close:hover { background: #F5F5F5; }
+    .drawer-avatar { width: 60px; height: 60px; border-radius: 50%; background: #1a1a1a; color: #FFFFFF; font-size: 20px; font-weight: 600; display: flex; align-items: center; justify-content: center; position: absolute; bottom: -28px; left: 60px; border: 2px solid #FFFFFF; overflow: hidden; }
+    .drawer-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+    .drawer-body { flex: 1; overflow-y: auto; padding: 0 60px 24px; }
+    .drawer-identity { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; padding-top: 44px; }
+    .drawer-identity-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .drawer-company { font-size: 20px; font-weight: 600; color: #1F1F1F; letter-spacing: -0.03em; }
+    .drawer-switch-btn { padding: 8px 14px; border-radius: 20px; border: 1.5px solid #D6D6D6; background: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 500; color: #0366DD; cursor: pointer; transition: background 0.14s; white-space: nowrap; flex-shrink: 0; }
+    .drawer-switch-btn:hover { background: #F5F8FF; }
+    .drawer-nav { display: flex; flex-direction: column; }
+    .drawer-nav-item { display: block; padding: 10px 12px; margin: 0 -12px; font-size: 15px; font-weight: 400; color: #1F1F1F; text-decoration: none; border-radius: 8px; transition: background 0.15s; }
+    .drawer-nav-item:hover { background: #F5F5F5; }
+    .drawer-footer { padding: 24px 60px 32px; }
+    .drawer-footer-box { border: 1px solid #E0E0E0; border-radius: 16px; overflow: hidden; }
+    .drawer-footer-row { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #F0F0F0; }
+    .drawer-footer-row:last-child { border-bottom: none; }
+    .drawer-footer-label { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: #1F1F1F; }
+    .drawer-manage-link { display: inline-flex; align-items: center; gap: 3px; font-size: 14px; font-weight: 600; color: #0366DD; text-decoration: none; }
+    .drawer-manage-link:hover { text-decoration: underline; }
+    .drawer-user-info { display: flex; flex-direction: column; gap: 2px; }
+    .drawer-user-name { font-size: 13px; font-weight: 600; color: #1F1F1F; }
+    .drawer-user-email { font-size: 12px; color: #707070; }
+    .drawer-logout { font-size: 13px; font-weight: 500; color: #0366DD; text-decoration: none; }
+    .drawer-logout:hover { text-decoration: underline; }
+    .btn-account {
+      display: inline-flex; align-items: center; gap: 8px;
+      height: 38px; padding: 0 14px 0 4px;
+      background: #FFFFFF; color: #3D3D3D;
+      border: 1.5px solid #D6D6D6; border-radius: 100px;
+      cursor: pointer; font-size: 13px; font-weight: 500; white-space: nowrap;
+      transition: border-color 0.14s, background 0.14s, color 0.14s;
+    }
+    .btn-account:hover { border-color: #ADADAD; background: #F5F5F5; color: #1F1F1F; }
+    .account-avatar { width: 28px; height: 28px; border-radius: 50%; background: #1a1a1a; color: #FFFFFF; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+    .account-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+    .account-name { font-size: 13px; }
+    .btn-cart-icon { position: relative; width: 40px; height: 40px; border: none; border-radius: 50%; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #3D3D3D; transition: background 0.14s, color 0.14s; }
+    .btn-cart-icon:hover { background: #F5F5F5; color: #1F1F1F; }
+    .btn-cart-icon .material-symbols-outlined { font-size: 24px; }
+    .cart-count { position: absolute; top: 2px; right: 2px; min-width: 17px; height: 17px; padding: 0 4px; background: #0366DD; border-radius: 100px; border: 2px solid #FFFFFF; font-size: 10px; font-weight: 600; color: #FFFFFF; display: flex; align-items: center; justify-content: center; line-height: 1; }
+    /* Nav */
+    .header-nav { border-top: 1px solid #F5F5F5; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 44px; }
+    .nav-links { display: flex; align-items: center; overflow-x: auto; scrollbar-width: none; gap: 24px; }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-link { display: flex; align-items: center; height: 44px; padding: 0; font-size: 13px; font-weight: 500; color: #858585; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.14s, border-color 0.14s; cursor: pointer; text-decoration: none; }
+    .nav-link:hover { color: #1F1F1F; }
+    .nav-link.sale { color: #D31A15; }
+    .nav-info { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .nav-info-item { display: flex; align-items: center; gap: 4px; }
+    .ni-lbl { font-size: 13px; font-weight: 400; color: #707070; white-space: nowrap; }
+    .ni-val { font-size: 13px; font-weight: 500; color: #0366DD; white-space: nowrap; cursor: pointer; display: flex; align-items: center; gap: 2px; }
+    .ni-sep { color: #D6D6D6; font-size: 16px; user-select: none; flex-shrink: 0; }
+
+    /* ─── Cart page ──────────────────────────────────── */
+    .cart-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .cart-title { font-size: 28px; font-weight: 600; color: #1F1F1F; letter-spacing: -0.02em; margin-bottom: 0; }
+    .cart-subtitle { font-size: 14px; color: #707070; margin-bottom: 28px; }
+
+    .cart-packages { display: flex; flex-direction: column; gap: 16px; }
+
+    .cart-package {
+      background: #FFFFFF;
+      border: 1px solid #EBEBEB;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .pkg-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid #F2F2F2;
+    }
+    .pkg-header-icon {
+      width: 36px; height: 36px;
+      background: #F5F5F5;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .pkg-header-icon .material-symbols-outlined { font-size: 18px; color: #3D3D3D; }
+    .pkg-header-info { flex: 1; }
+    .pkg-title { font-size: 14px; font-weight: 600; color: #1F1F1F; }
+    .pkg-meta { font-size: 13px; color: #707070; margin-top: 1px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px 6px; }
+    .pkg-meta-free { color: #1A7F37; font-weight: 600; }
+
+    .pkg-item {
+      display: flex;
+      align-items: stretch;
+      gap: 16px;
+      padding: 20px;
+      border-bottom: 1px solid #F2F2F2;
+    }
+    .pkg-item:last-child { border-bottom: none; }
+    .pkg-item-img {
+      width: 80px; height: 80px;
+      border-radius: 10px;
+      background: #F5F5F5;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .pkg-item-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .pkg-item-body { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .pkg-item-name { font-size: 14px; font-weight: 500; color: #1F1F1F; margin-bottom: 4px; }
+    .pkg-item-sku { font-size: 12px; color: #9A9A9A; margin-bottom: 10px; }
+    .pkg-item-divider { border: none; border-top: 1px solid #F0F0F0; margin: 0 0 10px; }
+    .pkg-item-cost-center { font-size: 13px; color: #707070; display: flex; align-items: center; gap: 6px; }
+    .pkg-item-cost-center a { color: #0366DD; font-weight: 500; text-decoration: none; }
+    .pkg-item-cost-center a:hover { text-decoration: underline; }
+    .pkg-item-change { font-size: 13px; font-weight: 500; color: #0366DD; cursor: pointer; display: inline-block; text-decoration: none; }
+    .pkg-item-change:hover { text-decoration: underline; }
+    .pkg-item-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; flex-shrink: 0; }
+    .pkg-item-controls { display: flex; align-items: center; gap: 8px; }
+
+    .qty-select {
+      appearance: none;
+      -webkit-appearance: none;
+      height: 34px;
+      padding: 0 28px 0 12px;
+      border: 1.5px solid #D6D6D6;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #1F1F1F;
+      background: #FFFFFF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='6' viewBox='0 0 9 6'%3E%3Cpath d='M1 1l3.5 3.5L8 1' stroke='%230366DD' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E") no-repeat right 10px center;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .qty-select:hover { border-color: #ADADAD; }
+    .qty-select:focus { outline: none; border-color: #0366DD; }
+
+    .btn-delete {
+      width: 34px; height: 34px;
+      border: 1.5px solid #D6D6D6;
+      border-radius: 100px;
+      background: #FFFFFF;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: #707070;
+      transition: border-color 0.14s, color 0.14s, background 0.14s;
+    }
+    .btn-delete:hover { border-color: #D92B2B; color: #D92B2B; background: #FFF5F5; }
+    .btn-delete .material-symbols-outlined { font-size: 16px; }
+
+    .pkg-item-price-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+    .pkg-item-price { font-size: 14px; font-weight: 600; color: #1F1F1F; }
+    .pkg-item-price-orig { font-size: 12px; color: #ADADAD; text-decoration: line-through; text-align: right; }
+    .pkg-item-price-unit { font-size: 12px; color: #707070; margin-top: 4px; }
+
+    /* Order summary */
+    .cart-summary {
+      background: #FFFFFF;
+      border: 1px solid #EBEBEB;
+      border-radius: 16px;
+      overflow: hidden;
+      position: sticky;
+      top: 24px;
+    }
+
+    .summary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid #F2F2F2;
+    }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-row-label { font-size: 14px; font-weight: 500; color: #1F1F1F; }
+    .summary-row-action { font-size: 14px; font-weight: 500; color: #0366DD; cursor: pointer; }
+    .summary-row-action:hover { text-decoration: underline; }
+
+    .summary-totals { padding: 20px; border-bottom: 1px solid #F2F2F2; }
+    .summary-totals-title { font-size: 15px; font-weight: 600; color: #1F1F1F; margin-bottom: 14px; }
+    .summary-line { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .summary-line:last-child { margin-bottom: 0; }
+    .summary-line-label { font-size: 14px; color: #707070; display: flex; align-items: center; gap: 4px; }
+    .summary-line-val { font-size: 14px; font-weight: 500; color: #1F1F1F; }
+    .summary-line-val.free { color: #1A7F37; font-weight: 600; }
+    .summary-total-row { display: flex; justify-content: space-between; padding: 20px; }
+    .summary-total-label { font-size: 15px; font-weight: 600; color: #1F1F1F; }
+    .summary-total-val { font-size: 18px; font-weight: 600; color: #1F1F1F; }
+
+    .summary-info-icon { font-size: 14px; color: #ADADAD; cursor: help; }
+
+    .btn-continuar {
+      display: block;
+      width: calc(100% - 40px);
+      margin: 0 20px 20px;
+      height: 40px;
+      border: none;
+      border-radius: 100px;
+      background: #0366DD;
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.16s;
+    }
+    .btn-continuar:hover { background: #0155B7; }
+
+    @media (max-width: 900px) {
+      .cart-wrap { grid-template-columns: 1fr; }
+      .cart-summary { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="header">
+    <div class="header-top">
+      <div class="header-logo-wrap">
+        <a class="header-logo" href="/storefrontb2b">Demo Store</a>
+      </div>
+      <div class="header-search" id="searchWrap">
+        <div class="search-bar" id="searchBar">
+          <span class="material-symbols-outlined search-icon">search</span>
+          <input type="text" placeholder="Search for items, brands and collections…" aria-label="Search products" />
+          <button class="btn-bulk" id="btnBulk" type="button">In bulk</button>
+        </div>
+        <div class="bulk-panel" id="bulkPanel" style="display:none">
+          <div class="bulk-drop-zone">
+            <img src="/Illustration-dragdrop.svg" alt="" width="60" height="50" />
+            <p class="bulk-title">Drop a file to search in bulk</p>
+            <input type="file" id="bulkFileInput" style="display:none" />
+            <button class="bulk-select-btn" type="button" onclick="document.getElementById('bulkFileInput').click()">Select file</button>
+            <a href="#" class="bulk-template-link">Download template</a>
+          </div>
+        </div>
+      </div>
+      <div class="header-account">
+        <button class="btn-account" id="btnAccount" type="button" aria-label="Account menu">
+          <span class="account-avatar"><img src="/logo-stellarglobal.png" alt="Stellar Global" /></span>
+          <span class="account-name">Stellar Global</span>
+        </button>
+        <button class="btn-cart-icon" type="button" aria-label="Shopping cart" onclick="window.location.href='/storefrontb2b/cart'">
+          <span class="material-symbols-outlined">shopping_cart</span>
+          <span class="cart-count">10</span>
+        </button>
+      </div>
+    </div>
+    <nav class="header-nav" aria-label="Categories">
+      <div class="nav-links">
+        <a class="nav-link" href="#">Shop</a>
+        <a class="nav-link" href="#">Mobile</a>
+        <a class="nav-link" href="#">TV &amp; AV</a>
+        <a class="nav-link" href="#">Home Appliance</a>
+        <a class="nav-link" href="#">Displays</a>
+        <a class="nav-link" href="#">Accessories</a>
+        <a class="nav-link sale" href="#">Sale</a>
+      </div>
+      <div class="nav-info">
+        <span class="nav-info-item">
+          <span class="ni-lbl">Ship to:</span>
+          <span class="ni-val">Boston Boylston St, 02116 <span class="material-symbols-outlined" style="font-size:16px">expand_more</span></span>
+        </span>
+        <span class="ni-sep">|</span>
+        <span class="nav-info-item">
+          <span class="ni-lbl">Delivery method:</span>
+          <span class="ni-val">Standard shipping <span class="material-symbols-outlined" style="font-size:16px">expand_more</span></span>
+        </span>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ── Drawer overlay ── -->
+  <div class="drawer-overlay" id="drawerOverlay" style="display:none" onclick="closeDrawer()"></div>
+
+  <!-- ── Account Drawer ── -->
+  <div class="drawer" id="accountDrawer">
+    <div class="drawer-cover">
+      <button class="drawer-close" type="button" aria-label="Close" onclick="closeDrawer()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+      <div class="drawer-avatar"><img src="/logo-stellarglobal.png" alt="Stellar Global" /></div>
+    </div>
+    <div class="drawer-body">
+      <div class="drawer-identity">
+        <div class="drawer-identity-row">
+          <span class="drawer-company">Stellar Global</span>
+          <button class="drawer-switch-btn" type="button">Switch</button>
+        </div>
+      </div>
+      <nav class="drawer-nav">
+        <a href="#" class="drawer-nav-item">Profile</a>
+        <a href="#" class="drawer-nav-item">Orders</a>
+        <a href="#" class="drawer-nav-item">Carts</a>
+        <a href="/storefrontb2b/account/quotes" class="drawer-nav-item">Quotes</a>
+        <a href="#" class="drawer-nav-item">Addresses</a>
+        <a href="#" class="drawer-nav-item">User details</a>
+        <a href="#" class="drawer-nav-item">Authentication</a>
+      </nav>
+    </div>
+    <div class="drawer-footer">
+      <div class="drawer-footer-box">
+        <div class="drawer-footer-row">
+          <span class="drawer-footer-label">
+            <span class="material-symbols-outlined" style="font-size:20px;color:#0366DD;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 20">folder</span>
+            Operations and facilities
+          </span>
+          <a href="#" class="drawer-manage-link">
+            Manage
+            <span class="material-symbols-outlined" style="font-size:16px">open_in_new</span>
+          </a>
+        </div>
+        <div class="drawer-footer-row">
+          <div class="drawer-user-info">
+            <span class="drawer-user-name">Donald Green</span>
+            <span class="drawer-user-email">d.green@stellar.com</span>
+          </div>
+          <a href="#" class="drawer-logout">Log out</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Account drawer
+    function openDrawer() {
+      document.getElementById('drawerOverlay').style.display = 'block';
+      document.getElementById('accountDrawer').classList.add('open');
+    }
+    function closeDrawer() {
+      document.getElementById('drawerOverlay').style.display = 'none';
+      document.getElementById('accountDrawer').classList.remove('open');
+    }
+    document.getElementById('btnAccount').addEventListener('click', openDrawer);
+
+    // Bulk panel
+    var bulkOpen = false;
+    var btnBulk = document.getElementById('btnBulk');
+    var bulkPanel = document.getElementById('bulkPanel');
+    var searchBar = document.getElementById('searchBar');
+    var searchWrap = document.getElementById('searchWrap');
+
+    btnBulk.addEventListener('click', function () {
+      bulkOpen = !bulkOpen;
+      bulkPanel.style.display = bulkOpen ? 'block' : 'none';
+      btnBulk.classList.toggle('active', bulkOpen);
+      searchBar.classList.toggle('bulk-open', bulkOpen);
+    });
+
+    document.addEventListener('mousedown', function (e) {
+      if (bulkOpen && !searchWrap.contains(e.target)) {
+        bulkOpen = false;
+        bulkPanel.style.display = 'none';
+        btnBulk.classList.remove('active');
+        searchBar.classList.remove('bulk-open');
+      }
+    });
+  </script>
+
+  <!-- ── Cart ── -->
+  <div class="cart-wrap">
+
+    <!-- Left: packages -->
+    <div>
+      <h1 class="cart-title">Cart</h1>
+      <p class="cart-subtitle">10 items</p>
+
+      <div class="cart-packages">
+
+        <!-- Package 1: Express Delivery -->
+        <div class="cart-package">
+          <div class="pkg-header">
+            <div class="pkg-header-icon"><span class="material-symbols-outlined">local_shipping</span></div>
+            <div class="pkg-header-info">
+              <div class="pkg-title">Express Delivery — Package 1</div>
+              <div class="pkg-meta">Boston Boylston St · 1–2 business days · $12.40</div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/TV.png" alt="Smart TV 55&quot; UHD 4K – Hotel Series" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Smart TV 55" UHD 4K – Hotel Series</div>
+              <div class="pkg-item-sku">TV-55-4K-HTL</div>
+              <hr class="pkg-item-divider" />
+              <div class="pkg-item-cost-center">Cost center <a href="#">Select</a></div>
+              <div class="pkg-item-price-unit">$616.55 un.</div>
+            </div>
+            <div class="pkg-item-right">
+              <span class="pkg-item-change">Edit</span>
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity" data-unit="616.55" data-orig-unit="649.00">
+                  <option>6</option><option>7</option><option selected>8</option><option>9</option><option>10</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$5,192.00</div>
+                <div class="pkg-item-price">$4,932.40</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/Frigobar.png" alt="Minibar Refrigerator 40L – Premium" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Minibar Refrigerator 40L – Premium</div>
+              <div class="pkg-item-sku">MNB-40L-PRM</div>
+              <hr class="pkg-item-divider" />
+              <div class="pkg-item-cost-center">Cost center <a href="#">Select</a></div>
+              <div class="pkg-item-price-unit">$365.66 un.</div>
+            </div>
+            <div class="pkg-item-right">
+              <span class="pkg-item-change">Edit</span>
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity" data-unit="365.66" data-orig-unit="389.00">
+                  <option>8</option><option>9</option><option selected>10</option><option>11</option><option>12</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$3,890.00</div>
+                <div class="pkg-item-price">$3,656.60</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/Cofre.png" alt="Digital Safe – Laptop Size (14&quot;)" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Digital Safe – Laptop Size (14")</div>
+              <div class="pkg-item-sku">SF-LPT-14-DG</div>
+              <hr class="pkg-item-divider" />
+              <div class="pkg-item-cost-center">Cost center <a href="#">Select</a></div>
+              <div class="pkg-item-price-unit">$193.03 un.</div>
+            </div>
+            <div class="pkg-item-right">
+              <span class="pkg-item-change">Edit</span>
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity" data-unit="193.03" data-orig-unit="199.00">
+                  <option>12</option><option>13</option><option>14</option><option selected>15</option><option>16</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$2,985.00</div>
+                <div class="pkg-item-price">$2,895.45</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/Termostato%20inteligente.png" alt="Smart Thermostat Wi-Fi – HVAC Control" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Smart Thermostat Wi-Fi – HVAC Control</div>
+              <div class="pkg-item-sku">THM-WIFI-HVC</div>
+              <hr class="pkg-item-divider" />
+              <div class="pkg-item-cost-center">Cost center <a href="#">Select</a></div>
+              <div class="pkg-item-price-unit">$240.93 un.</div>
+            </div>
+            <div class="pkg-item-right">
+              <span class="pkg-item-change">Edit</span>
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity" data-unit="240.93" data-orig-unit="259.00">
+                  <option>15</option><option>16</option><option>17</option><option selected>18</option><option>20</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$4,662.00</div>
+                <div class="pkg-item-price">$4,336.74</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/Access%20points%20Wi-Fi%20corporativos.png" alt="Access Point Wi-Fi 6 Dual Band – Enterprise" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Access Point Wi-Fi 6 Dual Band – Enterprise</div>
+              <div class="pkg-item-sku">AP-W6-DB-ENT</div>
+              <hr class="pkg-item-divider" />
+              <div class="pkg-item-cost-center">Cost center <a href="#">Select</a></div>
+              <div class="pkg-item-price-unit">$331.55 un.</div>
+            </div>
+            <div class="pkg-item-right">
+              <span class="pkg-item-change">Edit</span>
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity" data-unit="331.55" data-orig-unit="349.00">
+                  <option>4</option><option>5</option><option selected>6</option><option>7</option><option>8</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$2,094.00</div>
+                <div class="pkg-item-price">$1,989.30</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Package 2: Standard Delivery -->
+        <div class="cart-package">
+          <div class="pkg-header">
+            <div class="pkg-header-icon"><span class="material-symbols-outlined">package_2</span></div>
+            <div class="pkg-header-info">
+              <div class="pkg-title">Standard Delivery — Package 2</div>
+              <div class="pkg-meta">Multiple locations · 3–6 business days · $12.40</div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/TV.png" alt="Smart TV 43&quot; Full HD – Standard Room" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Smart TV 43" Full HD – Standard Room</div>
+              <div class="pkg-item-sku">TV-43-FHD-STD</div>
+              <hr class="pkg-item-divider" />
+              <div class="pkg-item-cost-center">Cost center <a href="#">Select</a></div>
+              <div class="pkg-item-price-unit">$426.55 un.</div>
+            </div>
+            <div class="pkg-item-right">
+              <span class="pkg-item-change">Edit</span>
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity" data-unit="426.55" data-orig-unit="449.00">
+                  <option>10</option><option>11</option><option selected>12</option><option>13</option><option>14</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$5,388.00</div>
+                <div class="pkg-item-price">$5,118.60</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/Frigobar.png" alt="Minibar Slim 20L – Compact Room" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Minibar Slim 20L – Compact Room</div>
+              <div class="pkg-item-sku">MNB-20L-SLM</div>
+              <hr class="pkg-item-divider" />
+              <div class="pkg-item-cost-center">Cost center <a href="#">Select</a></div>
+              <div class="pkg-item-price-unit">$267.84 un.</div>
+            </div>
+            <div class="pkg-item-right">
+              <span class="pkg-item-change">Edit</span>
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity" data-unit="267.84" data-orig-unit="279.00">
+                  <option>6</option><option>7</option><option selected>8</option><option>9</option><option>10</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$2,232.00</div>
+                <div class="pkg-item-price">$2,142.72</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/Cofre.png" alt="Digital Safe – Standard In-Room" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Digital Safe – Standard In-Room</div>
+              <div class="pkg-item-sku">SF-STD-INR</div>
+              <hr class="pkg-item-divider" />
+              <div class="pkg-item-cost-center">Cost center <a href="#">Select</a></div>
+              <div class="pkg-item-price-unit">$144.57 un.</div>
+            </div>
+            <div class="pkg-item-right">
+              <span class="pkg-item-change">Edit</span>
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity" data-unit="144.57" data-orig-unit="149.00">
+                  <option>17</option><option>18</option><option>19</option><option selected>20</option><option>22</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$2,980.00</div>
+                <div class="pkg-item-price">$2,891.40</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/Suporte.png" alt="Articulating TV Mount 32–65&quot;" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Articulating TV Mount 32–65"</div>
+              <div class="pkg-item-sku">MNT-ART-3265</div>
+              <hr class="pkg-item-divider" />
+              <div class="pkg-item-cost-center">Cost center <a href="#">Select</a></div>
+              <div class="pkg-item-price-unit">$85.44 un.</div>
+            </div>
+            <div class="pkg-item-right">
+              <span class="pkg-item-change">Edit</span>
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity" data-unit="85.44" data-orig-unit="89.00">
+                  <option>17</option><option>18</option><option>19</option><option selected>20</option><option>22</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$1,780.00</div>
+                <div class="pkg-item-price">$1,708.80</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/Access%20points%20Wi-Fi%20corporativos.png" alt="Access Point Wi-Fi 5 – Corporate" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Access Point Wi-Fi 5 – Corporate</div>
+              <div class="pkg-item-sku">AP-W5-CORP</div>
+              <hr class="pkg-item-divider" />
+              <div class="pkg-item-cost-center">Cost center <a href="#">Select</a></div>
+              <div class="pkg-item-price-unit">$284.05 un.</div>
+            </div>
+            <div class="pkg-item-right">
+              <span class="pkg-item-change">Edit</span>
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity" data-unit="284.05" data-orig-unit="299.00">
+                  <option>3</option><option>4</option><option selected>5</option><option>6</option><option>7</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$1,495.00</div>
+                <div class="pkg-item-price">$1,420.25</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right: summary -->
+    <div class="cart-summary">
+      <div class="summary-row">
+        <span class="summary-row-label">Discount coupon</span>
+        <span class="summary-row-action">Add</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-row-label">Sales rep code</span>
+        <span class="summary-row-action">Add</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-row-label">Note</span>
+        <span class="summary-row-action">Add</span>
+      </div>
+
+      <div class="summary-totals">
+        <div class="summary-totals-title">Order summary</div>
+        <div class="summary-line">
+          <span class="summary-line-label">Items</span>
+          <span class="summary-line-val" id="sum-items">$24,569.54</span>
+        </div>
+        <div class="summary-line">
+          <span class="summary-line-label">Shipping</span>
+          <span class="summary-line-val">$24.80</span>
+        </div>
+        <div class="summary-line">
+          <span class="summary-line-label">
+            Tax
+            <span class="material-symbols-outlined summary-info-icon" title="Calculated on the product value">help</span>
+          </span>
+          <span class="summary-line-val" id="sum-tax">$5,656.69</span>
+        </div>
+      </div>
+
+      <div class="summary-total-row">
+        <span class="summary-total-label">Total</span>
+        <span class="summary-total-val">$30,251.03</span>
+      </div>
+
+      <button class="btn-continuar" type="button" onclick="window.location.href='/storefrontb2b/checkout'">Checkout</button>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      const SHIPPING = 24.80;
+      const TAX_RATE = 5656.69 / 24569.54;
+      let itemsTotal = 24569.54;
+
+      function fmt(n) {
+        return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      function refreshSummary() {
+        const tax = itemsTotal * TAX_RATE;
+        const total = itemsTotal + SHIPPING + tax;
+        document.getElementById('sum-items').textContent = fmt(itemsTotal);
+        document.getElementById('sum-tax').textContent = fmt(tax);
+        document.querySelector('.summary-total-val').textContent = fmt(total);
+      }
+
+      // Apply revised quote changes from sales rep
+      if (sessionStorage.getItem('quoteToCart') === 'revised') {
+        sessionStorage.removeItem('quoteToCart');
+
+        // --- TV 55": replace with LG QNED55 4K ---
+        var tv55 = Array.from(document.querySelectorAll('.pkg-item-sku')).find(function(el) {
+          return el.textContent.trim() === 'TV-55-4K-HTL';
+        });
+        if (tv55) {
+          var item55 = tv55.closest('.pkg-item');
+          item55.querySelector('.pkg-item-name').textContent = 'LG QNED55 4K – Hotel Series';
+          tv55.textContent = 'TV-55-QNED-HTL';
+          item55.querySelector('.pkg-item-price-unit').textContent = '$579.00 un.';
+          var sel55 = item55.querySelector('.qty-select');
+          sel55.dataset.unit = '579.00';
+          item55.querySelector('.pkg-item-price').textContent = '$4,632.00';   // 8 × 579
+          item55.querySelector('.pkg-item-price-orig').textContent = '$5,192.00'; // 8 × 649
+          itemsTotal += (579.00 - 616.55) * 8; // -300.40
+        }
+
+        // --- TV 43": qty 12 → 16 @ $419 ---
+        var tv43 = Array.from(document.querySelectorAll('.pkg-item-sku')).find(function(el) {
+          return el.textContent.trim() === 'TV-43-FHD-STD';
+        });
+        if (tv43) {
+          var item43 = tv43.closest('.pkg-item');
+          item43.querySelector('.pkg-item-price-unit').textContent = '$419.00 un.';
+          var sel43 = item43.querySelector('.qty-select');
+          sel43.dataset.unit = '419.00';
+          sel43.innerHTML = '<option>14</option><option>15</option><option selected>16</option><option>17</option><option>18</option>';
+          item43.querySelector('.pkg-item-price').textContent = '$6,704.00';   // 16 × 419
+          item43.querySelector('.pkg-item-price-orig').textContent = '$7,184.00'; // 16 × 449
+          itemsTotal += 419.00 * 16 - 426.55 * 12; // +1585.40
+        }
+
+        refreshSummary();
+      }
+
+      document.querySelectorAll('.qty-select').forEach(function (select) {
+        select._prevQty = parseInt(select.value);
+        select.addEventListener('change', function () {
+          const newQty = parseInt(this.value);
+          const unit = parseFloat(this.dataset.unit);
+          const origUnit = parseFloat(this.dataset.origUnit);
+          const delta = unit * (newQty - this._prevQty);
+          this._prevQty = newQty;
+          itemsTotal += delta;
+          const item = this.closest('.pkg-item');
+          item.querySelector('.pkg-item-price').textContent = fmt(unit * newQty);
+          item.querySelector('.pkg-item-price-orig').textContent = fmt(origUnit * newQty);
+          refreshSummary();
+        });
+      });
+    })();
+  </script>
+
+  <!-- ── FloatingToggle ── -->
+  <style>
+    @keyframes ftFadeIn{from{opacity:0}to{opacity:1}}
+    #floatingToggle{position:fixed;z-index:9999;background:rgba(255,255,255,0.18);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-radius:9999px;border:1px solid rgba(255,255,255,0.35);box-shadow:0 2px 8px rgba(0,0,0,0.12),inset 0 1px 0 rgba(255,255,255,0.5);user-select:none;cursor:grab;font-family:Inter,system-ui,sans-serif;padding:3px;animation:ftFadeIn 0.18s 0.06s ease both;}
+    #floatingToggle:active{cursor:grabbing;}
+    #ftTrack{display:flex;flex-direction:row;position:relative;}
+    #ftPill{position:absolute;top:0;height:100%;border-radius:9999px;background:rgba(255,255,255,0.65);backdrop-filter:blur(16px) saturate(200%);-webkit-backdrop-filter:blur(16px) saturate(200%);box-shadow:inset 0 1px 0 rgba(255,255,255,0.9),0 2px 8px rgba(0,0,0,0.10);transition:left 0.3s cubic-bezier(0.25,1.1,0.4,1),width 0.3s cubic-bezier(0.25,1.1,0.4,1);pointer-events:none;}
+    .ft-btn{display:flex;flex-direction:column;align-items:center;padding:6px 14px;border:none;border-radius:9999px;background:transparent;cursor:pointer;font-family:inherit;white-space:nowrap;position:relative;z-index:1;}
+    .ft-label{font-size:12px;font-weight:500;color:rgba(0,0,0,0.5);line-height:1.2;transition:color 0.2s ease;}
+    .ft-label.active{color:rgba(0,0,0,0.85);}
+    .ft-btn:hover .ft-label{color:rgba(0,0,0,0.75);}
+  </style>
+  <div id="floatingToggle"><div id="ftTrack"><span id="ftPill"></span><button class="ft-btn" id="ftBuyerBtn"><span class="ft-label active" id="ftBuyerLabel">Buyer</span></button><button class="ft-btn" id="ftSalesBtn"><span class="ft-label" id="ftSalesLabel">Sales Rep</span></button></div></div>
+  <script>
+    (function(){
+      const el=document.getElementById('floatingToggle'),pill=document.getElementById('ftPill'),buyerBtn=document.getElementById('ftBuyerBtn'),salesBtn=document.getElementById('ftSalesBtn'),MARGIN=20;
+      function initPos(){const w=el.offsetWidth,h=el.offsetHeight;el.style.left=((window.innerWidth-w)/2)+'px';el.style.top=(window.innerHeight-h-32)+'px';updatePill(buyerBtn);}
+      function updatePill(b){pill.style.width=b.offsetWidth+'px';pill.style.left=b.offsetLeft+'px';pill.style.opacity='1';}
+      let dragging=false,hasMoved=false,startMouse={x:0,y:0},offset={x:0,y:0};
+      el.addEventListener('pointerdown',function(e){if(e.target.closest('.ft-btn'))return;dragging=true;hasMoved=false;startMouse={x:e.clientX,y:e.clientY};const r=el.getBoundingClientRect();offset={x:e.clientX-r.left,y:e.clientY-r.top};el.setPointerCapture(e.pointerId);e.preventDefault();});
+      document.addEventListener('pointermove',function(e){if(!dragging)return;const dx=e.clientX-startMouse.x,dy=e.clientY-startMouse.y;if(!hasMoved&&(Math.abs(dx)>4||Math.abs(dy)>4))hasMoved=true;if(hasMoved){const w=el.offsetWidth,h=el.offsetHeight;el.style.left=Math.max(0,Math.min(window.innerWidth-w,e.clientX-offset.x))+'px';el.style.top=Math.max(0,Math.min(window.innerHeight-h,e.clientY-offset.y))+'px';el.style.transition='none';}});
+      document.addEventListener('pointerup',function(){if(dragging&&hasMoved){const r=el.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,w=el.offsetWidth,h=el.offsetHeight;const sx=cx<window.innerWidth/2?MARGIN:window.innerWidth-w-MARGIN;const sy=cy<window.innerHeight/2?MARGIN:window.innerHeight-h-MARGIN;el.style.transition='left 0.35s cubic-bezier(0.2,0,0,1),top 0.35s cubic-bezier(0.2,0,0,1)';el.style.left=sx+'px';el.style.top=sy+'px';setTimeout(()=>{el.style.transition='none';},360);}dragging=false;});
+      salesBtn.addEventListener('click',function(){updatePill(salesBtn);document.getElementById('ftSalesLabel').classList.add('active');document.getElementById('ftBuyerLabel').classList.remove('active');const o=document.createElement('div');o.style.cssText='position:fixed;inset:0;background:#fff;opacity:0;z-index:99999;transition:opacity 0.18s ease;pointer-events:none;';document.body.appendChild(o);requestAnimationFrame(()=>{o.style.opacity='1';});setTimeout(()=>{window.location.href='/salesapp/home';},200);});
+      window.addEventListener('load',initPos);
+    })();
+  </script>
+  <!-- reset-session-r -->
+  <script>
+    document.addEventListener('keydown', function(e) {
+      if ((e.key === 'r' || e.key === 'R') && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        sessionStorage.removeItem('unlocked');
+        localStorage.removeItem('quoteRevised');
+        window.location.href = '/storefrontb2b';
+      }
+    });
+  </script>
+
+</body>
+</html>
