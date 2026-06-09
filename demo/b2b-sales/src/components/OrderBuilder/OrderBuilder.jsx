@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from 'react'
 import styles from './OrderBuilder.module.css'
 import headerStyles from '../Header/Header.module.css'
+import { asset } from '../../utils/asset'
 
 function ReasonedToggle() {
   const [open, setOpen] = useState(false)
@@ -44,16 +45,16 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
   const fillingTimerRef = useRef(null)
 
   const FILLED_ITEMS = [
-    { name: 'Smart TV 55" UHD 4K – Hotel Series', sku: 'HTV-55UHD-HSR', qty: 8, disc: 5, unitNum: 649, originalUnitNum: 729, unit: '$649.00', ship: 'Boston Boylston St', delivery: 'Express Delivery (1–2 business days)', costCenters: ['HPSL01', 'HPSL02'], img: '/items/TV.png' },
-    { name: 'Smart TV 43" Full HD – Standard Room', sku: 'HTV-43FHD-STD', qty: 12, disc: 5, unitNum: 449, unit: '$449.00', ship: 'Cambridge Harvard Sq', delivery: 'Standard Delivery (3–4 business days)', costCenters: ['HPSL02'], img: '/items/TV.png' },
-    { name: 'Minibar Refrigerator 40L – Premium', sku: 'HMB-40L-PRE', qty: 10, disc: 6, unitNum: 389, originalUnitNum: 429, unit: '$389.00', ship: 'Boston Boylston St', delivery: 'Express Delivery (1–2 business days)', costCenters: ['HPSL01', 'HPSL03'], img: '/items/Frigobar.png', stockStatus: 'out' },
-    { name: 'Minibar Slim 20L – Compact Room', sku: 'HMB-20L-SLM', qty: 8, disc: 4, unitNum: 279, unit: '$279.00', ship: 'Springfield Elm', delivery: 'Standard Delivery (5–6 business days)', costCenters: ['HPSL03'], img: '/items/Frigobar.png' },
-    { name: 'Digital Safe – Laptop Size (14")', sku: 'HCF-LPT-14', qty: 15, disc: 3, unitNum: 199, unit: '$199.00', ship: 'Boston Boylston St', delivery: 'Express Delivery (1–2 business days)', costCenters: ['HPSL01'], img: '/items/Cofre.png', stockStatus: 'low', stockQty: 4 },
-    { name: 'Digital Safe – Standard In-Room', sku: 'HCF-STD-IR', qty: 20, disc: 3, unitNum: 149, unit: '$149.00', ship: 'Worcester Main', delivery: 'Standard Delivery (5–6 business days)', costCenters: ['HPSL04'], img: '/items/Cofre.png' },
-    { name: 'Smart Thermostat Wi-Fi – HVAC Control', sku: 'HTT-WIFI-HVC', qty: 18, disc: 7, unitNum: 259, originalUnitNum: 299, unit: '$259.00', ship: 'Boston Boylston St', delivery: 'Express Delivery (1–2 business days)', costCenters: ['HPSL01', 'HPSL05'], img: '/items/Termostato%20inteligente.png' },
-    { name: 'Articulating TV Mount 32–65"', sku: 'HSP-ART-6532', qty: 20, disc: 4, unitNum: 89, unit: '$89.00', ship: 'Cambridge Harvard Sq', delivery: 'Standard Delivery (3–4 business days)', costCenters: ['HPSL02'], img: '/items/Suporte.png' },
-    { name: 'Access Point Wi-Fi 6 Dual Band – Enterprise', sku: 'HAP-W6DB-ENT', qty: 6, disc: 5, unitNum: 349, originalUnitNum: 399, unit: '$349.00', ship: 'Boston Boylston St', delivery: 'Pickup', costCenters: ['HPSL01'], img: '/items/Access%20points%20Wi-Fi%20corporativos.png' },
-    { name: 'Access Point Wi-Fi 5 – Corporate', sku: 'HAP-W5-CRP', qty: 5, disc: 5, unitNum: 299, unit: '$299.00', ship: 'Providence Downtown', delivery: 'Pickup', costCenters: ['HPSL05'], img: '/items/Access%20points%20Wi-Fi%20corporativos.png' },
+    { name: 'Smart TV 55" UHD 4K – Hotel Series', sku: 'HTV-55UHD-HSR', qty: 8, disc: 5, unitNum: 649, originalUnitNum: 729, unit: '$649.00', ship: 'Boston Boylston St', delivery: 'Express Delivery (1–2 business days)', costCenters: ['HPSL01', 'HPSL02'], img: asset('/items/TV.png') },
+    { name: 'Smart TV 43" Full HD – Standard Room', sku: 'HTV-43FHD-STD', qty: 12, disc: 5, unitNum: 449, unit: '$449.00', ship: 'Cambridge Harvard Sq', delivery: 'Standard Delivery (3–4 business days)', costCenters: ['HPSL02'], img: asset('/items/TV.png') },
+    { name: 'Minibar Refrigerator 40L – Premium', sku: 'HMB-40L-PRE', qty: 10, disc: 6, unitNum: 389, originalUnitNum: 429, unit: '$389.00', ship: 'Boston Boylston St', delivery: 'Express Delivery (1–2 business days)', costCenters: ['HPSL01', 'HPSL03'], img: asset('/items/Frigobar.png'), stockStatus: 'out' },
+    { name: 'Minibar Slim 20L – Compact Room', sku: 'HMB-20L-SLM', qty: 8, disc: 4, unitNum: 279, unit: '$279.00', ship: 'Springfield Elm', delivery: 'Standard Delivery (5–6 business days)', costCenters: ['HPSL03'], img: asset('/items/Frigobar.png') },
+    { name: 'Digital Safe – Laptop Size (14")', sku: 'HCF-LPT-14', qty: 15, disc: 3, unitNum: 199, unit: '$199.00', ship: 'Boston Boylston St', delivery: 'Express Delivery (1–2 business days)', costCenters: ['HPSL01'], img: asset('/items/Cofre.png'), stockStatus: 'low', stockQty: 4 },
+    { name: 'Digital Safe – Standard In-Room', sku: 'HCF-STD-IR', qty: 20, disc: 3, unitNum: 149, unit: '$149.00', ship: 'Worcester Main', delivery: 'Standard Delivery (5–6 business days)', costCenters: ['HPSL04'], img: asset('/items/Cofre.png') },
+    { name: 'Smart Thermostat Wi-Fi – HVAC Control', sku: 'HTT-WIFI-HVC', qty: 18, disc: 7, unitNum: 259, originalUnitNum: 299, unit: '$259.00', ship: 'Boston Boylston St', delivery: 'Express Delivery (1–2 business days)', costCenters: ['HPSL01', 'HPSL05'], img: asset('/items/Termostato%20inteligente.png') },
+    { name: 'Articulating TV Mount 32–65"', sku: 'HSP-ART-6532', qty: 20, disc: 4, unitNum: 89, unit: '$89.00', ship: 'Cambridge Harvard Sq', delivery: 'Standard Delivery (3–4 business days)', costCenters: ['HPSL02'], img: asset('/items/Suporte.png') },
+    { name: 'Access Point Wi-Fi 6 Dual Band – Enterprise', sku: 'HAP-W6DB-ENT', qty: 6, disc: 5, unitNum: 349, originalUnitNum: 399, unit: '$349.00', ship: 'Boston Boylston St', delivery: 'Pickup', costCenters: ['HPSL01'], img: asset('/items/Access%20points%20Wi-Fi%20corporativos.png') },
+    { name: 'Access Point Wi-Fi 5 – Corporate', sku: 'HAP-W5-CRP', qty: 5, disc: 5, unitNum: 299, unit: '$299.00', ship: 'Providence Downtown', delivery: 'Pickup', costCenters: ['HPSL05'], img: asset('/items/Access%20points%20Wi-Fi%20corporativos.png') },
   ]
   const [liveItems, setLiveItems] = useState(FILLED_ITEMS)
 
@@ -241,11 +242,11 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
   const [addProductSelected, setAddProductSelected] = useState({}) // { id: qty }
 
   const SEARCH_CATALOG = [
-    { id: 'sp1', name: 'Business Phone X200', sku: 'PHN-X200-BLK', availability: 'In stock', price: 349.00, img: '/product-phone.png' },
-    { id: 'sp2', name: 'Business Phone X200 – White', sku: 'PHN-X200-WHT', availability: 'In stock', price: 349.00, img: '/product-phone.png' },
-    { id: 'sp3', name: 'Conference Phone CP960', sku: 'PHN-CP960-GRY', availability: 'Low stock', price: 589.00, img: '/product-phone.png' },
-    { id: 'sp4', name: 'IP Desk Phone T54W', sku: 'PHN-T54W-BLK', availability: 'In stock', price: 219.00, img: '/product-phone.png' },
-    { id: 'sp5', name: 'Wireless DECT Phone W73P', sku: 'PHN-W73P-SET', availability: 'Out of stock', price: 179.00, img: '/product-phone.png' },
+    { id: 'sp1', name: 'Business Phone X200', sku: 'PHN-X200-BLK', availability: 'In stock', price: 349.00, img: asset('/product-phone.png') },
+    { id: 'sp2', name: 'Business Phone X200 – White', sku: 'PHN-X200-WHT', availability: 'In stock', price: 349.00, img: asset('/product-phone.png') },
+    { id: 'sp3', name: 'Conference Phone CP960', sku: 'PHN-CP960-GRY', availability: 'Low stock', price: 589.00, img: asset('/product-phone.png') },
+    { id: 'sp4', name: 'IP Desk Phone T54W', sku: 'PHN-T54W-BLK', availability: 'In stock', price: 219.00, img: asset('/product-phone.png') },
+    { id: 'sp5', name: 'Wireless DECT Phone W73P', sku: 'PHN-W73P-SET', availability: 'Out of stock', price: 179.00, img: asset('/product-phone.png') },
   ]
 
   const addProductResults = useMemo(() => {
@@ -660,7 +661,7 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
     >
       {isDragging && (
         <div className={styles.fullDragOverlay}>
-          <img src="/Illustration-dragdrop.svg" alt="" width={69} height={58} />
+          <img src={asset('/Illustration-dragdrop.svg')} alt="" width={69} height={58} />
           <span className={styles.fullDragTitle}>Drop file</span>
           <span className={styles.fullDragSub}>Drop your file here to fill your order in bulk</span>
         </div>
@@ -675,7 +676,7 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
           <button className={headerStyles.drawerClose} type="button" aria-label="Close" onClick={() => setAccountDrawerOpen(false)}>
             <span className="material-symbols-outlined">close</span>
           </button>
-          <div className={headerStyles.drawerAvatar}><img src="/logo-stellarglobal.png" alt="Stellar Global" /></div>
+          <div className={headerStyles.drawerAvatar}><img src={asset('/logo-stellarglobal.png')} alt="Stellar Global" /></div>
         </div>
         <div className={headerStyles.drawerBody}>
           <div className={headerStyles.drawerIdentity}>
@@ -1489,7 +1490,7 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
           <div className={styles.avatar} style={repCustomer && repCustomer.name !== 'Stellar Global' ? {background:'#EBF3FF'} : {}}>
             {repCustomer && repCustomer.name !== 'Stellar Global'
               ? <span className="material-symbols-outlined" style={{fontSize:'14px',color:'#0366DD',fontVariationSettings:"'wght' 300"}}>apartment</span>
-              : <img src="/logo-stellarglobal.png" alt="Stellar Global" />}
+              : <img src={asset('/logo-stellarglobal.png')} alt="Stellar Global" />}
           </div>
           <span className={styles.drawerFooterName}>{repCustomer ? repCustomer.name : 'Stellar Global'}</span>
           <span className={styles.spacer} />
@@ -1535,7 +1536,7 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
               <div className={styles.avatar} aria-label="User avatar" onClick={() => repMode ? setShowDrawer(true) : setAccountDrawerOpen(true)} style={{ cursor: 'pointer', background: repCustomer && repCustomer.name !== 'Stellar Global' ? '#EBF3FF' : undefined }}>
                 {repCustomer && repCustomer.name !== 'Stellar Global'
                   ? <span className="material-symbols-outlined" style={{fontSize:'14px',color:'#0366DD',fontVariationSettings:"'wght' 300"}}>apartment</span>
-                  : <img src="/logo-stellarglobal.png" alt="Stellar Global" />}
+                  : <img src={asset('/logo-stellarglobal.png')} alt="Stellar Global" />}
               </div>
             </div>
           </div>

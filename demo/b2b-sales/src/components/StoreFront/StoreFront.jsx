@@ -1,4 +1,5 @@
 import styles from './StoreFront.module.css'
+import { asset } from '../../utils/asset'
 
 const RECOMMENDED = [
   {
@@ -6,22 +7,22 @@ const RECOMMENDED = [
     name: 'Galaxy Z Flip4',
     price: '$999.99',
     badge: '10% off',
-    img: '/rec-galaxyz.png',
+    img: asset('/rec-galaxyz.png'),
   },
   {
     id: 2,
     name: 'Galaxy Book3 Ultra',
     price: '$2,499.99',
     badge: '8% off',
-    img: '/rec-book3.png',
+    img: asset('/rec-book3.png'),
   },
 ]
 
 const LATEST = [
-  { id: 1, name: 'Galaxy Buds2 Pro', from: '$229.99', img: '/product-buds.png' },
-  { id: 2, name: '32" 4K UHD Smart Monitor with Streaming TV and SlimFit Camera Included', from: '$499.99', img: '/product-monitor.png' },
-  { id: 3, name: '7.4 cu. ft. Smart Electric Dryer with Steam Sanitize+', from: '$679.00', img: '/product-dryer.png' },
-  { id: 4, name: '32" Odyssey Neo G8 4K UHD 240Hz 1ms Quantum HDR2000 Curved Gaming Monitor', from: '$1,199.00', img: '/product-odyssey.png' },
+  { id: 1, name: 'Galaxy Buds2 Pro', from: '$229.99', img: asset('/product-buds.png') },
+  { id: 2, name: '32" 4K UHD Smart Monitor with Streaming TV and SlimFit Camera Included', from: '$499.99', img: asset('/product-monitor.png') },
+  { id: 3, name: '7.4 cu. ft. Smart Electric Dryer with Steam Sanitize+', from: '$679.00', img: asset('/product-dryer.png') },
+  { id: 4, name: '32" Odyssey Neo G8 4K UHD 240Hz 1ms Quantum HDR2000 Curved Gaming Monitor', from: '$1,199.00', img: asset('/product-odyssey.png') },
 ]
 
 const TRUST_BADGES = [
@@ -46,7 +47,7 @@ export default function StoreFront() {
       {/* ── Hero ── */}
       <div className={styles.heroWrap}>
         <section className={styles.hero}>
-          <img src="/hero-s23.png" alt="" className={styles.heroBg} aria-hidden="true" />
+          <img src={asset('/hero-s23.png')} alt="" className={styles.heroBg} aria-hidden="true" />
           <div className={styles.heroOverlay} />
           <div className={styles.heroContent}>
             <h1 className={styles.heroTitle}>Galaxy S23<br />Ultra</h1>
@@ -124,7 +125,7 @@ export default function StoreFront() {
           </div>
           <div className={styles.promoRight}>
             <img
-              src="/promo-woman.png"
+              src={asset('/promo-woman.png')}
               alt="Demo Care+ promotion"
               className={styles.promoImg}
             />

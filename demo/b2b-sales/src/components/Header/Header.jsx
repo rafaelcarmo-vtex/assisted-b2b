@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import styles from './Header.module.css'
+import { asset } from '../../utils/asset'
 
 const NAV_LINKS = [
   { label: 'Shop', active: true },
@@ -72,7 +73,7 @@ export default function Header() {
                 <div className={styles.bulkDropZone}>
                   {/* Illustration */}
                   <div className={styles.bulkIllustration}>
-                    <img src="/Illustration-dragdrop.svg" alt="" width={60} height={50} />
+                    <img src={asset('/Illustration-dragdrop.svg')} alt="" width={60} height={50} />
                   </div>
                   <p className={styles.bulkTitle}>Drop a file to search in bulk</p>
                   <input ref={fileInputRef} type="file" style={{display:'none'}} />
@@ -90,7 +91,7 @@ export default function Header() {
               aria-label="Account menu"
               onClick={() => setDrawerOpen(true)}
             >
-              <span className={styles.accountAvatar}><img src="/logo-stellarglobal.png" alt="Stellar Global" /></span>
+              <span className={styles.accountAvatar}><img src={asset('/logo-stellarglobal.png')} alt="Stellar Global" /></span>
               <span className={styles.accountName}>Stellar Global</span>
             </button>
             <button className={styles.cartBtn} type="button" aria-label="Shopping cart" onClick={() => window.location.href = '/storefrontb2b/cart'}>
@@ -159,7 +160,7 @@ export default function Header() {
           >
             <span className="material-symbols-outlined">close</span>
           </button>
-          <div className={styles.drawerAvatar}><img src="/logo-stellarglobal.png" alt="Stellar Global" /></div>
+          <div className={styles.drawerAvatar}><img src={asset('/logo-stellarglobal.png')} alt="Stellar Global" /></div>
         </div>
 
         <div className={styles.drawerBody}>
