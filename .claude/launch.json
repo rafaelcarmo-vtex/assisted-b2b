@@ -5,7 +5,7 @@
       "name": "assisted-b2b",
       "runtimeExecutable": "npx",
       "runtimeArgs": ["serve", "-l", "4000", "."],
-      "port": 4000
+      "port": 3000
     }
   ]
 }
