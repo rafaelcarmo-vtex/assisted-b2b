@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/assisted-b2b/demo/b2b-sales/dist/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Desempenho — Midea</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,0" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    button, input, select { font-family: inherit; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #F7F7F7;
+      color: #1F1F1F;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      user-select: none;
+    }
+
+    /* ── Header ── */
+    .page-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #fff;
+      border-bottom: 1px solid #EBEBEB;
+      display: flex;
+      align-items: center;
+      height: 60px;
+      padding: 0 24px;
+      gap: 16px;
+    }
+
+    .btn-back {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px;
+      border: none; background: transparent;
+      border-radius: 50%; color: #3D3D3D; cursor: pointer;
+      transition: background 0.14s; flex-shrink: 0;
+    }
+    .btn-back:hover { background: #F5F5F5; }
+    .btn-back .material-symbols-outlined { font-size: 22px; }
+
+    .page-header-logo {
+      display: flex; align-items: center;
+      text-decoration: none; flex-shrink: 0;
+    }
+
+    .page-header-title {
+      font-size: 15px; font-weight: 600; color: #1F1F1F;
+      margin-left: 4px;
+    }
+
+    .page-header-sep {
+      width: 1px; height: 20px; background: #E0E0E0; margin: 0 4px;
+    }
+
+    /* ── Layout ── */
+    .page-body {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* ── Page Title ── */
+    .page-greeting {
+      margin-bottom: 4px;
+    }
+    .page-greeting h1 {
+      font-family: 'Inter Tight', Inter, sans-serif;
+      font-size: 26px; font-weight: 700; color: #1F1F1F; line-height: 1.2;
+    }
+    .page-greeting p {
+      font-size: 13px; color: #707070; margin-top: 4px;
+    }
+    .page-greeting p strong { color: #1F1F1F; font-weight: 600; }
+
+    /* ── Filters bar ── */
+    .filters-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 12px 0 4px;
+      border-bottom: 1px solid #EBEBEB;
+      margin-bottom: 4px;
+    }
+
+    .filter-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      height: 32px; padding: 0 12px;
+      border: 1.5px solid #D6D6D6; border-radius: 100px;
+      background: #fff; font-size: 13px; font-weight: 500; color: #3D3D3D;
+      cursor: pointer; transition: border-color 0.14s, background 0.14s;
+      white-space: nowrap;
+    }
+    .filter-chip:hover { border-color: #ADADAD; background: #F5F5F5; }
+    .filter-chip.active {
+      border-color: #1695CF; color: #1695CF; background: #EEF7FC;
+    }
+    .filter-chip .material-symbols-outlined { font-size: 15px; }
+    .filter-chip-cycle {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 32px; padding: 0 12px;
+      border: 1.5px solid #D6D6D6; border-radius: 100px;
+      background: #fff; font-size: 13px; font-weight: 500; color: #1F1F1F;
+      cursor: pointer; transition: border-color 0.14s;
+      white-space: nowrap;
+    }
+    .filter-chip-cycle .material-symbols-outlined { font-size: 15px; color: #707070; }
+    .filter-hint {
+      margin-left: auto;
+      font-size: 11px; color: #ADADAD;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .filter-hint .material-symbols-outlined { font-size: 14px; }
+
+    /* ── Section card ── */
+    .section-card {
+      background: #fff;
+      border: 1px solid #E8E8E8;
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-family: 'Inter Tight', Inter, sans-serif;
+      font-size: 17px; font-weight: 700; color: #1F1F1F;
+    }
+    .section-filter-tag {
+      font-size: 11px; color: #ADADAD;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .section-filter-tag .material-symbols-outlined { font-size: 14px; }
+
+    /* ── Meta & GMV ── */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 220px 1fr 1fr;
+      gap: 1px;
+      background: #F0F0F0;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .meta-col {
+      background: #fff;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .meta-col:first-child {
+      align-items: center; justify-content: center; gap: 8px;
+      background: #FAFAFA;
+    }
+
+    .meta-lbl {
+      font-size: 11px; font-weight: 500; color: #ADADAD;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .meta-lbl .material-symbols-outlined { font-size: 14px; }
+
+    .meta-val {
+      font-family: 'Inter Tight', Inter, sans-serif;
+      font-size: 28px; font-weight: 700; color: #1F1F1F;
+      line-height: 1.1; margin-top: 6px;
+    }
+
+    .meta-sub {
+      font-size: 12px; color: #ADADAD; margin-top: 2px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .meta-sub-dot { width: 3px; height: 3px; border-radius: 50%; background: #D6D6D6; }
+
+    .meta-growth {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 13px; font-weight: 600; color: #16A34A;
+      margin-top: 6px;
+    }
+    .meta-growth .material-symbols-outlined { font-size: 15px; }
+
+    /* Gauge */
+    .gauge-wrap {
+      position: relative; width: 120px; height: 72px; flex-shrink: 0;
+    }
+    .gauge-wrap svg { overflow: visible; }
+
+    .gauge-pct {
+      font-family: 'Inter Tight', Inter, sans-serif;
+      font-size: 22px; font-weight: 700; color: #1F1F1F;
+      text-align: center;
+    }
+    .gauge-caption { font-size: 11px; color: #ADADAD; text-align: center; }
+
+    .meta-cycle-info {
+      font-size: 12px; color: #707070; text-align: center;
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .meta-cycle-info strong { color: #1F1F1F; }
+    .meta-cycle-lack { color: #E53E3E; font-weight: 600; }
+
+    /* Sparkline placeholder */
+    .sparkline {
+      height: 40px; margin-top: 8px;
+    }
+
+    /* ── Ranking ── */
+    .ranking-bench-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .ranking-subtitle {
+      font-size: 12px; color: #ADADAD; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .ranking-subtitle strong { color: #1F1F1F; font-weight: 600; }
+    .rank-badge {
+      display: inline-flex; align-items: center;
+      background: #EEF7FC; color: #1695CF;
+      font-size: 12px; font-weight: 600;
+      padding: 2px 8px; border-radius: 100px;
+    }
+
+    .rank-table { width: 100%; border-collapse: collapse; }
+    .rank-table th {
+      font-size: 11px; font-weight: 500; color: #ADADAD;
+      text-align: left; padding: 0 8px 8px;
+      border-bottom: 1px solid #F0F0F0;
+    }
+    .rank-table th:last-child, .rank-table td:last-child { text-align: right; }
+    .rank-table td {
+      padding: 10px 8px; font-size: 13px; color: #1F1F1F;
+      border-bottom: 1px solid #F7F7F7;
+      vertical-align: middle;
+    }
+    .rank-table tr:last-child td { border-bottom: none; }
+    .rank-table tr.you td { background: #F0F9FF; }
+    .rank-table tr.you td:first-child { border-radius: 8px 0 0 8px; }
+    .rank-table tr.you td:last-child  { border-radius: 0 8px 8px 0; }
+
+    .rank-pos {
+      width: 24px; height: 24px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+      background: #F0F0F0; color: #707070;
+    }
+    .rank-pos.top1 { background: #FEF3C7; color: #D97706; }
+    .rank-pos.top2 { background: #F1F5F9; color: #475569; }
+    .rank-pos.top3 { background: #FEF3C7; color: #B45309; }
+
+    .rank-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+    }
+
+    .rank-name-cell {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .rank-you-tag {
+      font-size: 10px; font-weight: 600; color: #1695CF;
+      background: #EEF7FC; padding: 1px 6px; border-radius: 100px;
+    }
+
+    .rank-bar-cell { min-width: 80px; }
+    .rank-bar-wrap { display: flex; align-items: center; gap: 6px; }
+    .rank-bar-bg { flex: 1; height: 4px; background: #F0F0F0; border-radius: 2px; }
+    .rank-bar-fill { height: 100%; border-radius: 2px; background: #D6D6D6; }
+    .rank-bar-fill.you { background: #1695CF; }
+    .rank-pct { font-size: 12px; font-weight: 600; color: #3D3D3D; white-space: nowrap; }
+
+    /* ── Benchmark ── */
+    .bench-title {
+      font-size: 13px; font-weight: 600; color: #1F1F1F; margin-bottom: 12px;
+    }
+    .bench-legend {
+      display: flex; gap: 14px; margin-bottom: 16px;
+    }
+    .bench-legend-item {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 12px; color: #707070;
+    }
+    .bench-legend-dot {
+      width: 10px; height: 3px; border-radius: 2px;
+    }
+    .bench-legend-dot.you { background: #1695CF; }
+    .bench-legend-dot.avg { background: #D6D6D6; border: 1px dashed #ADADAD; }
+
+    .bench-row {
+      margin-bottom: 16px;
+    }
+    .bench-row:last-child { margin-bottom: 0; }
+    .bench-row-top {
+      display: flex; justify-content: space-between;
+      font-size: 12px; margin-bottom: 6px;
+    }
+    .bench-row-label { color: #707070; }
+    .bench-row-vals { display: flex; gap: 10px; align-items: center; }
+    .bench-val-you { font-weight: 700; color: #1F1F1F; }
+    .bench-val-sep { color: #D6D6D6; font-size: 10px; }
+    .bench-val-avg { color: #ADADAD; }
+
+    .bench-track {
+      position: relative; height: 6px;
+      background: #F0F0F0; border-radius: 3px;
+    }
+    .bench-fill-you {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      border-radius: 3px; background: #1695CF;
+    }
+    .bench-fill-avg {
+      position: absolute; top: -3px; bottom: -3px; width: 2px;
+      background: #ADADAD; border-radius: 1px;
+    }
+
+    /* ── Cotações ── */
+    .cotacoes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: #F0F0F0;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .cotacao-cell {
+      background: #fff;
+      padding: 20px 20px;
+    }
+
+    .cotacao-lbl {
+      font-size: 11px; font-weight: 500; color: #ADADAD;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      display: flex; align-items: center; gap: 5px; margin-bottom: 8px;
+    }
+    .cotacao-lbl .material-symbols-outlined { font-size: 15px; color: #ADADAD; }
+
+    .cotacao-val {
+      font-family: 'Inter Tight', Inter, sans-serif;
+      font-size: 26px; font-weight: 700; color: #1F1F1F; line-height: 1.1;
+    }
+
+    .cotacao-sub {
+      font-size: 12px; color: #ADADAD; margin-top: 4px;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .cotacao-sub .material-symbols-outlined { font-size: 14px; }
+
+    .cotacao-tag-pos {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 12px; font-weight: 600; color: #16A34A;
+      margin-top: 6px;
+    }
+    .cotacao-tag-pos .material-symbols-outlined { font-size: 14px; }
+    .cotacao-tag-neg {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 12px; font-weight: 600; color: #DC2626;
+      margin-top: 6px;
+    }
+    .cotacao-tag-neg .material-symbols-outlined { font-size: 14px; }
+
+    /* Donut */
+    .donut-row {
+      display: flex; align-items: center; gap: 14px;
+    }
+    .donut-wrap { position: relative; width: 56px; height: 56px; flex-shrink: 0; }
+    .donut-label {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Inter Tight', Inter, sans-serif;
+      font-size: 13px; font-weight: 700; color: #1F1F1F;
+    }
+    .donut-text { font-size: 12px; color: #707070; line-height: 1.4; }
+    .donut-text strong { color: #1F1F1F; font-size: 14px; font-weight: 700; }
+
+    /* Won/lost */
+    .wonlost-card {
+      border: 1px solid #E8E8E8; border-radius: 12px; padding: 16px 20px;
+    }
+    .wonlost-top {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .wonlost-label {
+      font-size: 13px; font-weight: 600; color: #1F1F1F;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .wonlost-label .material-symbols-outlined { font-size: 16px; color: #ADADAD; }
+    .wonlost-stats {
+      display: flex; gap: 16px; align-items: center;
+    }
+    .wonlost-stat { text-align: center; }
+    .wonlost-stat-val {
+      font-family: 'Inter Tight', Inter, sans-serif;
+      font-size: 22px; font-weight: 700; line-height: 1;
+    }
+    .wonlost-stat-val.won { color: #16A34A; }
+    .wonlost-stat-val.lost { color: #DC2626; }
+    .wonlost-stat-val.rate { color: #1F1F1F; }
+    .wonlost-stat-lbl { font-size: 11px; color: #ADADAD; margin-top: 2px; }
+
+    .wonlost-bar {
+      height: 6px; border-radius: 3px; overflow: hidden;
+      display: flex; gap: 2px; margin-bottom: 14px;
+    }
+    .wonlost-bar-won { background: #16A34A; border-radius: 3px 0 0 3px; }
+    .wonlost-bar-lost { background: #DC2626; flex: 1; border-radius: 0 3px 3px 0; }
+
+    .wonlost-reasons-title {
+      font-size: 10px; font-weight: 600; color: #ADADAD;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      margin-bottom: 10px;
+    }
+    .wonlost-reasons-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px;
+    }
+    .wonlost-reason-row {
+      display: flex; align-items: center; gap: 8px; font-size: 12px; color: #3D3D3D;
+    }
+    .wonlost-reason-bar-wrap { flex: 1; display: flex; align-items: center; gap: 6px; }
+    .wonlost-reason-bar-bg { flex: 1; height: 4px; background: #F0F0F0; border-radius: 2px; }
+    .wonlost-reason-bar-fill { height: 100%; border-radius: 2px; background: #FCA5A5; }
+    .wonlost-reason-count { font-weight: 700; color: #1F1F1F; min-width: 14px; text-align: right; }
+
+    /* ── Indicadores ── */
+    .indicadores-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .indicadores-tag {
+      font-size: 12px; color: #707070;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .indicadores-tag .material-symbols-outlined { font-size: 15px; color: #ADADAD; }
+
+    .indicador-card {
+      border: 1px solid #E8E8E8; border-radius: 12px; padding: 16px 20px;
+    }
+    .indicador-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #F0F9FF; color: #1695CF;
+      font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 100px;
+      margin-bottom: 10px;
+    }
+    .indicador-badge .material-symbols-outlined { font-size: 13px; }
+    .indicador-row {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 16px;
+    }
+    .indicador-label { font-size: 14px; font-weight: 600; color: #1F1F1F; }
+    .indicador-desc  { font-size: 12px; color: #707070; margin-top: 3px; }
+    .indicador-val {
+      font-family: 'Inter Tight', Inter, sans-serif;
+      font-size: 28px; font-weight: 700; color: #1F1F1F;
+      white-space: nowrap; text-align: right;
+    }
+    .indicador-delta {
+      font-size: 12px; font-weight: 600; color: #16A34A;
+      text-align: right; margin-top: 3px;
+    }
+    .indicador-actions {
+      display: flex; gap: 8px; margin-top: 14px; padding-top: 14px;
+      border-top: 1px solid #F0F0F0;
+    }
+    .indicador-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      height: 30px; padding: 0 12px;
+      border: 1.5px solid #D6D6D6; border-radius: 100px;
+      background: #fff; font-size: 12px; font-weight: 500; color: #3D3D3D;
+      cursor: pointer; transition: border-color 0.14s, background 0.14s;
+    }
+    .indicador-btn:hover { border-color: #ADADAD; background: #F5F5F5; }
+    .indicador-btn .material-symbols-outlined { font-size: 14px; }
+    .indicador-btn.remove { color: #DC2626; border-color: #FECACA; }
+    .indicador-btn.remove:hover { background: #FEF2F2; border-color: #FCA5A5; }
+
+    /* ── Responsive ── */
+    @media (max-width: 720px) {
+      .meta-grid { grid-template-columns: 1fr; }
+      .ranking-bench-grid { grid-template-columns: 1fr; }
+      .cotacoes-grid { grid-template-columns: 1fr; }
+      .wonlost-reasons-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="page-header">
+    <a href="/assisted-b2b/demo/b2b-sales/dist/salesapp/home/" class="btn-back" aria-label="Voltar">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </a>
+    <div class="page-header-sep"></div>
+    <a class="page-header-logo" href="/assisted-b2b/demo/b2b-sales/dist/salesapp/home/">
+      <svg height="28" viewBox="0 0 1000 533" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;border-radius:3px"><rect fill="#1F94D3" width="1000" height="533"/><path fill="#FFFFFF" d="M479.809967,381.1594849h27.0238037V269.0042419H479.809967V381.1594849z M482.5101318,227.1135406c-1.8019409,0-2.7001648,1.8019562-2.7001648,2.7004852v24.3233185h27.0238037v-24.3233185c0-1.3504028-0.4466553-2.7004852-2.7001953-2.7004852H482.5101318z M406.840332,227.1135406c-2.25354,0-2.7001953,1.3500824-2.7001953,2.7004852v21.6228333c0,25.6734009-2.7056885,63.5086365-33.7849426,102.698822L352.7878113,230.717453c-0.4515381-2.25383-0.8982239-3.6039124-3.6039124-3.6039124H323.05896c-2.7001953,0-2.7001953,1.8019562-2.7001953,2.7004852c-1.8019409,59.9096069-29.2773132,140.9855957-94.5927734,153.1470947c2.2535095,0,4.5073242,0.4518738,6.760849,0.4518738c40.9872589,0,85.5778046-27.4753418,98.6430511-80.6293335l10.8068237,81.9794312c-25.6734009,13.0652466-53.6009521,19.3693237-80.624115,19.3693237c-62.1585541,0-122.068161-34.2313232-151.7973328-101.3487549c18.9177628,81.9794312,86.4867477,123.8701172,153.5989685,123.8701172c66.2136841,0,131.5245667-40.9872742,149.0919495-123.8701172c0,0,12.161499,75.675354,12.161499,78.375824h36.4845276l-25.6734009-151.345459c-0.4515686-1.7970581-0.9031372-2.7004852-3.1517334-2.7004852H406.840332z M131.1784058,290.6221619c1.801651-90.5321045,74.7715912-143.6860809,149.9901733-143.6860809c47.2962341,0,95.4962158,20.7194061,127.0215149,66.6655579c-25.6734009-67.1171265-83.3291931-97.2929611-140.5334167-97.2929611c-74.7719116,0-148.6400909,52.2502365-148.6400909,143.2342224c0,20.2727356,5.4058685,41.890686,16.2172852,60.808136C132.5284882,310.894928,131.1784058,300.0834961,131.1784058,290.6221619 M793.3070679,300.0834961l10.8117676,4.055481c7.5490723-12.4577637,18.0189209-18.0192566,30.6325684-18.0192566c13.5112915,0,26.1201172,8.5579224,26.1201172,24.3233337v1.8019409c-8.1060791-1.8019409-15.7605591-3.1520386-23.4199219-3.1520386c-26.5771484,0-46.8446655,13.0600281-46.8446655,40.9872742c0,20.7193909,19.8208618,32.8808899,39.6368408,32.8808899c11.2633057,0,22.9732666-4.0505676,30.6277466-12.6081543v10.8065186h24.3278809V306.839447c0-24.3233337-20.723999-39.6371765-42.7941284-39.6371765C822.1377563,267.2022705,800.5148926,278.0137024,793.3070679,300.0834961 M860.871521,356.8361816c-6.3041382,4.0554504-15.3139038,6.7559204-23.87146,6.7559204c-11.7099609,0-22.0701294-4.9539795-22.0701294-17.562439c0-14.4153442,11.7099609-21.6228638,26.1256104-21.6228638c6.3040771,0,13.0596924,1.3500977,19.815979,4.055481V356.8361816z M771.6891479,329.8123779c0-36.4848328-19.3693237-62.6101074-53.6002808-62.6101074c-33.7843628,0-57.2042847,26.1252747-57.2042847,57.2045288c0,36.9364014,30.1755371,58.107666,59.4528809,58.107666c21.1712646,0,41.4437256-10.8114014,50.0018921-35.1347351l-9.4613037-4.0554504c-6.7562866,9.9079895-21.1712646,15.7654114-35.5814209,15.7654114c-17.1206665,0-33.7849121-8.5579224-36.0384521-29.2773132H771.6891479z M689.2581787,313.5950928c2.7056885-17.115509,15.7654419-26.1249695,28.8306885-26.1249695c13.0603027,0,25.6734009,8.5575867,27.9268799,26.1249695H689.2581787z M616.2885132,227.1135406c-2.7001343,0-2.7001343,1.8019562-2.7001343,2.7004852v45.946167c-9.9086304-5.8574524-20.7197266-8.5579224-31.5314331-8.5579224c-27.4754028,0-53.6003418,18.91745-53.6003418,58.5546265c0,40.5402832,24.7752075,57.2042236,48.6466064,57.2042236c14.4150391,0,28.378479-6.3040771,36.4851685-16.6639404v14.8623047h27.0231934v-151.345459c0-1.7970581-0.8982544-2.7004852-2.7001953-2.7004852H616.2885132z M613.5883789,348.7298279c-8.1066895,7.2078247-17.1158447,10.3598633-25.6740112,10.3598633c-16.21698,0-29.7288818-12.1615295-29.7288818-36.0332642c0-23.87146,15.3138428-33.7843628,31.0792847-33.7843628c9.0097656,0,18.4655762,3.6036072,24.3236084,9.4610291V348.7298279z"/></svg>
+    </a>
+    <span class="page-header-sep"></span>
+    <span class="page-header-title">Desempenho</span>
+  </header>
+
+  <div class="page-body">
+
+    <!-- Greeting -->
+    <div class="page-greeting">
+      <h1>Olá, André</h1>
+      <p>Desempenho da sua carteira de clientes no ciclo de <strong>Julho</strong>.</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-bar">
+      <button class="filter-chip-cycle">
+        <span class="material-symbols-outlined">calendar_today</span>
+        Ciclo: Julho 2026
+        <span class="material-symbols-outlined">expand_more</span>
+      </button>
+      <button class="filter-chip active">Todas as vendas</button>
+      <button class="filter-chip">Fechadas por mim</button>
+      <button class="filter-chip">Cotação minha</button>
+      <button class="filter-chip">Self service</button>
+      <span class="filter-hint">
+        <span class="material-symbols-outlined">filter_alt</span>
+        Aplica-se às seções Meta &amp; GMV e Ranking
+      </span>
+    </div>
+
+    <!-- ── Meta & GMV ── -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">Meta &amp; GMV</span>
+        <span class="section-filter-tag">
+          <span class="material-symbols-outlined">filter_alt</span>
+          Filtrado por tipo de venda
+        </span>
+      </div>
+
+      <div class="meta-grid">
+        <!-- Gauge col -->
+        <div class="meta-col" style="gap:12px;">
+          <!-- SVG Gauge -->
+          <div class="gauge-wrap" style="width:130px;height:80px;">
+            <svg width="130" height="80" viewBox="0 0 130 80">
+              <!-- Track -->
+              <path d="M15,75 A50,50 0 0,1 115,75" fill="none" stroke="#F0F0F0" stroke-width="10" stroke-linecap="round"/>
+              <!-- Fill 78% of 180deg = ~140deg -->
+              <path d="M15,75 A50,50 0 0,1 115,75" fill="none" stroke="#1695CF" stroke-width="10" stroke-linecap="round"
+                stroke-dasharray="157" stroke-dashoffset="35"/>
+            </svg>
+            <div style="position:absolute;bottom:4px;left:0;right:0;text-align:center;">
+              <div class="gauge-pct">78%</div>
+              <div class="gauge-caption">da meta atingida</div>
+            </div>
+          </div>
+          <div class="meta-cycle-info">
+            <span>Meta do ciclo <strong>R$ 2,40 mi</strong></span>
+            <span>Faltam <span class="meta-cycle-lack">R$ 528 mil</span></span>
+          </div>
+        </div>
+
+        <!-- GMV realizado -->
+        <div class="meta-col">
+          <div class="meta-lbl">
+            <span class="material-symbols-outlined">monitoring</span>
+            GMV realizado
+          </div>
+          <div class="meta-val">R$ 1.872.000</div>
+          <div class="meta-sub">
+            <span>Ticket médio</span>
+            <span class="meta-sub-dot"></span>
+            <strong style="color:#1F1F1F;">R$ 18.240</strong>
+            <span class="meta-sub-dot"></span>
+            <span>103 pedidos</span>
+          </div>
+
+          <!-- Mini sparkline SVG -->
+          <svg class="sparkline" viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top:12px;">
+            <polyline points="0,32 28,28 56,22 84,26 112,18 140,14 168,10 200,6"
+              fill="none" stroke="#1695CF" stroke-width="2" stroke-linejoin="round"/>
+            <polyline points="0,32 28,28 56,22 84,26 112,18 140,14 168,10 200,6 200,40 0,40"
+              fill="url(#sparkGrad)" stroke="none"/>
+            <defs>
+              <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#1695CF" stop-opacity="0.15"/>
+                <stop offset="100%" stop-color="#1695CF" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+
+        <!-- Valor total da meta -->
+        <div class="meta-col">
+          <div class="meta-lbl">
+            <span class="material-symbols-outlined">flag</span>
+            Valor total da meta
+          </div>
+          <div class="meta-val">R$ 2.400.000</div>
+          <div class="meta-sub" style="margin-top:8px;">Crescimento vs. ciclo anterior</div>
+          <div class="meta-growth">
+            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">trending_up</span>
+            +14,2%
+          </div>
+          <svg class="sparkline" viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top:8px;">
+            <polyline points="0,30 40,26 80,20 120,22 160,14 200,8"
+              fill="none" stroke="#16A34A" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Ranking & Benchmark ── -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">Ranking &amp; Benchmark</span>
+        <span class="section-filter-tag">
+          <span class="material-symbols-outlined">filter_alt</span>
+          Filtrado por tipo de venda
+        </span>
+      </div>
+
+      <div class="ranking-bench-grid">
+        <!-- Ranking -->
+        <div>
+          <div class="ranking-subtitle">
+            Ranking de representantes
+            <span class="rank-badge">Você está em 4º de 8</span>
+          </div>
+          <table class="rank-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Representante</th>
+                <th>GMV</th>
+                <th class="rank-bar-cell">% meta</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="rank-pos top1">1</span></td>
+                <td><div class="rank-name-cell">
+                  <span class="rank-avatar" style="background:#7C3AED;">MC</span>
+                  Marina Costa
+                </div></td>
+                <td><strong>R$ 2,30 mi</strong></td>
+                <td><div class="rank-bar-wrap">
+                  <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:96%"></div></div>
+                  <span class="rank-pct">96%</span>
+                </div></td>
+              </tr>
+              <tr>
+                <td><span class="rank-pos top2">2</span></td>
+                <td><div class="rank-name-cell">
+                  <span class="rank-avatar" style="background:#2563EB;">RL</span>
+                  Rafael Lima
+                </div></td>
+                <td><strong>R$ 2,09 mi</strong></td>
+                <td><div class="rank-bar-wrap">
+                  <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:87%"></div></div>
+                  <span class="rank-pct">87%</span>
+                </div></td>
+              </tr>
+              <tr>
+                <td><span class="rank-pos top3">3</span></td>
+                <td><div class="rank-name-cell">
+                  <span class="rank-avatar" style="background:#0891B2;">BS</span>
+                  Bianca Souza
+                </div></td>
+                <td><strong>R$ 1,97 mi</strong></td>
+                <td><div class="rank-bar-wrap">
+                  <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:82%"></div></div>
+                  <span class="rank-pct">82%</span>
+                </div></td>
+              </tr>
+              <tr class="you">
+                <td><span class="rank-pos" style="background:#EEF7FC;color:#1695CF;font-weight:800;">4</span></td>
+                <td><div class="rank-name-cell">
+                  <span class="rank-avatar" style="background:#1695CF;">AM</span>
+                  André Miller
+                  <span class="rank-you-tag">você</span>
+                </div></td>
+                <td><strong>R$ 1,87 mi</strong></td>
+                <td><div class="rank-bar-wrap">
+                  <div class="rank-bar-bg"><div class="rank-bar-fill you" style="width:78%"></div></div>
+                  <span class="rank-pct" style="color:#1695CF;">78%</span>
+                </div></td>
+              </tr>
+              <tr>
+                <td><span class="rank-pos">5</span></td>
+                <td><div class="rank-name-cell">
+                  <span class="rank-avatar" style="background:#D97706;">DM</span>
+                  Diego Martins
+                </div></td>
+                <td><strong>R$ 1,70 mi</strong></td>
+                <td><div class="rank-bar-wrap">
+                  <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:71%"></div></div>
+                  <span class="rank-pct">71%</span>
+                </div></td>
+              </tr>
+              <tr>
+                <td><span class="rank-pos">6</span></td>
+                <td><div class="rank-name-cell">
+                  <span class="rank-avatar" style="background:#16A34A;">LA</span>
+                  Leticia Alves
+                </div></td>
+                <td><strong>R$ 1,58 mi</strong></td>
+                <td><div class="rank-bar-wrap">
+                  <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:66%"></div></div>
+                  <span class="rank-pct">66%</span>
+                </div></td>
+              </tr>
+              <tr>
+                <td><span class="rank-pos">7</span></td>
+                <td><div class="rank-name-cell">
+                  <span class="rank-avatar" style="background:#DC2626;">PH</span>
+                  Paulo Henrique
+                </div></td>
+                <td><strong>R$ 1,44 mi</strong></td>
+                <td><div class="rank-bar-wrap">
+                  <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:60%"></div></div>
+                  <span class="rank-pct">60%</span>
+                </div></td>
+              </tr>
+              <tr>
+                <td><span class="rank-pos">8</span></td>
+                <td><div class="rank-name-cell">
+                  <span class="rank-avatar" style="background:#9333EA;">CR</span>
+                  Camila Rocha
+                </div></td>
+                <td><strong>R$ 1,30 mi</strong></td>
+                <td><div class="rank-bar-wrap">
+                  <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:54%"></div></div>
+                  <span class="rank-pct">54%</span>
+                </div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Benchmark -->
+        <div>
+          <div class="bench-title">Benchmark vs. média do time</div>
+          <div class="bench-legend">
+            <div class="bench-legend-item">
+              <div class="bench-legend-dot you"></div> Você
+            </div>
+            <div class="bench-legend-item">
+              <div class="bench-legend-dot avg"></div> Média do time
+            </div>
+          </div>
+
+          <div class="bench-row">
+            <div class="bench-row-top">
+              <span class="bench-row-label">GMV do ciclo</span>
+              <div class="bench-row-vals">
+                <span class="bench-val-you">R$ 1,87 mi</span>
+                <span class="bench-val-sep">·</span>
+                <span class="bench-val-avg">méd. R$ 1,66 mi</span>
+              </div>
+            </div>
+            <div class="bench-track">
+              <div class="bench-fill-you" style="width:78%"></div>
+              <div class="bench-fill-avg" style="left:69%"></div>
+            </div>
+          </div>
+
+          <div class="bench-row">
+            <div class="bench-row-top">
+              <span class="bench-row-label">Ticket médio</span>
+              <div class="bench-row-vals">
+                <span class="bench-val-you">R$ 18 mil</span>
+                <span class="bench-val-sep">·</span>
+                <span class="bench-val-avg">méd. R$ 16 mil</span>
+              </div>
+            </div>
+            <div class="bench-track">
+              <div class="bench-fill-you" style="width:72%"></div>
+              <div class="bench-fill-avg" style="left:64%"></div>
+            </div>
+          </div>
+
+          <div class="bench-row">
+            <div class="bench-row-top">
+              <span class="bench-row-label">% da meta atingida</span>
+              <div class="bench-row-vals">
+                <span class="bench-val-you">78%</span>
+                <span class="bench-val-sep">·</span>
+                <span class="bench-val-avg">méd. 74%</span>
+              </div>
+            </div>
+            <div class="bench-track">
+              <div class="bench-fill-you" style="width:78%"></div>
+              <div class="bench-fill-avg" style="left:74%"></div>
+            </div>
+          </div>
+
+          <div class="bench-row">
+            <div class="bench-row-top">
+              <span class="bench-row-label">Conversão de cotação</span>
+              <div class="bench-row-vals">
+                <span class="bench-val-you">42%</span>
+                <span class="bench-val-sep">·</span>
+                <span class="bench-val-avg">méd. 38%</span>
+              </div>
+            </div>
+            <div class="bench-track">
+              <div class="bench-fill-you" style="width:42%"></div>
+              <div class="bench-fill-avg" style="left:38%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Cotações ── -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">Cotações</span>
+        <span class="section-filter-tag">Visão da carteira · todos os tipos</span>
+      </div>
+
+      <div class="cotacoes-grid">
+        <!-- Conversão -->
+        <div class="cotacao-cell">
+          <div class="cotacao-lbl">
+            <span class="material-symbols-outlined">trending_up</span>
+            Conversão de cotação
+          </div>
+          <div class="donut-row">
+            <div class="donut-wrap">
+              <svg width="56" height="56" viewBox="0 0 56 56">
+                <circle cx="28" cy="28" r="22" fill="none" stroke="#F0F0F0" stroke-width="7"/>
+                <circle cx="28" cy="28" r="22" fill="none" stroke="#1695CF" stroke-width="7"
+                  stroke-dasharray="138.2" stroke-dashoffset="80.2"
+                  stroke-linecap="round" transform="rotate(-90 28 28)"/>
+              </svg>
+              <div class="donut-label">42%</div>
+            </div>
+            <div class="donut-text">
+              <strong>Cotação → pedido</strong><br/>
+              <div class="cotacao-tag-pos" style="margin-top:4px;">
+                <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">trending_up</span>
+                +3 pp
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Valor em cotação -->
+        <div class="cotacao-cell">
+          <div class="cotacao-lbl">
+            <span class="material-symbols-outlined">description</span>
+            Valor em cotação
+          </div>
+          <div class="cotacao-val">R$ 980.000</div>
+          <div class="cotacao-sub">
+            <span class="material-symbols-outlined">expand_more</span>
+            27 cotações em aberto
+          </div>
+        </div>
+
+        <!-- Tempo médio -->
+        <div class="cotacao-cell">
+          <div class="cotacao-lbl">
+            <span class="material-symbols-outlined">schedule</span>
+            Tempo médio de fechamento
+          </div>
+          <div class="cotacao-val">12 <span style="font-size:16px;font-weight:500;color:#707070;">dias</span></div>
+          <div class="cotacao-tag-pos">
+            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">trending_up</span>
+            +3 dias mais rápido que o ciclo anterior
+          </div>
+        </div>
+      </div>
+
+      <!-- Won / Lost -->
+      <div class="wonlost-card">
+        <div class="wonlost-top">
+          <div class="wonlost-label">
+            <span class="material-symbols-outlined">emoji_events</span>
+            Oportunidades won / lost
+          </div>
+          <div class="wonlost-stats">
+            <div class="wonlost-stat">
+              <div class="wonlost-stat-val won">34</div>
+              <div class="wonlost-stat-lbl">won</div>
+            </div>
+            <div class="wonlost-stat">
+              <div class="wonlost-stat-val lost">11</div>
+              <div class="wonlost-stat-lbl">lost</div>
+            </div>
+            <div class="wonlost-stat">
+              <div class="wonlost-stat-val rate">76%</div>
+              <div class="wonlost-stat-lbl">win rate</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wonlost-bar">
+          <div class="wonlost-bar-won" style="width:75%"></div>
+          <div class="wonlost-bar-lost"></div>
+        </div>
+
+        <div class="wonlost-reasons-title">Motivos de perda · 11 oportunidades</div>
+        <div class="wonlost-reasons-grid">
+          <div class="wonlost-reason-row">
+            <span style="flex:1;font-size:12px;color:#3D3D3D;">Preço acima do orçamento</span>
+            <div class="wonlost-reason-bar-wrap" style="max-width:80px;">
+              <div class="wonlost-reason-bar-bg"><div class="wonlost-reason-bar-fill" style="width:90%"></div></div>
+            </div>
+            <span class="wonlost-reason-count">5</span>
+          </div>
+          <div class="wonlost-reason-row">
+            <span style="flex:1;font-size:12px;color:#3D3D3D;">Prazo de entrega</span>
+            <div class="wonlost-reason-bar-wrap" style="max-width:80px;">
+              <div class="wonlost-reason-bar-bg"><div class="wonlost-reason-bar-fill" style="width:55%"></div></div>
+            </div>
+            <span class="wonlost-reason-count">3</span>
+          </div>
+          <div class="wonlost-reason-row">
+            <span style="flex:1;font-size:12px;color:#3D3D3D;">Escolheu concorrente</span>
+            <div class="wonlost-reason-bar-wrap" style="max-width:80px;">
+              <div class="wonlost-reason-bar-bg"><div class="wonlost-reason-bar-fill" style="width:36%"></div></div>
+            </div>
+            <span class="wonlost-reason-count">2</span>
+          </div>
+          <div class="wonlost-reason-row">
+            <span style="flex:1;font-size:12px;color:#3D3D3D;">Sem budget no ciclo</span>
+            <div class="wonlost-reason-bar-wrap" style="max-width:80px;">
+              <div class="wonlost-reason-bar-bg"><div class="wonlost-reason-bar-fill" style="width:18%"></div></div>
+            </div>
+            <span class="wonlost-reason-count">1</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Indicadores adicionados ── -->
+    <div class="section-card">
+      <div class="indicadores-header">
+        <span class="section-title">Indicadores adicionados</span>
+        <span class="indicadores-tag">
+          <span class="material-symbols-outlined">smart_toy</span>
+          Pesquisados por você no assistente
+        </span>
+      </div>
+
+      <div class="indicador-card">
+        <div class="indicador-badge">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">add_circle</span>
+          Adicionado pelo assistente
+        </div>
+        <div class="indicador-row">
+          <div>
+            <div class="indicador-label">Margem bruta da carteira</div>
+            <div class="indicador-desc">Margem média ponderada por GMV nos pedidos fechados em Julho.</div>
+          </div>
+          <div>
+            <div class="indicador-val">31,4%</div>
+            <div class="indicador-delta">+2,1 pp vs. ciclo anterior</div>
+          </div>
+        </div>
+        <div class="indicador-actions">
+          <button class="indicador-btn">
+            <span class="material-symbols-outlined">push_pin</span>
+            Fixar na dashboard
+          </button>
+          <button class="indicador-btn remove">
+            <span class="material-symbols-outlined">close</span>
+            Remover
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener("keydown", function(e) {
+      var tag = document.activeElement && document.activeElement.tagName;
+      if ((e.key === "i" || e.key === "I") && !e.metaKey && !e.ctrlKey && !e.altKey && tag !== "INPUT" && tag !== "TEXTAREA") {
+        window.location = "/assisted-b2b/";
+      }
+    });
+  </script>
+</body>
+</html>
