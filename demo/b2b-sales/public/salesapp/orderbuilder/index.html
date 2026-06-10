@@ -45,18 +45,117 @@
         }
       }, true);
 
+      // ── Logo patch ────────────────────────────────────────────────
       var patchedLogo = false;
-      var observer = new MutationObserver(function() {
+      var logoObserver = new MutationObserver(function() {
         if (patchedLogo) return;
         var logoSpan = document.querySelector('span[class*="drawerLogo"]');
         if (logoSpan && logoSpan.textContent.trim() === 'Demo Store') {
           patchedLogo = true;
           logoSpan.innerHTML = MIDEA_SVG;
           logoSpan.style.cssText = 'cursor:pointer;display:flex;align-items:center;';
-          observer.disconnect();
+          logoObserver.disconnect();
         }
       });
-      observer.observe(document.body, { childList: true, subtree: true });
+      logoObserver.observe(document.body, { childList: true, subtree: true });
+
+      // ── PT-BR translations ─────────────────────────────────────────
+      // Substring replacements — longer patterns first (safe anywhere)
+      var SUB = [
+        ['Hotel equipment order · 112 items', 'Pedido de equipamentos para hotel · 112 itens'],
+        ['I have a few suggestions that could strengthen this offer. ', 'Tenho algumas sugestões para fortalecer esta oferta. '],
+        ['AI responses may contain errors.', 'Respostas de IA podem conter erros.'],
+        [' sent the following message:', ' enviou a seguinte mensagem:'],
+        ['Hi, Andrew! ', 'Olá, André! '],
+        ['Shall I walk you through them?', 'Quer que eu as apresente?'],
+        ['Corporate credit card', 'Cartão corporativo'],
+        ['Cart / Storefront B2B', 'Carrinho / Storefront B2B'],
+        ['Boston Boylston St', 'Av. Paulista, 1578'],
+        ['Delivery addr.', 'End. de entrega'],
+        ['New order', 'Novo pedido'],
+        ['Promo code', 'Código promo'],
+        ['Show more', 'Ver detalhes'],
+        ['Show less', 'Ver menos'],
+        ['Sales Rep', 'Rep. de vendas'],
+        ['Created by', 'Criado por'],
+        ['Quote ID', 'ID do pedido'],
+        ['Expires on', 'Expira em'],
+        ['Unassigned', 'Não atribuído'],
+        ['Learn more', 'Saiba mais'],
+        ['Buyer: ', 'Comprador: '],
+        ['Profile: ', 'Perfil: '],
+        ['Total: ', 'Total: '],
+        ['Recipient', 'Destinatário'],
+        ['Payment', 'Pagamento'],
+        ['Origin', 'Origem'],
+        [' from ', ' da '],
+        // Date months
+        ['January', 'jan.'], ['February', 'fev.'], ['March', 'mar.'],
+        ['April', 'abr.'], ['June', 'jun.'], ['July', 'jul.'],
+        ['August', 'ago.'], ['September', 'set.'], ['October', 'out.'],
+        ['November', 'nov.'], ['December', 'dez.'],
+      ];
+      // Regex replacements
+      var REG = [
+        [/\bMay (?=\d)/g, 'mai. '],
+        [/\(in (\d+) weeks?\)/g, '(em $1 semanas)'],
+        [/\(in 1 week\)/g, '(em 1 semana)'],
+        [/\(in (\d+) days?\)/g, '(em $1 dias)'],
+        [/\(in 1 day\)/g, '(em 1 dia)'],
+        [/· (\d+) items\b/g, '· $1 itens'],
+        [/\bItems (\d+)/g, 'Itens $1'],
+      ];
+      // Exact match (trimmed text node)
+      var EXACT = {
+        'Requested': 'Solicitado', 'Summary': 'Resumo', 'Buyer': 'Comprador',
+        'Orders': 'Pedidos', 'Add': 'Adicionar', 'Items': 'Itens',
+        'Order Builder': 'Novo Pedido', 'Status': 'Status',
+      };
+
+      function applyTranslations() {
+        var walker = document.createTreeWalker(document.body, 1 + 4 /* ELEMENT + TEXT */, {
+          acceptNode: function(n) {
+            if (n.nodeType === 3) return 1; // TEXT
+            var tag = n.tagName;
+            if (tag === 'SCRIPT' || tag === 'STYLE') return 2; // REJECT
+            return 3; // SKIP (continue to children)
+          }
+        }, false);
+        var nodes = [];
+        var n;
+        while ((n = walker.nextNode())) { if (n.nodeType === 3) nodes.push(n); }
+
+        for (var i = 0; i < nodes.length; i++) {
+          var node = nodes[i];
+          var t = node.nodeValue;
+          if (!t || !t.trim()) continue;
+          var trimmed = t.trim();
+
+          // Exact match
+          if (EXACT[trimmed] !== undefined) {
+            node.nodeValue = t.replace(trimmed, EXACT[trimmed]);
+            continue;
+          }
+
+          // Substring replacements
+          var out = t;
+          for (var j = 0; j < SUB.length; j++) {
+            if (out.indexOf(SUB[j][0]) !== -1) out = out.split(SUB[j][0]).join(SUB[j][1]);
+          }
+          // Regex replacements
+          for (var k = 0; k < REG.length; k++) {
+            out = out.replace(REG[k][0], REG[k][1]);
+          }
+          if (out !== t) node.nodeValue = out;
+        }
+      }
+
+      var translateTimer = null;
+      var translateObserver = new MutationObserver(function() {
+        clearTimeout(translateTimer);
+        translateTimer = setTimeout(applyTranslations, 80);
+      });
+      translateObserver.observe(document.body, { childList: true, subtree: true });
     }
   </script>
   </body>
