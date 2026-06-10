@@ -1271,14 +1271,6 @@
     .ai-send:hover { background: #0255BB; transform: scale(1.05); }
     .ai-send .material-symbols-outlined { font-size: 18px; font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24; }
 
-    /* Badge */
-    .ai-fab-badge {
-      position: absolute; top: -2px; right: -2px;
-      width: 16px; height: 16px; border-radius: 50%;
-      background: #EF4444; border: 2px solid #fff;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 9px; font-weight: 700; color: #fff;
-    }
   </style>
 
   <!-- FAB button -->
@@ -1294,7 +1286,7 @@
       <rect x="11.5" y="1" width="3" height="24" rx="1.5" fill="url(#fabGrad)" transform="rotate(60 13 13)"/>
       <rect x="11.5" y="1" width="3" height="24" rx="1.5" fill="url(#fabGrad)" transform="rotate(120 13 13)"/>
     </svg>
-    <span class="ai-fab-badge">1</span>
+    
   </button>
 
   <!-- Chat panel -->
@@ -1330,14 +1322,12 @@
     var msgs   = document.getElementById('aiMessages');
     var input  = document.getElementById('aiInput');
     var send   = document.getElementById('aiSend');
-    var badge  = fab.querySelector('.ai-fab-badge');
     var open   = false;
 
     function togglePanel() {
       open = !open;
       panel.classList.toggle('open', open);
       if (open) {
-        badge && (badge.style.display = 'none');
         input.focus();
         if (!msgs.children.length) showIntro();
       }
