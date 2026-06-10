@@ -3290,7 +3290,7 @@
 
       </div>
 
-      <div class="qc-card" data-status="requested" data-owner="team" style="cursor:pointer;" onclick="window.location.href='/assisted-b2b/demo/b2b-sales/dist/salesapp/orderbuilder?repMode=true'">
+      <div class="qc-card" data-status="requested" data-owner="team" style="cursor:pointer;" onclick="window.location.href='/assisted-b2b/demo/b2b-sales/dist/salesapp/orderbuilder?repMode=true&brand=midea'">
         <div class="qc-card-top">
           <div>
             <div class="qc-card-id">ORD-2023-XYZ-789</div>
@@ -4073,7 +4073,7 @@
       <!-- 2-column grid -->
       <div class="drawer-grid">
 
-        <button class="drawer-item" onclick="fadeNavigate('/assisted-b2b/demo/b2b-sales/dist/salesapp/orderbuilder?repMode=true&newOrder=true')">
+        <button class="drawer-item" onclick="fadeNavigate('/assisted-b2b/demo/b2b-sales/dist/salesapp/orderbuilder?repMode=true&newOrder=true&brand=midea')">
           <span class="material-symbols-outlined">add_shopping_cart</span>
           <span class="drawer-item-label">Novo Carrinho</span>
         </button>
@@ -6479,7 +6479,7 @@
       if (identifyDrawerFromNewOrder) {
         identifyDrawerFromNewOrder = false;
         closeDrawer();
-        fadeNavigate('/assisted-b2b/demo/b2b-sales/dist/salesapp/orderbuilder?repMode=true&newOrder=true');
+        fadeNavigate('/assisted-b2b/demo/b2b-sales/dist/salesapp/orderbuilder?repMode=true&newOrder=true&brand=midea');
         return;
       }
 
@@ -6627,7 +6627,7 @@
 
     function handleNewOrderClick() {
       if (cpIdentifiedCustomer) {
-        fadeNavigate('/assisted-b2b/demo/b2b-sales/dist/salesapp/orderbuilder?repMode=true&newOrder=true');
+        fadeNavigate('/assisted-b2b/demo/b2b-sales/dist/salesapp/orderbuilder?repMode=true&newOrder=true&brand=midea');
       } else {
         identifyDrawerFromNewOrder = true;
         openDrawer();

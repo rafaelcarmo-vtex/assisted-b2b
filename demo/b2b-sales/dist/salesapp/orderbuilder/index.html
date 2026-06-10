@@ -4,11 +4,13 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/assisted-b2b/demo/b2b-sales/dist/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Demostore — B2B Sales</title>
+    <title>Sales App</title>
     <script>
       if (location.pathname.endsWith('/index.html')) {
         location.replace(location.pathname.slice(0, -'index.html'.length) + location.search + location.hash);
       }
+      // detect if came from Midea
+      window.__MIDEA__ = document.referrer.includes('/salesapp/midea') || location.search.includes('brand=midea');
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -26,6 +28,32 @@
         window.location = "/assisted-b2b/";
       }
     });
+
+    // Patch logo for Midea brand
+    if (window.__MIDEA__) {
+      var MIDEA_HOME = '/assisted-b2b/demo/b2b-sales/dist/salesapp/midea/';
+      var MIDEA_SVG = '<svg height="28" viewBox="0 0 1000 533" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;border-radius:3px"><rect fill="#1F94D3" width="1000" height="533"/><path fill="#FFFFFF" d="M479.809967,381.1594849h27.0238037V269.0042419H479.809967V381.1594849z M482.5101318,227.1135406c-1.8019409,0-2.7001648,1.8019562-2.7001648,2.7004852v24.3233185h27.0238037v-24.3233185c0-1.3504028-0.4466553-2.7004852-2.7001953-2.7004852H482.5101318z M406.840332,227.1135406c-2.25354,0-2.7001953,1.3500824-2.7001953,2.7004852v21.6228333c0,25.6734009-2.7056885,63.5086365-33.7849426,102.698822L352.7878113,230.717453c-0.4515381-2.25383-0.8982239-3.6039124-3.6039124-3.6039124H323.05896c-2.7001953,0-2.7001953,1.8019562-2.7001953,2.7004852c-1.8019409,59.9096069-29.2773132,140.9855957-94.5927734,153.1470947c2.2535095,0,4.5073242,0.4518738,6.760849,0.4518738c40.9872589,0,85.5778046-27.4753418,98.6430511-80.6293335l10.8068237,81.9794312c-25.6734009,13.0652466-53.6009521,19.3693237-80.624115,19.3693237c-62.1585541,0-122.068161-34.2313232-151.7973328-101.3487549c18.9177628,81.9794312,86.4867477,123.8701172,153.5989685,123.8701172c66.2136841,0,131.5245667-40.9872742,149.0919495-123.8701172c0,0,12.161499,75.675354,12.161499,78.375824h36.4845276l-25.6734009-151.345459c-0.4515686-1.7970581-0.9031372-2.7004852-3.1517334-2.7004852H406.840332z"/></svg>';
+
+      var observer = new MutationObserver(function() {
+        // Find the drawer logo span
+        var logoSpan = document.querySelector('span[class*="drawerLogo"]');
+        if (logoSpan && logoSpan.textContent.trim() === 'Demo Store') {
+          logoSpan.innerHTML = MIDEA_SVG;
+          logoSpan.style.cssText = 'cursor:pointer;display:flex;align-items:center;';
+          logoSpan.onclick = function(e) {
+            e.preventDefault(); e.stopPropagation();
+            window.location.href = MIDEA_HOME;
+          };
+          // Also patch header logo if any
+          var headerLogo = document.querySelector('a[class*="logo"]');
+          if (headerLogo) {
+            headerLogo.innerHTML = MIDEA_SVG;
+            headerLogo.href = MIDEA_HOME;
+          }
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
   </script>
   </body>
 </html>
