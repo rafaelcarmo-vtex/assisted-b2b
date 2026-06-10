@@ -599,17 +599,17 @@
           </div>
 
           <!-- Mini sparkline SVG -->
-          <svg class="sparkline" viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top:12px;">
-            <polyline points="0,32 28,28 56,22 84,26 112,18 140,14 168,10 200,6"
-              fill="none" stroke="#1695CF" stroke-width="2" stroke-linejoin="round"/>
-            <polyline points="0,32 28,28 56,22 84,26 112,18 140,14 168,10 200,6 200,40 0,40"
-              fill="url(#sparkGrad)" stroke="none"/>
+          <svg class="sparkline" viewBox="0 0 400 48" width="100%" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top:12px;display:block;">
             <defs>
-              <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#1695CF" stop-opacity="0.15"/>
+              <linearGradient id="sparkGrad1" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#1695CF" stop-opacity="0.18"/>
                 <stop offset="100%" stop-color="#1695CF" stop-opacity="0"/>
               </linearGradient>
             </defs>
+            <path d="M0,40 C28,40 28,34 56,30 C84,26 84,28 112,22 C140,16 140,20 168,14 C196,8 224,10 252,8 C280,6 308,4 336,3 C364,2 380,2 400,0"
+              fill="none" stroke="#1695CF" stroke-width="2" stroke-linecap="round"/>
+            <path d="M0,40 C28,40 28,34 56,30 C84,26 84,28 112,22 C140,16 140,20 168,14 C196,8 224,10 252,8 C280,6 308,4 336,3 C364,2 380,2 400,0 L400,48 L0,48 Z"
+              fill="url(#sparkGrad1)"/>
           </svg>
         </div>
 
@@ -625,9 +625,9 @@
             <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">trending_up</span>
             +14,2%
           </div>
-          <svg class="sparkline" viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top:8px;">
-            <polyline points="0,30 40,26 80,20 120,22 160,14 200,8"
-              fill="none" stroke="#16A34A" stroke-width="2" stroke-linejoin="round"/>
+          <svg class="sparkline" viewBox="0 0 400 48" width="100%" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top:8px;display:block;">
+            <path d="M0,38 C60,36 80,32 130,26 C180,20 200,24 250,18 C300,12 340,10 400,4"
+              fill="none" stroke="#16A34A" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
       </div>
