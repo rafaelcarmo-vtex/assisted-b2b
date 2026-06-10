@@ -45,6 +45,11 @@
         }
       }, true);
 
+      // ── Hide Buyer/Rep toggle ─────────────────────────────────────
+      var s = document.createElement('style');
+      s.textContent = 'div[class*="_floatingToggle_"] { display: none !important; }';
+      document.head.appendChild(s);
+
       // ── Logo patch ────────────────────────────────────────────────
       var patchedLogo = false;
       var logoObserver = new MutationObserver(function() {
