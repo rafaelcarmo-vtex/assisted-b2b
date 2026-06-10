@@ -564,15 +564,15 @@
         <!-- Gauge col -->
         <div class="meta-col" style="gap:12px;">
           <!-- SVG Gauge -->
-          <div class="gauge-wrap" style="width:130px;height:80px;">
-            <svg width="130" height="80" viewBox="0 0 130 80">
-              <!-- Track -->
-              <path d="M15,75 A50,50 0 0,1 115,75" fill="none" stroke="#F0F0F0" stroke-width="10" stroke-linecap="round"/>
-              <!-- Fill 78% of 180deg = ~140deg -->
-              <path d="M15,75 A50,50 0 0,1 115,75" fill="none" stroke="#22C55E" stroke-width="10" stroke-linecap="round"
-                stroke-dasharray="157" stroke-dashoffset="35"/>
+          <div class="gauge-wrap" style="width:110px;height:110px;">
+            <svg width="110" height="110" viewBox="0 0 110 110">
+              <circle cx="55" cy="55" r="44" fill="none" stroke="#F0F0F0" stroke-width="10"/>
+              <circle cx="55" cy="55" r="44" fill="none" stroke="#22C55E" stroke-width="10"
+                stroke-linecap="round"
+                stroke-dasharray="276.5" stroke-dashoffset="60.8"
+                transform="rotate(-90 55 55)"/>
             </svg>
-            <div style="position:absolute;bottom:4px;left:0;right:0;text-align:center;">
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
               <div class="gauge-pct">78%</div>
               <div class="gauge-caption">da meta atingida</div>
             </div>
