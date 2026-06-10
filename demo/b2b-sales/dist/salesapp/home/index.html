@@ -3286,7 +3286,7 @@
 
       </div>
 
-      <div class="qc-card" data-status="requested" data-owner="team" style="cursor:pointer;" onclick="window.location.href='/salesapp/orderbuilder?repMode=true'">
+      <div class="qc-card" data-status="requested" data-owner="team" style="cursor:pointer;" onclick="window.location.href='/assisted-b2b/demo/b2b-sales/dist/salesapp/orderbuilder?repMode=true'">
         <div class="qc-card-top">
           <div>
             <div class="qc-card-id">ORD-2023-XYZ-789</div>
@@ -4069,7 +4069,7 @@
       <!-- 2-column grid -->
       <div class="drawer-grid">
 
-        <button class="drawer-item" onclick="fadeNavigate('/salesapp/orderbuilder?repMode=true&newOrder=true')">
+        <button class="drawer-item" onclick="fadeNavigate('/assisted-b2b/demo/b2b-sales/dist/salesapp/orderbuilder?repMode=true&newOrder=true')">
           <span class="material-symbols-outlined">add_shopping_cart</span>
           <span class="drawer-item-label">New Cart</span>
         </button>
@@ -5959,7 +5959,7 @@
     });
     document.getElementById('mcGoToCart')?.addEventListener('click', () => {
       closeMinicart();
-      window.location.href = '/salesapp/cart';
+      window.location.href = '/assisted-b2b/demo/b2b-sales/dist/salesapp/cart';
     });
 
     btnCart.addEventListener('click', () => {
@@ -6162,7 +6162,7 @@
           closeDrawer(); // already here
         } else if (label === 'Explore') {
           closeDrawer();
-          window.location.href = '/salesapp/explore';
+          window.location.href = '/assisted-b2b/demo/b2b-sales/dist/salesapp/explore';
         } else if (label === 'Cart') {
           showPage('home');
           closeDrawer();
@@ -6472,7 +6472,7 @@
       if (identifyDrawerFromNewOrder) {
         identifyDrawerFromNewOrder = false;
         closeDrawer();
-        fadeNavigate('/salesapp/orderbuilder?repMode=true&newOrder=true');
+        fadeNavigate('/assisted-b2b/demo/b2b-sales/dist/salesapp/orderbuilder?repMode=true&newOrder=true');
         return;
       }
 
@@ -6620,7 +6620,7 @@
 
     function handleNewOrderClick() {
       if (cpIdentifiedCustomer) {
-        fadeNavigate('/salesapp/orderbuilder?repMode=true&newOrder=true');
+        fadeNavigate('/assisted-b2b/demo/b2b-sales/dist/salesapp/orderbuilder?repMode=true&newOrder=true');
       } else {
         identifyDrawerFromNewOrder = true;
         openDrawer();
