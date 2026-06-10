@@ -47,7 +47,11 @@
 
       // ── Hide Buyer/Rep toggle ─────────────────────────────────────
       var s = document.createElement('style');
-      s.textContent = 'div[class*="_floatingToggle_"] { display: none !important; }';
+      s.textContent = [
+        'div[class*="_floatingToggle_"] { display: none !important; }',
+        'button[class*="_checkoutBtn_"] { background: #1695CF !important; }',
+        'button[class*="_checkoutBtn_"]:hover { background: #1277AB !important; }',
+      ].join('\n');
       document.head.appendChild(s);
 
       // ── Logo patch ────────────────────────────────────────────────
@@ -78,6 +82,8 @@
         ['Cart / Storefront B2B', 'Carrinho / Storefront B2B'],
         ['Boston Boylston St', 'Av. Paulista, 1578'],
         ['Delivery addr.', 'End. de entrega'],
+        ['Go to Checkout', 'Ir para Checkout'],
+        ['Send to Buyer', 'Enviar ao Comprador'],
         ['New order', 'Novo pedido'],
         ['Promo code', 'Código promo'],
         ['Show more', 'Ver detalhes'],
@@ -110,6 +116,13 @@
         [/\(in 1 day\)/g, '(em 1 dia)'],
         [/· (\d+) items\b/g, '· $1 itens'],
         [/\bItems (\d+)/g, 'Itens $1'],
+        // USD → BRL: $33,726.18 → R$ 33.726,18
+        [/\$(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)/g, function(m, n) {
+          var parts = n.split('.');
+          var intPart = parts[0].replace(/,/g, '.');
+          var decPart = parts.length > 1 ? parts[1] : '00';
+          return 'R ' + intPart + ',' + decPart;
+        }],
       ];
       // Exact match (trimmed text node)
       var EXACT = {
