@@ -4296,9 +4296,9 @@
           class="identify-input"
           type="text"
           id="locationCepInput"
-          placeholder="ZIP code"
+          placeholder="CEP"
           autocomplete="off"
-          aria-label="ZIP code"
+          aria-label="CEP"
           inputmode="numeric"
         />
         <p class="location-store-msg" id="locationLojaMsg">
@@ -5269,7 +5269,7 @@
                   >
                     <span class="material-symbols-outlined">error</span>
                   </span>
-                  <span id="pdpShipCepLabel">22290-160</span>
+                  <span id="pdpShipCepLabel">05038-001</span>
                 </span>
                 <span class="pdp-ship-cep-sub" id="pdpShipCepSub">Loja Lapa - SP</span>
               </div>
@@ -6899,7 +6899,7 @@
       // top line: CEP only; bottom line: location name
       const pdpSub = document.getElementById('pdpShipCepSub');
       if (currentCep === STORE_CEP) {
-        if (pdpLabel) pdpLabel.textContent = '22290-160';
+        if (pdpLabel) pdpLabel.textContent = '05038-001';
         if (pdpSub)   pdpSub.textContent = STORE_LABEL;
       } else {
         // label = "CEP · bairro" — show just CEP on top, bairro below
