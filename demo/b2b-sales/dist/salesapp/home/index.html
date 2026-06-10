@@ -2899,6 +2899,8 @@
     .home-section { padding: 32px 0; border-top: 1px solid #F0F0F0; }
     .home-section-layout { display: flex; align-items: flex-start; gap: 64px; }
     .home-section-title { font-size: 20px; font-weight: 600; color: #1F1F1F; width: 200px; flex-shrink: 0; padding-top: 6px; font-family: 'Inter Tight', Inter, system-ui, sans-serif; }
+    .home-section-subtitle-link { display: block; font-size: 13px; font-weight: 500; color: #1695CF; margin-top: 4px; text-decoration: none; }
+    .home-section-subtitle-link:hover { text-decoration: underline; }
     .home-cards-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; flex: 1; min-width: 0; }
     @media (max-width: 900px) { .home-cards-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 540px) { .home-cards-grid { grid-template-columns: 1fr; } }
@@ -4877,7 +4879,10 @@
     <!-- EXT: Pedidos de hoje -->
     <div class="home-section" id="ext-todays-orders">
       <div class="home-section-layout">
-        <div class="home-section-title">Pedidos de hoje</div>
+        <div>
+          <div class="home-section-title">Pedidos de hoje</div>
+          <a href="#" class="home-section-subtitle-link">Ver desempenho completo</a>
+        </div>
         <div class="home-cards-grid">
 
           <button class="metric-card">
