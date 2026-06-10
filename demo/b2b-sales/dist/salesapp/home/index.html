@@ -1608,7 +1608,7 @@
     #drawerSubVendedor { z-index: 3; }
     .drawer--sub-vendedor   #drawerSubVendedor  { transform: translateX(0); }
 
-    /* Customer Portfolio list */
+    /* Carteira de Clientes list */
     .cp-card {
       display: flex;
       align-items: center;
@@ -3648,7 +3648,7 @@
 
       <div class="qc-search-wrap">
         <span class="material-symbols-outlined qc-search-icon">search</span>
-        <input class="qc-search-input" id="ordSearchInput" type="text" placeholder="Search by order ID, buyer, company…" oninput="ordSearch(this.value)" />
+        <input class="qc-search-input" id="ordSearchInput" type="text" placeholder="Buscar por ID do pedido, comprador, empresa…" oninput="ordSearch(this.value)" />
         <button class="qc-search-clear" id="ordSearchClear" onclick="ordClearSearch()" tabindex="-1">
           <span class="material-symbols-outlined">close</span>
         </button>
@@ -3904,7 +3904,7 @@
 
       <div class="qc-search-wrap">
         <span class="material-symbols-outlined qc-search-icon">search</span>
-        <input class="qc-search-input" id="cpSearchInput" type="text" placeholder="Search by company or contact…" oninput="cpSearch(this.value)" />
+        <input class="qc-search-input" id="cpSearchInput" type="text" placeholder="Buscar por empresa ou contato…" oninput="cpSearch(this.value)" />
         <button class="qc-search-clear" id="cpSearchClear" onclick="cpClearSearch()" tabindex="-1">
           <span class="material-symbols-outlined">close</span>
         </button>
@@ -4091,7 +4091,7 @@
 
         <button class="drawer-item">
           <span class="material-symbols-outlined">groups</span>
-          <span class="drawer-item-label">Customer Portfolio</span>
+          <span class="drawer-item-label">Carteira de Clientes</span>
         </button>
 
         <button class="drawer-item">
@@ -4804,7 +4804,7 @@
       <div class="home-profile-info">
         <div class="home-profile-top">
           <h1 class="home-greeting">Hi, Andrew Miller</h1>
-          <button class="home-profile-btn">My profile</button>
+          <button class="home-profile-btn">Meu perfil</button>
         </div>
         <!-- EXT: Goal bar -->
         <div id="ext-goal-block">
@@ -4834,7 +4834,7 @@
     <div id="ph-profile-block" style="display:none;margin-bottom:36px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
         <h1 class="home-greeting">Hi, Andrew Miller</h1>
-        <button class="home-profile-btn">My profile</button>
+        <button class="home-profile-btn">Meu perfil</button>
       </div>
       <div class="ext-placeholder" style="border-radius:16px;height:120px;display:flex;align-items:center;justify-content:center;gap:8px;color:#ADADAD;font-size:13px;font-weight:500;">
         <span class="material-symbols-outlined" style="font-size:18px;">extension</span>
@@ -4865,7 +4865,7 @@
 
           <button class="action-card" id="actionPortfolio">
             <span class="material-symbols-outlined">group</span>
-            <div class="action-card-title">Customer Portfolio</div>
+            <div class="action-card-title">Carteira de Clientes</div>
           </button>
 
         </div>
@@ -4884,12 +4884,12 @@
           </button>
 
           <button class="metric-card">
-            <div class="metric-card-label">Quotations Converted</div>
+            <div class="metric-card-label">Cotações Convertidas</div>
             <div class="metric-card-value">6</div>
           </button>
 
           <button class="metric-card">
-            <div class="metric-card-label">Items Sold</div>
+            <div class="metric-card-label">Itens Vendidos</div>
             <div class="metric-card-value">43</div>
           </button>
 
@@ -6175,8 +6175,8 @@
           openDrawerSub('recuperar', 'Recuperar Cart');
         } else if (label === 'Cotações' || label === 'My Cotações') {
           openDrawerSub('quotes', 'Cotações');
-        } else if (label === 'Customer Portfolio') {
-          openDrawerSub('portfolio', 'Customer Portfolio');
+        } else if (label === 'Carteira de Clientes') {
+          openDrawerSub('portfolio', 'Carteira de Clientes');
           applyCpFilters();
         }
       });
@@ -6407,9 +6407,9 @@
       }
     });
 
-    // Customer Portfolio action card
+    // Carteira de Clientes action card
     document.getElementById('actionPortfolio')?.addEventListener('click', () => {
-      openDrawerSub('portfolio', 'Customer Portfolio');
+      openDrawerSub('portfolio', 'Carteira de Clientes');
       drawer.classList.add('open');
       overlay.classList.add('open');
       overlay.removeAttribute('aria-hidden');
@@ -6419,7 +6419,7 @@
     // Also handle from drawer menu item
     // (added in drawer-item click handler below via label match)
 
-    // Customer Portfolio filter & search
+    // Carteira de Clientes filter & search
     var CP_CUSTOMERS = {
       'Stellar Global':    { avatar: 'S', address: 'Loja Lapa - SP, 02116',      contact: 'Donald Green',   email: 'd.green@stellar.com',      sector: 'Operations and facilities' },
       'LabMark':           { avatar: 'L', address: 'Cambridge Main St, 02139',        contact: 'Sarah Mitchell', email: 's.mitchell@labmark.com',    sector: 'Research and development' },
@@ -6624,7 +6624,7 @@
       } else {
         identifyDrawerFromNewOrder = true;
         openDrawer();
-        openDrawerSub('portfolio', 'Customer Portfolio');
+        openDrawerSub('portfolio', 'Carteira de Clientes');
       }
     }
 
@@ -6682,7 +6682,7 @@
       resetIdentifiedCustomer();
       setTimeout(function() {
         openDrawer();
-        openDrawerSub('portfolio', 'Customer Portfolio');
+        openDrawerSub('portfolio', 'Carteira de Clientes');
       }, 260);
     });
 
@@ -6691,7 +6691,7 @@
         openCpAccountDrawer();
       } else {
         openDrawer();
-        openDrawerSub('portfolio', 'Customer Portfolio');
+        openDrawerSub('portfolio', 'Carteira de Clientes');
       }
     });
 
