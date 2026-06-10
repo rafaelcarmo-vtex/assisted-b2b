@@ -7299,7 +7299,7 @@
         overlay.style.cssText = 'position:fixed;inset:0;background:#fff;opacity:0;z-index:99999;transition:opacity 0.18s ease;pointer-events:none;';
         document.body.appendChild(overlay);
         requestAnimationFrame(() => { overlay.style.opacity = '1'; });
-        setTimeout(() => { window.location.href = '/storefrontb2b'; }, 200);
+        setTimeout(() => { window.location.href = '/assisted-b2b/demo/b2b-sales/dist/storefrontb2b'; }, 200);
       });
 
       salesBtn.addEventListener('click', function() {
@@ -7315,7 +7315,7 @@
       if ((e.key === 'r' || e.key === 'R') && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
         sessionStorage.removeItem('unlocked');
         localStorage.removeItem('quoteRevised');
-        window.location.href = '/storefrontb2b';
+        window.location.href = '/assisted-b2b/demo/b2b-sales/dist/storefrontb2b';
       }
     });
   </script>
