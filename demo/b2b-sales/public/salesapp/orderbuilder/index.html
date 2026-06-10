@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/assisted-b2b/demo/b2b-sales/dist/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demostore — B2B Sales</title>
+    <script>
+      if (location.pathname.endsWith('/index.html')) {
+        location.replace(location.pathname.slice(0, -'index.html'.length) + location.search + location.hash);
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet" />
+    <script type="module" crossorigin src="/assisted-b2b/demo/b2b-sales/dist/assets/index-C8yDs8ou.js"></script>
+    <link rel="stylesheet" crossorigin href="/assisted-b2b/demo/b2b-sales/dist/assets/index-DCFyNOZy.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  <script>
+    document.addEventListener("keydown", function(e) {
+      var tag = document.activeElement && document.activeElement.tagName;
+      if ((e.key === "i" || e.key === "I") && !e.metaKey && !e.ctrlKey && !e.altKey && tag !== "INPUT" && tag !== "TEXTAREA") {
+        window.location = "/assisted-b2b/";
+      }
+    });
+  </script>
+  </body>
+</html>
