@@ -1873,7 +1873,7 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
             <span className={styles.orderTitle}>ORD-2023-XYZ-789</span>
             <span className={styles.draftBadge}>
               <span className={`${styles.draftDot} ${repBuyerPending ? styles.draftDotGreen : quotePending || (repMode && !newOrder) ? styles.draftDotPending : ''}`} aria-hidden="true" />
-              {quotePending ? 'Requested' : repBuyerPending ? 'Revised' : (repMode && !newOrder) ? 'Requested' : 'Draft'}
+              {(pendingApproval && window.__HOME_OVERRIDE__) ? 'Pending Approval' : quotePending ? 'Requested' : repBuyerPending ? 'Revised' : (repMode && !newOrder) ? 'Requested' : 'Draft'}
             </span>
           </div>
           <span className={styles.spacer} />
