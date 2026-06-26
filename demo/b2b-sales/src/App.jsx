@@ -13,14 +13,16 @@ function BuyerHome() {
 
   // Read URL params
   const params       = new URLSearchParams(location.search)
-  const initRepMode  = params.get('repMode') === 'true'
-  const initNewOrder = params.get('newOrder') === 'true'
+  const initRepMode        = params.get('repMode') === 'true'
+  const initNewOrder       = params.get('newOrder') === 'true'
+  const initPendingApproval = params.get('pendingApproval') === 'true'
   const initOpenOB   = params.get('openOB') === 'true' || location.pathname === '/storefrontb2b/orderbuilder' || location.pathname === '/salesapp/orderbuilder'
   const [obMounted,  setObMounted]  = useState(initRepMode || initOpenOB)
   const [obVisible,  setObVisible]  = useState(initRepMode || initOpenOB)
   const [fabLoading, setFabLoading] = useState(false)
-  const [repMode,    setRepMode]    = useState(initRepMode)
-  const [newOrder,   setNewOrder]   = useState(initNewOrder)
+  const [repMode,         setRepMode]         = useState(initRepMode)
+  const [newOrder,        setNewOrder]        = useState(initNewOrder)
+  const [pendingApproval, setPendingApproval] = useState(initPendingApproval)
   const [pageVisible, setPageVisible] = useState(true)
   const [toast,      setToast]      = useState(null)
   const [toastOut,   setToastOut]   = useState(false)
@@ -62,6 +64,11 @@ function BuyerHome() {
   }
 
   function closeOB() {
+    if (window.__HOME_OVERRIDE__) {
+      setObVisible(false)
+      setTimeout(() => { window.location.href = window.__HOME_OVERRIDE__ }, 200)
+      return
+    }
     setObVisible(false)
     setTimeout(() => { setObMounted(false); setRepMode(false); setNewOrder(false) }, 200)
   }
@@ -70,10 +77,15 @@ function BuyerHome() {
     if (mode === 'sales') {
       setPageVisible(false)
       setTimeout(() => {
-        window.location.href = '/salesapp/home'
+        window.location.href = window.__HOME_OVERRIDE__ || '/salesapp/home'
       }, 180)
-    } else if (mode === 'buyer' && repMode) {
-      closeOB()
+    } else if (mode === 'buyer') {
+      if (window.__HOME_OVERRIDE__) {
+        setPageVisible(false)
+        setTimeout(() => { window.location.href = window.__HOME_OVERRIDE__ }, 180)
+      } else if (repMode) {
+        closeOB()
+      }
     }
   }
 
@@ -105,12 +117,19 @@ function BuyerHome() {
             transition: 'opacity 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
             pointerEvents: obVisible ? 'auto' : 'none',
           }}>
-            <OrderBuilder onClose={closeOB} repMode={repMode} newOrder={newOrder} />
+            <OrderBuilder onClose={closeOB} repMode={repMode} newOrder={newOrder} pendingApproval={pendingApproval} />
           </div>
         )}
       </div>
 
-      <FloatingToggle mode={repMode ? 'sales' : 'buyer'} onChange={handleModeChange} />
+      <FloatingToggle
+        mode={repMode ? 'sales' : 'buyer'}
+        onChange={handleModeChange}
+        modes={window.__HOME_OVERRIDE__ ? [
+          { id: 'buyer', label: 'Sales Rep'      },
+          { id: 'sales', label: 'Sales Manager'  },
+        ] : undefined}
+      />
 
       {toast === 'cart-saved' && (
         <div style={{
@@ -144,7 +163,7 @@ function App() {
   }, [])
 
   return (
-    <BrowserRouter basename="/assisted-b2b/demo/b2b-sales/dist">
+    <BrowserRouter basename={window.location.pathname.startsWith('/assisted-b2b/demo/hierarchical-approval') ? '/assisted-b2b/demo/hierarchical-approval' : '/assisted-b2b/demo/b2b-sales/dist'}>
       <Routes>
         <Route path="/" element={<Navigate to="/storefrontb2b" replace />} />
         <Route path="/storefrontb2b" element={<BuyerHome />} />

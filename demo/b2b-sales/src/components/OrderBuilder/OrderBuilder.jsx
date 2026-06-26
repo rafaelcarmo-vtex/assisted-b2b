@@ -23,7 +23,7 @@ function fadeNavigate(href) {
   setTimeout(() => { window.location.href = href }, 220)
 }
 
-export default function OrderBuilder({ onClose, repMode = false, newOrder = false }) {
+export default function OrderBuilder({ onClose, repMode = false, newOrder = false, pendingApproval = false }) {
   const [activeTab, setActiveTab] = useState('products')
   const [tabVisible, setTabVisible] = useState(true)
 
@@ -56,7 +56,9 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
     { name: 'Access Point Wi-Fi 6 Dual Band – Enterprise', sku: 'HAP-W6DB-ENT', qty: 6, disc: 5, unitNum: 349, originalUnitNum: 399, unit: '$349.00', ship: 'Boston Boylston St', delivery: 'Pickup', costCenters: ['HPSL01'], img: asset('/items/Access%20points%20Wi-Fi%20corporativos.png') },
     { name: 'Access Point Wi-Fi 5 – Corporate', sku: 'HAP-W5-CRP', qty: 5, disc: 5, unitNum: 299, unit: '$299.00', ship: 'Providence Downtown', delivery: 'Pickup', costCenters: ['HPSL05'], img: asset('/items/Access%20points%20Wi-Fi%20corporativos.png') },
   ]
-  const [liveItems, setLiveItems] = useState(FILLED_ITEMS)
+  const [liveItems, setLiveItems] = useState(() =>
+    pendingApproval ? FILLED_ITEMS.map((it, i) => i === 0 ? { ...it, disc: 21 } : it) : FILLED_ITEMS
+  )
 
   // Dynamic totals — recompute whenever quantities change
   const SHIPPING = 24.80
@@ -65,6 +67,8 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
   const fmt = (n) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   const calcItemSub = (item) => item.unitNum * (typeof item.qty === 'number' ? item.qty : 0) * (1 - item.disc / 100)
   const liveSubtotalNum = useMemo(() => liveItems.reduce((s, it) => s + calcItemSub(it), 0), [liveItems])
+  const haExcessiveDiscount = useMemo(() => window.__HOME_OVERRIDE__ && liveItems.some(it => it.disc > 20), [liveItems])
+  const haHomeUrl = window.__HOME_OVERRIDE__ || '/salesapp/home'
   const liveBostonSubNum = useMemo(() => liveItems.filter(it => it.ship?.includes('Boston')).reduce((s, it) => s + calcItemSub(it), 0), [liveItems])
   const liveStateTaxNum = useMemo(() => liveSubtotalNum * STATE_TAX_RATE, [liveSubtotalNum])
   const liveCityTaxNum = useMemo(() => liveBostonSubNum * CITY_TAX_RATE, [liveBostonSubNum])
@@ -81,6 +85,13 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
     if (isFirstLiveItemsRender.current) { isFirstLiveItemsRender.current = false; return }
     setRepHasEdited(true)
   }, [liveItems])
+
+  useEffect(() => {
+    if (!haExcessiveDiscount) {
+      setHaDiscoveredExcessive(false)
+      setHaCheckoutValidating(false)
+    }
+  }, [haExcessiveDiscount])
 
   const [visibleCount, setVisibleCount] = useState(repMode && !newOrder ? 10 : 5)
   const [revealedFrom, setRevealedFrom] = useState(0)
@@ -122,6 +133,12 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
   ]
   const [thinkingPhrase, setThinkingPhrase] = useState(thinkingPhrases[0])
   const [showDrawer, setShowDrawer] = useState(false)
+  const [showApprovalDialog, setShowApprovalDialog] = useState(false)
+  const [approvalSent, setApprovalSent] = useState(false)
+  const [approvalSending, setApprovalSending] = useState(false)
+  const [approvalNote, setApprovalNote] = useState('')
+  const [haDiscoveredExcessive, setHaDiscoveredExcessive] = useState(pendingApproval)
+  const [haCheckoutValidating, setHaCheckoutValidating] = useState(false)
   const [accountDrawerOpen, setAccountDrawerOpen] = useState(false)
   const [addressDrawerOpen, setAddressDrawerOpen] = useState(false)
   const [selectedAddressId, setSelectedAddressId] = useState('boston')
@@ -1463,7 +1480,7 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
       {/* ── Left Nav Drawer ── */}
       <div className={`${styles.drawer} ${showDrawer ? styles.drawerOpen : ''}`}>
         <div className={styles.drawerHeader}>
-          <span className={styles.drawerLogo} onClick={() => repMode ? window.location.href = '/salesapp/home' : onClose()} style={{ cursor: 'pointer' }}>Demo Store</span>
+          <span className={styles.drawerLogo} onClick={() => repMode ? window.location.href = (haHomeUrl) : onClose()} style={{ cursor: 'pointer' }}>Demo Store</span>
           <button className={styles.railBtn} aria-label="Close sidebar" onClick={() => setShowDrawer(false)}>
             <span className="material-symbols-outlined">dock_to_right</span>
           </button>
@@ -1577,18 +1594,34 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                           <div className={styles.quoteCardDiscount}>Hotel equipment order · 112 items</div>
                           <div className={styles.quoteCardMeta}>Buyer: <a href="#" style={{color:'#0366DD',textDecoration:'none'}}>Stellar Global</a></div>
                           <div className={styles.quoteCardMeta}>Profile: <a href="#" style={{color:'#0366DD',textDecoration:'none'}}>Donald Green</a></div>
-                          <div className={styles.quoteCardMeta}>Total: <strong style={{color:'#1F1F1F'}}>$33,726.18</strong></div>
+                          <div className={styles.quoteCardMeta}>Total: <strong style={{color:'#1F1F1F'}}>{pendingApproval ? '$32,812.39' : '$33,726.18'}</strong></div>
                         </div>
                       </div>
-                      <p>
-                        Hi, Andrew! <strong>Donald Green</strong> from <strong>Stellar Global</strong> sent the following message:
-                      </p>
-                      <blockquote className={styles.buyerQuote}>
-                        &ldquo;I&rsquo;m equipping dozens of rooms for my hotel chain and would like a quote with the best prices. I&rsquo;m considering other offers as well &mdash; let me know what you can do for me.&rdquo;
-                      </blockquote>
-                      <p>
-                        I have a few suggestions that could strengthen this offer. <strong>Shall I walk you through them?</strong>
-                      </p>
+                      {pendingApproval ? (
+                        <>
+                          <p>
+                            Hi, Amanda! <strong>Andrew Miller</strong> submitted this order for your approval.
+                          </p>
+                          <blockquote className={styles.buyerQuote}>
+                            &ldquo;Hey Amanda, I applied a 21% discount on the Smart TV 55&rdquo; UHD 4K to close this deal with Stellar Global. They&rsquo;re a high-volume account and the buyer pushed back hard on pricing. I believe it&rsquo;s worth it long-term.&rdquo;
+                          </blockquote>
+                          <p>
+                            The discount on item 1 exceeds the 20% policy limit. <strong>Would you like to approve or reject this request?</strong>
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <p>
+                            Hi, Andrew! <strong>Donald Green</strong> from <strong>Stellar Global</strong> sent the following message:
+                          </p>
+                          <blockquote className={styles.buyerQuote}>
+                            &ldquo;I&rsquo;m equipping dozens of rooms for my hotel chain and would like a quote with the best prices. I&rsquo;m considering other offers as well &mdash; let me know what you can do for me.&rdquo;
+                          </blockquote>
+                          <p>
+                            I have a few suggestions that could strengthen this offer. <strong>Shall I walk you through them?</strong>
+                          </p>
+                        </>
+                      )}
                       <p className={styles.disclaimer}>
                         AI responses may contain errors.{' '}
                         <button className={styles.learnMoreBtn}>Learn more</button>
@@ -1659,7 +1692,7 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                       {msg.backToHome && (
                         <div style={{display:'flex', justifyContent:'center', marginTop:'4px'}}>
                         <button
-                          onClick={() => fadeNavigate('/salesapp/home')}
+                          onClick={() => fadeNavigate(haHomeUrl)}
                           style={{
                             marginTop: '12px',
                             padding: '7px 12px',
@@ -1805,7 +1838,6 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                     <input
                       ref={fileInputRef}
                       type="file"
-                      accept=".png,.jpg,.jpeg,.docx,.csv,.xlsx,.txt"
                       style={{ display: 'none' }}
                       onChange={e => {
                         attachFile(e.target.files?.[0])
@@ -1891,6 +1923,17 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                 <button className={styles.quoteBannerBtn} aria-label="Dismiss" onClick={() => setQuoteBannerDismissed(true)}>
                   <span className="material-symbols-outlined">close</span>
                 </button>
+              </div>
+            )}
+
+            {/* HA: Excessive discount approval warning */}
+            {haDiscoveredExcessive && (
+              <div style={{margin:'0 0 16px',padding:'12px 16px',background:'#FFF7ED',borderRadius:'10px',display:'flex',gap:'10px',alignItems:'flex-start'}}>
+                <span className="material-symbols-outlined" style={{color:'#E8920A',fontSize:'20px',flexShrink:0,marginTop:'1px',fontVariationSettings:"'FILL' 1"}}>warning</span>
+                <div>
+                  <div style={{fontWeight:600,fontSize:'14px',color:'#9A3412'}}>Approval required</div>
+                  <div style={{fontSize:'13px',color:'#C2410C',marginTop:'2px'}}>One or more items exceed the 20% discount limit. This order will need approval from your Sales Manager before it can proceed.</div>
+                </div>
               </div>
             )}
 
@@ -2136,7 +2179,7 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                   <div className={styles.itemsTableHeader}>
                     <span className={styles.itemsColMain}>Line item details</span>
                     <span className={`${styles.itemsColNum} ${styles.itemsColStepper}`}>Quantity</span>
-                    {repMode && <span className={`${styles.itemsColNum} ${styles.itemsColStepper}`}>Discount</span>}
+                    {(repMode || !!window.__HOME_OVERRIDE__) && <span className={`${styles.itemsColNum} ${styles.itemsColStepper}`}>Discount</span>}
                     <span className={styles.itemsColNum}>Unit price</span>
                     <span className={styles.itemsColNum}>Subtotal</span>
                   </div>
@@ -2213,12 +2256,12 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                           }}><span className="material-symbols-outlined" style={{fontSize:'16px',lineHeight:1}}>add</span></button>
                         </span>
                       </span>
-                      {repMode && (
+                      {(repMode || !!window.__HOME_OVERRIDE__) && (
                         <span className={`${styles.itemsColNum} ${styles.itemsColStepper}`}>
                           {repOrigItemsRef.current && item.disc !== repOrigItemsRef.current[i]?.disc && (
                             <span className={styles.itemOldPrice}>{repOrigItemsRef.current[i].disc}%</span>
                           )}
-                          <span className={styles.qtyStepper}>
+                          <span className={styles.qtyStepper} style={haDiscoveredExcessive && item.disc > 20 ? {outline:'2px solid #F97316',borderRadius:'999px'} : undefined}>
                             <button className={styles.qtyBtn} onClick={e => {
                               e.stopPropagation()
                               setLiveItems(prev => prev.map((it, j) => j === i ? { ...it, disc: Math.max(0, it.disc - 1) } : it))
@@ -2622,23 +2665,152 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                   text: `You don't have a recorded discount request yet. In the message box below, describe what you want—for example: "I want 10% off all items"—so we can save it and continue with your quote.`
                 }])
               }
-            }}>Request for Quote</button>}
-            {repMode && (
-              <button
-                className={styles.sendToBuyerBtn}
-                disabled={!repItemUpdated}
-              >
-                Send to Buyer
-              </button>
+            }}>Send to Buyer</button>}
+            {pendingApproval && window.__HOME_OVERRIDE__ ? (
+              <>
+                <button
+                  style={{padding:'0 22px',height:'40px',borderRadius:'999px',border:'none',background:'#DC2626',fontSize:'14px',fontWeight:600,color:'#fff',fontFamily:'inherit',cursor:'pointer',display:'flex',alignItems:'center',gap:'6px',transition:'opacity 0.15s'}}
+                  onMouseEnter={e => { e.currentTarget.style.opacity = '0.85' }}
+                  onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
+                  onClick={() => { window.location.href = window.__HOME_OVERRIDE__ }}
+                >
+                  <span className="material-symbols-outlined" style={{fontSize:'18px'}}>close</span>
+                  Reject
+                </button>
+                <button
+                  style={{padding:'0 22px',height:'40px',borderRadius:'999px',border:'none',background:'#16A34A',fontSize:'14px',fontWeight:600,color:'#fff',fontFamily:'inherit',cursor:'pointer',display:'flex',alignItems:'center',gap:'6px',transition:'opacity 0.15s'}}
+                  onMouseEnter={e => { e.currentTarget.style.opacity = '0.85' }}
+                  onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
+                  onClick={() => { window.location.href = window.__HOME_OVERRIDE__ }}
+                >
+                  <span className="material-symbols-outlined" style={{fontSize:'18px'}}>check</span>
+                  Approve
+                </button>
+              </>
+            ) : (
+              <>
+                {repMode && (
+                  <button
+                    className={styles.sendToBuyerBtn}
+                    disabled={!repItemUpdated}
+                  >
+                    Send to Buyer
+                  </button>
+                )}
+                <button
+                  className={styles.checkoutBtn}
+                  disabled={haCheckoutValidating}
+                  style={haDiscoveredExcessive ? {background:'#F97316'} : haCheckoutValidating ? {opacity:0.85,cursor:'default'} : undefined}
+                  onClick={() => {
+                    if (haDiscoveredExcessive) { setShowApprovalDialog(true) }
+                    else if (haExcessiveDiscount && !haCheckoutValidating) {
+                      setHaCheckoutValidating(true)
+                      setTimeout(() => {
+                        setHaCheckoutValidating(false)
+                        setHaDiscoveredExcessive(true)
+                        const offending = liveItems.find(it => it.disc > 20)
+                        setChatMessages(prev => [...prev, {
+                          type: 'ai',
+                          text: `**Rule triggered: Maximum Discount Exceeded.**\n\nWhile validating the order, I found that **${offending?.name || 'one item'}** has a **${offending?.disc ?? 21}% discount**, which goes over the **20% limit** allowed for Sales Reps.\n\nDiscounts above this threshold can't be applied on your own — they need sign-off from your Sales Manager.\n\nI'll submit this order to **Amanda Garcia** to review and approve. Just add a short note explaining the discount, and click **Request Approval** to send it.`
+                        }])
+                      }, 1600)
+                    }
+                    else if (repMode) { window.location.href = (window.__HOME_OVERRIDE__ || '/salesapp/order-summary') }
+                  }}
+                >
+                  {haCheckoutValidating && (
+                    <span className="fab-spinner" style={{position:'absolute',width:'18px',height:'18px',borderWidth:'2px',borderColor:'rgba(255,255,255,0.35)',borderTopColor:'#fff'}} />
+                  )}
+                  <span style={{visibility: haCheckoutValidating ? 'hidden' : 'visible', display:'flex', alignItems:'center', gap:'4px'}}>
+                    {haDiscoveredExcessive
+                      ? 'Request Approval'
+                      : <><span>Go to Checkout</span><span className="material-symbols-outlined">arrow_forward</span></>
+                    }
+                  </span>
+                </button>
+              </>
             )}
-            <button className={styles.checkoutBtn} onClick={() => repMode ? window.location.href = '/salesapp/order-summary' : null}>
-              Go to Checkout
-              <span className="material-symbols-outlined">arrow_forward</span>
-            </button>
           </div>
         </div>
 
       </div>{/* end rightPanel */}
+
+      {/* Approval Request Dialog */}
+      {showApprovalDialog && (
+        <div style={{position:'fixed',inset:0,zIndex:9999,display:'flex',alignItems:'center',justifyContent:'center',background:'rgba(0,0,0,0.4)',animation:'haBackdropIn 0.2s ease'}} onClick={() => { if (!approvalSent && !approvalSending) { setShowApprovalDialog(false) } }}>
+          <style>{`@keyframes haBackdropIn{from{opacity:0}to{opacity:1}}@keyframes haDialogIn{from{opacity:0;transform:scale(0.94) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}`}</style>
+          <div style={{background:'#fff',borderRadius:'16px',padding:'28px 28px 24px',width:'400px',maxWidth:'90vw',boxShadow:'0 8px 32px rgba(0,0,0,0.18)',display:'flex',flexDirection:'column',gap:'20px',animation:'haDialogIn 0.22s cubic-bezier(0.34,1.56,0.64,1)'}} onClick={e => e.stopPropagation()}>
+            {approvalSent ? (
+              <>
+                {/* Success state */}
+                <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'16px',padding:'8px 0 4px',textAlign:'center'}}>
+                  <div style={{width:'52px',height:'52px',borderRadius:'50%',background:'#ECFDF5',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                    <span className="material-symbols-outlined" style={{color:'#16A34A',fontSize:'28px',fontVariationSettings:"'FILL' 1"}}>check_circle</span>
+                  </div>
+                  <div>
+                    <div style={{fontWeight:700,fontSize:'17px',color:'#111',marginBottom:'6px'}}>Approval request sent</div>
+                    <div style={{fontSize:'13px',color:'#6B7280',lineHeight:'1.5'}}>Your request has been submitted to <strong style={{color:'#374151'}}>Amanda Garcia</strong>. You'll be notified once it's reviewed.</div>
+                  </div>
+                </div>
+                <button
+                  style={{padding:'11px 20px',borderRadius:'999px',border:'none',background:'#0366DD',fontSize:'14px',fontWeight:600,color:'#fff',fontFamily:'inherit',cursor:'pointer',width:'100%'}}
+                  onClick={() => { window.location.href = (haHomeUrl) }}
+                >Go to Home</button>
+              </>
+            ) : (
+              <>
+                {/* Header */}
+                <div>
+                  <div style={{fontWeight:700,fontSize:'17px',color:'#111',marginBottom:'4px'}}>Request Approval</div>
+                  <div style={{fontSize:'13px',color:'#6B7280'}}>Your request will be sent to your Sales Manager for review.</div>
+                </div>
+                {/* Approver */}
+                <div style={{display:'flex',alignItems:'center',gap:'12px',padding:'12px 14px',background:'#F9FAFB',borderRadius:'10px',border:'1px solid #E5E7EB'}}>
+                  <img src="/avatar-amanda.png" alt="Amanda Garcia" style={{width:'40px',height:'40px',borderRadius:'50%',objectFit:'cover',flexShrink:0}} />
+                  <div>
+                    <div style={{fontWeight:600,fontSize:'14px',color:'#111'}}>Amanda Garcia</div>
+                    <div style={{fontSize:'12px',color:'#6B7280'}}>Sales Manager · Sequential workflow</div>
+                  </div>
+                </div>
+                {/* Note */}
+                <div>
+                  <label style={{fontSize:'13px',fontWeight:500,color:'#374151',display:'block',marginBottom:'6px'}}>Justification <span style={{color:'#9CA3AF',fontWeight:400}}>(optional)</span></label>
+                  <textarea
+                    value={approvalNote}
+                    onChange={e => setApprovalNote(e.target.value)}
+                    placeholder="Explain why this discount is necessary..."
+                    rows={3}
+                    style={{width:'100%',boxSizing:'border-box',padding:'10px 12px',borderRadius:'8px',border:'1.5px solid #D1D5DB',fontSize:'13px',fontFamily:'inherit',resize:'vertical',outline:'none',color:'#111'}}
+                  />
+                </div>
+                {/* Actions */}
+                <div style={{display:'flex',gap:'10px',justifyContent:'flex-end'}}>
+                  <button
+                    disabled={approvalSending}
+                    style={{padding:'9px 20px',borderRadius:'999px',border:'1.5px solid #D1D5DB',background:'transparent',fontSize:'14px',fontWeight:500,color:'#374151',fontFamily:'inherit',cursor:approvalSending?'default':'pointer',opacity:approvalSending?0.5:1}}
+                    onClick={() => { if(approvalSending) return; setShowApprovalDialog(false); setApprovalSent(false) }}
+                  >Cancel</button>
+                  <button
+                    disabled={approvalSending}
+                    style={{position:'relative',display:'flex',alignItems:'center',justifyContent:'center',padding:'9px 20px',borderRadius:'999px',border:'none',background:'#0366DD',fontSize:'14px',fontWeight:500,color:'#fff',fontFamily:'inherit',cursor:approvalSending?'default':'pointer',opacity:approvalSending?0.85:1}}
+                    onClick={() => {
+                      if (approvalSending) return
+                      setApprovalSending(true)
+                      setTimeout(() => { setApprovalSending(false); setApprovalSent(true); setApprovalNote('') }, 1600)
+                    }}
+                  >
+                    {approvalSending && (
+                      <span className="fab-spinner" style={{position:'absolute',width:'18px',height:'18px',borderWidth:'2px',borderColor:'rgba(255,255,255,0.35)',borderTopColor:'#fff'}} />
+                    )}
+                    <span style={{visibility: approvalSending ? 'hidden' : 'visible'}}>Send Request</span>
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }

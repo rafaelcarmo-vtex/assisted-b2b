@@ -1,14 +1,14 @@
 import { useState, useRef, useEffect } from 'react'
 import styles from './FloatingToggle.module.css'
 
-const MODES = [
+const DEFAULT_MODES = [
   { id: 'buyer', label: 'Buyer'    },
   { id: 'sales', label: 'Sales Rep' },
 ]
 
 const MARGIN = 20
 
-export default function FloatingToggle({ mode = 'buyer', onChange }) {
+export default function FloatingToggle({ mode = 'buyer', onChange, modes = DEFAULT_MODES }) {
   const [pos, setPos]           = useState({ x: MARGIN, y: MARGIN })
   const [snapping, setSnapping] = useState(false)
   const [pillStyle, setPillStyle] = useState({ width: 0, left: 0, opacity: 0 })
@@ -35,7 +35,7 @@ export default function FloatingToggle({ mode = 'buyer', onChange }) {
 
   // Update pill position whenever mode changes
   useEffect(() => {
-    const idx = MODES.findIndex(m => m.id === mode)
+    const idx = modes.findIndex(m => m.id === mode)
     const btn = btnRefs.current[idx]
     if (!btn) return
     setPillStyle({
@@ -48,7 +48,7 @@ export default function FloatingToggle({ mode = 'buyer', onChange }) {
   // Also measure on mount after render — defer to after paint so dimensions are ready
   useEffect(() => {
     requestAnimationFrame(() => {
-      const idx = MODES.findIndex(m => m.id === mode)
+      const idx = modes.findIndex(m => m.id === mode)
       const btn = btnRefs.current[idx]
       if (!btn) return
       setPillStyle({
@@ -138,7 +138,7 @@ export default function FloatingToggle({ mode = 'buyer', onChange }) {
             opacity: pillStyle.opacity,
           }}
         />
-        {MODES.map((m, i) => (
+        {modes.map((m, i) => (
           <button
             key={m.id}
             ref={el => btnRefs.current[i] = el}

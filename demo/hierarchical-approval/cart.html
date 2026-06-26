@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cart – Demo Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,0" rel="stylesheet" />
+
+  <style>
+    /* ─── Reset ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    button, input, select, textarea { font-family: inherit; }
+    html { scroll-behavior: smooth; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    body {
+      animation: fadeIn 0.18s ease both;
+      font-family: 'Inter', sans-serif;
+      background: #FFFFFF;
+      color: #1F1F1F;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      user-select: none;
+    }
+
+    /* ─── Header ─────────────────────────────────────── */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #FFFFFF;
+      border-bottom: 1px solid #EBEBEB;
+    }
+
+    .header-main {
+      display: flex;
+      align-items: center;
+      min-height: 68px;
+      padding: 0 24px;
+      gap: 0;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .btn-menu {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: transparent;
+      border-radius: 50%;
+      color: #3D3D3D;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.14s;
+    }
+    .btn-menu:hover { background: #F5F5F5; }
+    .btn-menu .material-symbols-outlined { font-size: 24px; }
+
+    .header-logo {
+      font-size: 22px;
+      font-weight: 600;
+      color: #0366DD;
+      text-decoration: none;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .header-logo:hover { color: #0155B7; }
+
+    .header-center {
+      flex: 0 0 448px;
+      padding: 0 24px;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #FFFFFF;
+      border: 1.5px solid #D6D6D6;
+      border-radius: 100px;
+      height: 40px;
+      padding: 0 18px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .search-bar:hover { border-color: #ADADAD; }
+    .search-bar:focus-within {
+      border-color: #0366DD;
+      box-shadow: 0 0 0 3px rgba(3,102,221,0.10);
+    }
+    .search-bar .material-symbols-outlined { font-size: 20px; color: #ADADAD; }
+    .search-bar input {
+      flex: 1;
+      border: none;
+      background: none;
+      font-size: 14px;
+      color: #1F1F1F;
+      outline: none;
+    }
+    .search-bar input::placeholder { color: #ADADAD; }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      justify-content: flex-end;
+    }
+
+    .btn-identify {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      height: 40px;
+      padding: 0 16px;
+      background: #FFFFFF;
+      color: #3D3D3D;
+      border: 1.5px solid #D6D6D6;
+      border-radius: 100px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: border-color 0.14s, background 0.14s, color 0.14s;
+    }
+    .btn-identify:hover { border-color: #ADADAD; background: #F5F5F5; color: #1F1F1F; }
+    .btn-identify .material-symbols-outlined { font-size: 18px; color: #707070; }
+
+    .btn-cart {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: none;
+      border-radius: 50%;
+      cursor: pointer;
+      color: #3D3D3D;
+      transition: background 0.14s, color 0.14s;
+    }
+    .btn-cart:hover { background: #F5F5F5; color: #1F1F1F; }
+    .btn-cart .material-symbols-outlined { font-size: 24px; }
+    .cart-dot {
+      position: absolute;
+      top: 4px; right: 4px;
+      min-width: 17px; height: 17px;
+      padding: 0 4px;
+      background: #0366DD;
+      border-radius: 100px;
+      border: 2px solid #FFFFFF;
+      font-size: 10px; font-weight: 600;
+      color: #FFFFFF;
+      display: flex; align-items: center; justify-content: center;
+      line-height: 1;
+    }
+
+    /* Nav */
+    .header-nav {
+      border-top: 1px solid #F5F5F5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 44px;
+      overflow: hidden;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      margin-left: 16px;
+    }
+    .nav-info-item { display: flex; align-items: center; gap: 4px; }
+    .ni-lbl { font-size: 13px; font-weight: 400; color: #707070; white-space: nowrap; }
+    .ni-val { font-size: 13px; font-weight: 500; color: #0366DD; white-space: nowrap; }
+    .ni-sep { color: #D6D6D6; font-size: 16px; user-select: none; flex-shrink: 0; }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      height: 44px;
+      padding: 0 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #858585;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.14s, border-color 0.14s;
+      cursor: pointer;
+    }
+    .nav-link:hover { color: #1F1F1F; }
+    .nav-link.sale { color: #D31A15; }
+
+    /* ─── Cart page ──────────────────────────────────── */
+    .cart-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .cart-title { font-size: 28px; font-weight: 600; color: #1F1F1F; letter-spacing: -0.02em; margin-bottom: 2px; }
+    .cart-subtitle { font-size: 14px; color: #707070; margin-bottom: 28px; }
+
+    .cart-packages { display: flex; flex-direction: column; gap: 16px; }
+
+    .cart-package {
+      background: #FFFFFF;
+      border: 1px solid #EBEBEB;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .pkg-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid #F2F2F2;
+    }
+    .pkg-header-icon {
+      width: 36px; height: 36px;
+      background: #F5F5F5;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .pkg-header-icon .material-symbols-outlined { font-size: 18px; color: #3D3D3D; }
+    .pkg-header-info { flex: 1; }
+    .pkg-title { font-size: 14px; font-weight: 600; color: #1F1F1F; }
+    .pkg-meta { font-size: 13px; color: #707070; margin-top: 1px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px 6px; }
+    .pkg-meta-free { color: #1A7F37; font-weight: 600; }
+
+    .pkg-item {
+      display: flex;
+      align-items: stretch;
+      gap: 16px;
+      padding: 20px;
+      border-bottom: 1px solid #F2F2F2;
+    }
+    .pkg-item:last-child { border-bottom: none; }
+    .pkg-item-img {
+      width: 80px; height: 80px;
+      border-radius: 10px;
+      background: #F5F5F5;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .pkg-item-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .pkg-item-body { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .pkg-item-name { font-size: 14px; font-weight: 500; color: #1F1F1F; margin-bottom: 6px; }
+    .pkg-item-change { font-size: 13px; color: #0366DD; cursor: pointer; display: inline-block; margin-top: 10px; }
+    .pkg-item-change:hover { text-decoration: underline; }
+    .pkg-item-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; flex-shrink: 0; }
+    .pkg-item-controls { display: flex; align-items: center; gap: 8px; }
+
+    .qty-select {
+      appearance: none;
+      -webkit-appearance: none;
+      height: 34px;
+      padding: 0 28px 0 12px;
+      border: 1.5px solid #D6D6D6;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #1F1F1F;
+      background: #FFFFFF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='6' viewBox='0 0 9 6'%3E%3Cpath d='M1 1l3.5 3.5L8 1' stroke='%230366DD' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E") no-repeat right 10px center;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .qty-select:hover { border-color: #ADADAD; }
+    .qty-select:focus { outline: none; border-color: #0366DD; }
+
+    .btn-delete {
+      width: 34px; height: 34px;
+      border: 1.5px solid #D6D6D6;
+      border-radius: 100px;
+      background: #FFFFFF;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: #707070;
+      transition: border-color 0.14s, color 0.14s, background 0.14s;
+    }
+    .btn-delete:hover { border-color: #D92B2B; color: #D92B2B; background: #FFF5F5; }
+    .btn-delete .material-symbols-outlined { font-size: 16px; }
+
+    .pkg-item-price-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+    .pkg-item-price { font-size: 14px; font-weight: 600; color: #1F1F1F; }
+    .pkg-item-price-orig { font-size: 12px; color: #ADADAD; text-decoration: line-through; text-align: right; }
+
+    /* Order summary */
+    .cart-summary {
+      background: #FFFFFF;
+      border: 1px solid #EBEBEB;
+      border-radius: 16px;
+      overflow: hidden;
+      position: sticky;
+      top: 24px;
+    }
+
+    .summary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid #F2F2F2;
+    }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-row-label { font-size: 14px; font-weight: 500; color: #1F1F1F; }
+    .summary-row-action { font-size: 14px; font-weight: 500; color: #0366DD; cursor: pointer; }
+    .summary-row-action:hover { text-decoration: underline; }
+
+    .summary-totals { padding: 20px; border-bottom: 1px solid #F2F2F2; }
+    .summary-totals-title { font-size: 15px; font-weight: 600; color: #1F1F1F; margin-bottom: 14px; }
+    .summary-line { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .summary-line:last-child { margin-bottom: 0; }
+    .summary-line-label { font-size: 14px; color: #707070; display: flex; align-items: center; gap: 4px; }
+    .summary-line-val { font-size: 14px; font-weight: 500; color: #1F1F1F; }
+    .summary-line-val.free { color: #1A7F37; font-weight: 600; }
+    .summary-total-row { display: flex; justify-content: space-between; padding: 20px; }
+    .summary-total-label { font-size: 15px; font-weight: 600; color: #1F1F1F; }
+    .summary-total-val { font-size: 18px; font-weight: 600; color: #1F1F1F; }
+
+    .summary-info-icon { font-size: 14px; color: #ADADAD; cursor: help; }
+
+    .btn-continuar {
+      display: block;
+      width: calc(100% - 40px);
+      margin: 0 20px 20px;
+      height: 48px;
+      border: none;
+      border-radius: 100px;
+      background: #0366DD;
+      color: #FFFFFF;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.16s;
+    }
+    .btn-continuar:hover { background: #0155B7; }
+
+    @media (max-width: 900px) {
+      .cart-wrap { grid-template-columns: 1fr; }
+      .cart-summary { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="header">
+    <div class="header-main">
+      <div class="header-left">
+        <button class="btn-menu" type="button" aria-label="Open menu">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <a class="header-logo" href="/">Demo Store</a>
+      </div>
+      <div class="header-center">
+        <div class="search-bar">
+          <input type="text" placeholder="Search for items, brands and collections…" aria-label="Search" />
+          <span class="material-symbols-outlined">search</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="btn-identify" type="button">
+          <span class="material-symbols-outlined">person</span>
+          <span class="btn-label">Identify customer</span>
+        </button>
+        <button class="btn-cart" type="button" aria-label="Shopping cart">
+          <span class="material-symbols-outlined">shopping_cart</span>
+          <span class="cart-dot">10</span>
+        </button>
+      </div>
+    </div>
+    <nav class="header-nav" aria-label="Categories">
+      <div class="nav-links">
+        <a class="nav-link" href="#">Shop</a>
+        <a class="nav-link" href="#">Mobile</a>
+        <a class="nav-link" href="#">TV &amp; AV</a>
+        <a class="nav-link" href="#">Home Appliance</a>
+        <a class="nav-link" href="#">Displays</a>
+        <a class="nav-link" href="#">Accessories</a>
+        <a class="nav-link sale" href="#">Sale</a>
+      </div>
+      <div class="nav-info">
+        <span class="nav-info-item">
+          <span class="ni-lbl">Ship to:</span>
+          <span class="ni-val">Boston Boylston St</span>
+        </span>
+        <span class="ni-sep">|</span>
+        <span class="nav-info-item">
+          <span class="ni-lbl">Sold by:</span>
+          <span class="ni-val">Ecommerce</span>
+        </span>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ── Cart ── -->
+  <div class="cart-wrap">
+
+    <!-- Left: packages -->
+    <div>
+      <h1 class="cart-title">Cart</h1>
+      <p class="cart-subtitle">10 items</p>
+
+      <div class="cart-packages">
+
+        <!-- Package 1: Express Delivery -->
+        <div class="cart-package">
+          <div class="pkg-header">
+            <div class="pkg-header-icon"><span class="material-symbols-outlined">local_shipping</span></div>
+            <div class="pkg-header-info">
+              <div class="pkg-title">Express Delivery — Package 1</div>
+              <div class="pkg-meta">Boston Boylston St · 1–2 business days · <span class="pkg-meta-free">Free</span></div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/TV.png" alt="Smart TV 55&quot; UHD 4K – Hotel Series" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Smart TV 55" UHD 4K – Hotel Series</div>
+              <span class="pkg-item-change">Change method</span>
+            </div>
+            <div class="pkg-item-right">
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity">
+                  <option>6</option><option>7</option><option selected>8</option><option>9</option><option>10</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$5,192.00</div>
+                <div class="pkg-item-price">$4,932.40</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/Frigobar.png" alt="Minibar Refrigerator 40L – Premium" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Minibar Refrigerator 40L – Premium</div>
+              <span class="pkg-item-change">Change method</span>
+            </div>
+            <div class="pkg-item-right">
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity">
+                  <option>8</option><option>9</option><option selected>10</option><option>11</option><option>12</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$3,890.00</div>
+                <div class="pkg-item-price">$3,656.60</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/Cofre.png" alt="Digital Safe – Laptop Size (14&quot;)" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Digital Safe – Laptop Size (14")</div>
+              <span class="pkg-item-change">Change method</span>
+            </div>
+            <div class="pkg-item-right">
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity">
+                  <option>12</option><option>13</option><option>14</option><option selected>15</option><option>16</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$2,985.00</div>
+                <div class="pkg-item-price">$2,895.45</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/Termostato%20inteligente.png" alt="Smart Thermostat Wi-Fi – HVAC Control" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Smart Thermostat Wi-Fi – HVAC Control</div>
+              <span class="pkg-item-change">Change method</span>
+            </div>
+            <div class="pkg-item-right">
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity">
+                  <option>15</option><option>16</option><option>17</option><option selected>18</option><option>20</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$4,662.00</div>
+                <div class="pkg-item-price">$4,336.74</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/Access%20points%20Wi-Fi%20corporativos.png" alt="Access Point Wi-Fi 6 Dual Band – Enterprise" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Access Point Wi-Fi 6 Dual Band – Enterprise</div>
+              <span class="pkg-item-change">Change method</span>
+            </div>
+            <div class="pkg-item-right">
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity">
+                  <option>4</option><option>5</option><option selected>6</option><option>7</option><option>8</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$2,094.00</div>
+                <div class="pkg-item-price">$1,989.30</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Package 2: Standard Delivery -->
+        <div class="cart-package">
+          <div class="pkg-header">
+            <div class="pkg-header-icon"><span class="material-symbols-outlined">package_2</span></div>
+            <div class="pkg-header-info">
+              <div class="pkg-title">Standard Delivery — Package 2</div>
+              <div class="pkg-meta">Multiple locations · 3–6 business days · <span class="pkg-meta-free">Free</span></div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/TV.png" alt="Smart TV 43&quot; Full HD – Standard Room" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Smart TV 43" Full HD – Standard Room</div>
+              <span class="pkg-item-change">Change method</span>
+            </div>
+            <div class="pkg-item-right">
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity">
+                  <option>10</option><option>11</option><option selected>12</option><option>13</option><option>14</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$5,388.00</div>
+                <div class="pkg-item-price">$5,118.60</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/Frigobar.png" alt="Minibar Slim 20L – Compact Room" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Minibar Slim 20L – Compact Room</div>
+              <span class="pkg-item-change">Change method</span>
+            </div>
+            <div class="pkg-item-right">
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity">
+                  <option>6</option><option>7</option><option selected>8</option><option>9</option><option>10</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$2,232.00</div>
+                <div class="pkg-item-price">$2,142.72</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/Cofre.png" alt="Digital Safe – Standard In-Room" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Digital Safe – Standard In-Room</div>
+              <span class="pkg-item-change">Change method</span>
+            </div>
+            <div class="pkg-item-right">
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity">
+                  <option>17</option><option>18</option><option>19</option><option selected>20</option><option>22</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$2,980.00</div>
+                <div class="pkg-item-price">$2,891.40</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/Suporte.png" alt="Articulating TV Mount 32–65&quot;" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Articulating TV Mount 32–65"</div>
+              <span class="pkg-item-change">Change method</span>
+            </div>
+            <div class="pkg-item-right">
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity">
+                  <option>17</option><option>18</option><option>19</option><option selected>20</option><option>22</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$1,780.00</div>
+                <div class="pkg-item-price">$1,708.80</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pkg-item">
+            <div class="pkg-item-img"><img src="/items/Access%20points%20Wi-Fi%20corporativos.png" alt="Access Point Wi-Fi 5 – Corporate" loading="lazy" /></div>
+            <div class="pkg-item-body">
+              <div class="pkg-item-name">Access Point Wi-Fi 5 – Corporate</div>
+              <span class="pkg-item-change">Change method</span>
+            </div>
+            <div class="pkg-item-right">
+              <div class="pkg-item-controls">
+                <select class="qty-select" aria-label="Quantity">
+                  <option>3</option><option>4</option><option selected>5</option><option>6</option><option>7</option>
+                </select>
+                <button class="btn-delete" aria-label="Remove item"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+              <div class="pkg-item-price-wrap">
+                <div class="pkg-item-price-orig">$1,495.00</div>
+                <div class="pkg-item-price">$1,420.25</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right: summary -->
+    <div class="cart-summary">
+      <div class="summary-row">
+        <span class="summary-row-label">Discount coupon</span>
+        <span class="summary-row-action">Add</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-row-label">Sales rep code</span>
+        <span class="summary-row-action">Add</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-row-label">Note</span>
+        <span class="summary-row-action">Add</span>
+      </div>
+
+      <div class="summary-totals">
+        <div class="summary-totals-title">Order summary</div>
+        <div class="summary-line">
+          <span class="summary-line-label">Items</span>
+          <span class="summary-line-val">$24,569.54</span>
+        </div>
+        <div class="summary-line">
+          <span class="summary-line-label">Shipping</span>
+          <span class="summary-line-val free">Free</span>
+        </div>
+        <div class="summary-line">
+          <span class="summary-line-label">
+            Tax
+            <span class="material-symbols-outlined summary-info-icon" title="Calculated on the product value">help</span>
+          </span>
+          <span class="summary-line-val">$5,681.49</span>
+        </div>
+      </div>
+
+      <div class="summary-total-row">
+        <span class="summary-total-label">Total</span>
+        <span class="summary-total-val">$30,251.03</span>
+      </div>
+
+      <button class="btn-continuar" type="button">Continue</button>
+    </div>
+
+  </div>
+
+</body>
+</html>

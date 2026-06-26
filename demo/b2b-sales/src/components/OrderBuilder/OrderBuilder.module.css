@@ -28,11 +28,11 @@
   flex-direction: column;
   transform: translateX(-100%);
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
 }
 
 .drawerOpen {
   transform: translateX(0);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
 }
 
 .drawerBackdrop {
@@ -1588,11 +1588,11 @@
   flex-direction: column;
   transform: translateX(100%);
   transition: transform 0.28s cubic-bezier(0.2, 0, 0, 1);
-  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.10);
 }
 
 .addrDrawerOpen {
   transform: translateX(0);
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.10);
 }
 
 .addrDrawerHeader {
@@ -3213,8 +3213,10 @@
 }
 
 .checkoutBtn {
+  position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   border: none;
   border-radius: 100px;
