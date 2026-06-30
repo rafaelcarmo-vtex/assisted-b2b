@@ -16,6 +16,7 @@ function BuyerHome() {
   const initRepMode        = params.get('repMode') === 'true'
   const initNewOrder       = params.get('newOrder') === 'true'
   const initPendingApproval = params.get('pendingApproval') === 'true'
+  const initApproved        = params.get('approved') === 'true'
   const initOpenOB   = params.get('openOB') === 'true' || location.pathname === '/storefrontb2b/orderbuilder' || location.pathname === '/salesapp/orderbuilder'
   const [obMounted,  setObMounted]  = useState(initRepMode || initOpenOB)
   const [obVisible,  setObVisible]  = useState(initRepMode || initOpenOB)
@@ -23,6 +24,7 @@ function BuyerHome() {
   const [repMode,         setRepMode]         = useState(initRepMode)
   const [newOrder,        setNewOrder]        = useState(initNewOrder)
   const [pendingApproval, setPendingApproval] = useState(initPendingApproval)
+  const [approved,        setApproved]        = useState(initApproved)
   const [pageVisible, setPageVisible] = useState(true)
   const [toast,      setToast]      = useState(null)
   const [toastOut,   setToastOut]   = useState(false)
@@ -117,7 +119,7 @@ function BuyerHome() {
             transition: 'opacity 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
             pointerEvents: obVisible ? 'auto' : 'none',
           }}>
-            <OrderBuilder onClose={closeOB} repMode={repMode} newOrder={newOrder} pendingApproval={pendingApproval} />
+            <OrderBuilder onClose={closeOB} repMode={repMode} newOrder={newOrder} pendingApproval={pendingApproval} approved={approved} />
           </div>
         )}
       </div>

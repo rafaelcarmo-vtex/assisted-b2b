@@ -3417,15 +3417,15 @@
 
       </div>
 
-      <div class="qc-card" data-status="requested" data-owner="team" style="cursor:pointer;" onclick="window.location.href='/assisted-b2b/demo/hierarchical-approval/salesapp/orderbuilder?repMode=true'">
+      <div class="qc-card" data-status="revised" data-owner="team" style="cursor:pointer;" onclick="window.location.href='/assisted-b2b/demo/hierarchical-approval/salesapp/orderbuilder?repMode=true&approved=true'">
         <div class="qc-card-top">
           <div>
             <div class="qc-card-id">ORD-2023-XYZ-789</div>
             <span class="qc-badge-new">New</span>
           </div>
           <div class="qc-card-status">
-            <span class="qc-status-dot orange"></span>
-            <span class="qc-card-status-label">Requested</span>
+            <span class="qc-status-dot green"></span>
+            <span class="qc-card-status-label">Revised</span>
           </div>
         </div>
         <div class="qc-card-bottom">
@@ -3437,7 +3437,7 @@
             </div>
           </div>
           <div class="qc-meta">
-            <span class="qc-meta-item">Total <strong>$33,726.18</strong></span>
+            <span class="qc-meta-item">Total <strong>$32,812.39</strong></span>
           </div>
         </div>
       </div>
@@ -3818,16 +3818,16 @@
 
         <div class="qc-filter-wrap" id="ordOwnerWrap">
           <button class="qc-filter-btn" id="ordOwnerBtn" onclick="toggleOrdOwner(event)">
-            <span id="ordOwnerBtnLabel">All clients</span>
+            <span id="ordOwnerBtnLabel">My reps</span>
             <span class="material-symbols-outlined qc-filter-chevron" id="ordOwnerChevron">expand_more</span>
           </button>
           <div class="qc-filter-menu" id="ordOwnerMenu">
-            <button class="qc-filter-item" data-owner="mine" onclick="selectOrdOwner(this)">
-              <span class="qc-filter-item-label">My clients</span>
-            </button>
-            <button class="qc-filter-item active" data-owner="all" onclick="selectOrdOwner(this)">
-              <span class="qc-filter-item-label">All clients</span>
+            <button class="qc-filter-item active" data-owner="mine" onclick="selectOrdOwner(this)">
+              <span class="qc-filter-item-label">My reps</span>
               <span class="material-symbols-outlined qc-filter-item-check">check</span>
+            </button>
+            <button class="qc-filter-item" data-owner="all" onclick="selectOrdOwner(this)">
+              <span class="qc-filter-item-label">All reps</span>
             </button>
           </div>
         </div>
@@ -3907,7 +3907,7 @@
             <div class="qc-avatar" style="overflow:hidden;"><img src="/assisted-b2b/demo/hierarchical-approval/logo-stellarglobal.png" alt="Stellar Global" /></div>
             <div class="qc-company-info">
               <span class="qc-company-name">Stellar Global</span>
-              <span class="qc-buyer-name">Donald Green</span>
+              <span class="qc-buyer-name">Andrew Miller</span>
             </div>
           </div>
           <div class="qc-meta">
@@ -3920,7 +3920,7 @@
         </div>
       </div>
 
-      <div class="ord-card" data-status="pending" data-owner="team">
+      <div class="ord-card" data-status="pending" data-owner="mine">
         <div class="ord-card-top">
           <div class="ord-card-id">1302300719820-03</div>
           <div class="qc-card-status">
@@ -6454,7 +6454,7 @@
 
     // Orders filter logic
     var ordCurrentFilter = 'all';
-    var ordCurrentOwner  = 'all';
+    var ordCurrentOwner  = 'mine';
 
     function applyOrdFilters() {
       var cards = document.querySelectorAll('#drawerSubOrders .ord-card');

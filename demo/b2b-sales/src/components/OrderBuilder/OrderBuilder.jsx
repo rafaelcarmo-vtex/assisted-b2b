@@ -23,7 +23,7 @@ function fadeNavigate(href) {
   setTimeout(() => { window.location.href = href }, 220)
 }
 
-export default function OrderBuilder({ onClose, repMode = false, newOrder = false, pendingApproval = false }) {
+export default function OrderBuilder({ onClose, repMode = false, newOrder = false, pendingApproval = false, approved = false }) {
   const [activeTab, setActiveTab] = useState('products')
   const [tabVisible, setTabVisible] = useState(true)
 
@@ -57,7 +57,7 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
     { name: 'Access Point Wi-Fi 5 – Corporate', sku: 'HAP-W5-CRP', qty: 5, disc: 5, unitNum: 299, unit: '$299.00', ship: 'Providence Downtown', delivery: 'Pickup', costCenters: ['HPSL05'], img: asset('/items/Access%20points%20Wi-Fi%20corporativos.png') },
   ]
   const [liveItems, setLiveItems] = useState(() =>
-    pendingApproval ? FILLED_ITEMS.map((it, i) => i === 0 ? { ...it, disc: 21 } : it) : FILLED_ITEMS
+    (pendingApproval || approved) ? FILLED_ITEMS.map((it, i) => i === 0 ? { ...it, disc: 21 } : it) : FILLED_ITEMS
   )
 
   // Dynamic totals — recompute whenever quantities change
@@ -67,7 +67,7 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
   const fmt = (n) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   const calcItemSub = (item) => item.unitNum * (typeof item.qty === 'number' ? item.qty : 0) * (1 - item.disc / 100)
   const liveSubtotalNum = useMemo(() => liveItems.reduce((s, it) => s + calcItemSub(it), 0), [liveItems])
-  const haExcessiveDiscount = useMemo(() => window.__HOME_OVERRIDE__ && liveItems.some(it => it.disc > 20), [liveItems])
+  const haExcessiveDiscount = useMemo(() => !approved && window.__HOME_OVERRIDE__ && liveItems.some(it => it.disc > 20), [liveItems, approved])
   const haHomeUrl = window.__HOME_OVERRIDE__ || '/salesapp/home'
   const liveBostonSubNum = useMemo(() => liveItems.filter(it => it.ship?.includes('Boston')).reduce((s, it) => s + calcItemSub(it), 0), [liveItems])
   const liveStateTaxNum = useMemo(() => liveSubtotalNum * STATE_TAX_RATE, [liveSubtotalNum])
@@ -139,6 +139,15 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
   const [approvalNote, setApprovalNote] = useState('')
   const [haDiscoveredExcessive, setHaDiscoveredExcessive] = useState(pendingApproval)
   const [haCheckoutValidating, setHaCheckoutValidating] = useState(false)
+  const [haApprovalRequested, setHaApprovalRequested] = useState(false)
+  const [showRejectDialog, setShowRejectDialog] = useState(false)
+  const [rejectSent, setRejectSent] = useState(false)
+  const [rejectSending, setRejectSending] = useState(false)
+  const [rejectNote, setRejectNote] = useState('')
+  const [showApproveDialog, setShowApproveDialog] = useState(false)
+  const [approveSent, setApproveSent] = useState(false)
+  const [approveSending, setApproveSending] = useState(false)
+  const [approveNote, setApproveNote] = useState('')
   const [accountDrawerOpen, setAccountDrawerOpen] = useState(false)
   const [addressDrawerOpen, setAddressDrawerOpen] = useState(false)
   const [selectedAddressId, setSelectedAddressId] = useState('boston')
@@ -1583,8 +1592,8 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                         <div className={styles.quoteCardHeader}>
                           <span className={styles.quoteCardTitle}>ORD-2023-XYZ-789</span>
                           <div className={styles.quoteCardStatus}>
-                            <span className={styles.quoteCardDot} />
-                            <span className={styles.quoteCardStatusLabel}>Requested</span>
+                            <span className={styles.quoteCardDot} style={approved ? {background:'#1D8348'} : undefined} />
+                            <span className={styles.quoteCardStatusLabel}>{approved ? 'Revised' : 'Requested'}</span>
                           </div>
                           <button className={styles.quoteCardMenu} type="button">
                             <span className="material-symbols-outlined">more_horiz</span>
@@ -1594,10 +1603,29 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                           <div className={styles.quoteCardDiscount}>Hotel equipment order · 112 items</div>
                           <div className={styles.quoteCardMeta}>Buyer: <a href="#" style={{color:'#0366DD',textDecoration:'none'}}>Stellar Global</a></div>
                           <div className={styles.quoteCardMeta}>Profile: <a href="#" style={{color:'#0366DD',textDecoration:'none'}}>Donald Green</a></div>
-                          <div className={styles.quoteCardMeta}>Total: <strong style={{color:'#1F1F1F'}}>{pendingApproval ? '$32,812.39' : '$33,726.18'}</strong></div>
+                          {approved && <div className={styles.quoteCardMeta}>Approver: <a href="#" style={{color:'#0366DD',textDecoration:'none'}}>Amanda Garcia</a></div>}
+                          <div className={styles.quoteCardMeta}>Total: <strong style={{color:'#1F1F1F'}}>{(pendingApproval || approved) ? '$32,812.39' : '$33,726.18'}</strong></div>
                         </div>
                       </div>
-                      {pendingApproval ? (
+                      {approved ? (
+                        <>
+                          <p>
+                            Hi, Andrew! Here's the message you sent to <strong>Amanda Garcia</strong> requesting approval:
+                          </p>
+                          <blockquote className={styles.buyerQuote}>
+                            &ldquo;Hey Amanda, I applied a 21% discount on the Smart TV 55&rdquo; UHD 4K to close this deal with Stellar Global. They&rsquo;re a high-volume account and the buyer pushed back hard on pricing. I believe it&rsquo;s worth it long-term.&rdquo;
+                          </blockquote>
+                          <p>
+                            <strong>Amanda Garcia</strong> reviewed and <strong style={{color:'#1D8348'}}>approved</strong> it:
+                          </p>
+                          <blockquote className={styles.buyerQuote} style={{borderLeftColor:'#1D8348'}}>
+                            &ldquo;Approved. Stellar Global is a strategic account and the long-term value clearly justifies the 21% on the Smart TV. Great work holding the deal together &mdash; go ahead and close it.&rdquo;
+                          </blockquote>
+                          <p>
+                            The discount is cleared. <strong>Want to send the quote to the buyer, or go straight to checkout?</strong> Your call.
+                          </p>
+                        </>
+                      ) : pendingApproval ? (
                         <>
                           <p>
                             Hi, Amanda! <strong>Andrew Miller</strong> submitted this order for your approval.
@@ -1872,8 +1900,8 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
           <div className={styles.orderTitleGroup}>
             <span className={styles.orderTitle}>ORD-2023-XYZ-789</span>
             <span className={styles.draftBadge}>
-              <span className={`${styles.draftDot} ${repBuyerPending ? styles.draftDotGreen : quotePending || (repMode && !newOrder) ? styles.draftDotPending : ''}`} aria-hidden="true" />
-              {(pendingApproval && window.__HOME_OVERRIDE__) ? 'Pending Approval' : quotePending ? 'Requested' : repBuyerPending ? 'Revised' : (repMode && !newOrder) ? 'Requested' : 'Draft'}
+              <span className={`${styles.draftDot} ${(repBuyerPending || approved) ? styles.draftDotGreen : quotePending || haApprovalRequested || (pendingApproval && window.__HOME_OVERRIDE__) || (repMode && !newOrder) ? styles.draftDotPending : ''}`} aria-hidden="true" />
+              {((pendingApproval && window.__HOME_OVERRIDE__) || haApprovalRequested) ? 'Pending Approval' : approved ? 'Revised' : quotePending ? 'Requested' : repBuyerPending ? 'Revised' : (repMode && !newOrder) ? 'Requested' : 'Draft'}
             </span>
           </div>
           <span className={styles.spacer} />
@@ -1926,8 +1954,25 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
               </div>
             )}
 
-            {/* HA: Excessive discount approval warning */}
-            {haDiscoveredExcessive && (
+            {/* HA: Approval requested — order locked, awaiting Sales Manager */}
+            {haApprovalRequested ? (
+              <div style={{margin:'0 0 16px',padding:'12px 16px',background:'#EFF6FF',borderRadius:'10px',display:'flex',gap:'12px',alignItems:'center'}}>
+                <span className="material-symbols-outlined" style={{color:'#2563EB',fontSize:'20px',flexShrink:0,fontVariationSettings:"'FILL' 1"}}>schedule</span>
+                <div style={{flex:1}}>
+                  <div style={{fontWeight:600,fontSize:'14px',color:'#1E3A8A'}}>Approval requested</div>
+                  <div style={{fontSize:'13px',color:'#1D4ED8',marginTop:'2px'}}>This order is awaiting review from <strong>Amanda Garcia</strong>. While it's pending you can't edit it or check out — but you can duplicate it to create a new version with revised terms.</div>
+                </div>
+                <button
+                  onClick={() => { setHaApprovalRequested(false); setHaDiscoveredExcessive(false) }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#2563EB' }}
+                  onMouseLeave={e => { e.currentTarget.style.background = '#3B82F6' }}
+                  style={{flexShrink:0,padding:'8px 16px',borderRadius:'999px',border:'none',background:'#3B82F6',fontSize:'13px',fontWeight:600,color:'#fff',fontFamily:'inherit',cursor:'pointer',display:'inline-flex',alignItems:'center',gap:'6px',transition:'background 0.15s',whiteSpace:'nowrap'}}
+                >
+                  <span className="material-symbols-outlined" style={{fontSize:'17px'}}>content_copy</span>
+                  Create copy
+                </button>
+              </div>
+            ) : haDiscoveredExcessive && (
               <div style={{margin:'0 0 16px',padding:'12px 16px',background:'#FFF7ED',borderRadius:'10px',display:'flex',gap:'10px',alignItems:'flex-start'}}>
                 <span className="material-symbols-outlined" style={{color:'#E8920A',fontSize:'20px',flexShrink:0,marginTop:'1px',fontVariationSettings:"'FILL' 1"}}>warning</span>
                 <div>
@@ -2022,9 +2067,9 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                       <div className={styles.metaRow}>
                         <span className={styles.metaIcon}><span className="material-symbols-outlined">app_badging</span></span>
                         <span className={styles.metaLabel}>Status</span>
-                        <span className={styles.metaStatusChip} data-status={repBuyerPending ? 'revised' : 'requested'}>
+                        <span className={styles.metaStatusChip} data-status={(repBuyerPending || approved) ? 'revised' : 'requested'}>
                           <span className={styles.metaStatusDot} />
-                          {repBuyerPending ? 'Revised' : 'Requested'}
+                          {(repBuyerPending || approved) ? 'Revised' : 'Requested'}
                         </span>
                       </div>
                       <div className={styles.metaRow}>
@@ -2066,8 +2111,8 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                       <div className={styles.metaRow}>
                         <span className={styles.metaIcon}><span className="material-symbols-outlined">badge</span></span>
                         <span className={styles.metaLabel}>Sales Rep</span>
-                        <span className={styles.metaValue} style={!repItemUpdated ? {color:'#ADADAD',fontStyle:'italic'} : {}}>
-                          {repItemUpdated ? 'Andrew Miller' : 'Unassigned'}
+                        <span className={styles.metaValue} style={!(repItemUpdated || approved || pendingApproval) ? {color:'#ADADAD',fontStyle:'italic'} : {}}>
+                          {(repItemUpdated || approved || pendingApproval) ? 'Andrew Miller' : 'Unassigned'}
                         </span>
                       </div>
                       <div className={styles.metaRow}>
@@ -2223,7 +2268,7 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                         </div>
                       </div>
                       <span className={`${styles.itemsColNum} ${styles.itemsColStepper}`}>
-                        <span className={styles.qtyStepper}>
+                        <span className={styles.qtyStepper} style={haApprovalRequested ? {pointerEvents:'none',opacity:0.45} : undefined}>
                           <button className={styles.qtyBtn} onClick={e => {
                             e.stopPropagation()
                             const oldQty = item.qty
@@ -2261,7 +2306,7 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                           {repOrigItemsRef.current && item.disc !== repOrigItemsRef.current[i]?.disc && (
                             <span className={styles.itemOldPrice}>{repOrigItemsRef.current[i].disc}%</span>
                           )}
-                          <span className={styles.qtyStepper} style={haDiscoveredExcessive && item.disc > 20 ? {outline:'2px solid #F97316',borderRadius:'999px'} : undefined}>
+                          <span className={styles.qtyStepper} style={{...(approved && item.disc > 20 ? {outline:'2px solid #1D8348',borderRadius:'999px'} : haDiscoveredExcessive && item.disc > 20 ? {outline:'2px solid #F97316',borderRadius:'999px'} : {}), ...(haApprovalRequested ? {pointerEvents:'none',opacity:0.45} : {})}}>
                             <button className={styles.qtyBtn} onClick={e => {
                               e.stopPropagation()
                               setLiveItems(prev => prev.map((it, j) => j === i ? { ...it, disc: Math.max(0, it.disc - 1) } : it))
@@ -2672,27 +2717,35 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                   style={{padding:'0 22px',height:'40px',borderRadius:'999px',border:'none',background:'#DC2626',fontSize:'14px',fontWeight:600,color:'#fff',fontFamily:'inherit',cursor:'pointer',display:'flex',alignItems:'center',gap:'6px',transition:'opacity 0.15s'}}
                   onMouseEnter={e => { e.currentTarget.style.opacity = '0.85' }}
                   onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
-                  onClick={() => { window.location.href = window.__HOME_OVERRIDE__ }}
+                  onClick={() => { setShowRejectDialog(true) }}
                 >
                   <span className="material-symbols-outlined" style={{fontSize:'18px'}}>close</span>
-                  Reject
+                  Deny
                 </button>
                 <button
                   style={{padding:'0 22px',height:'40px',borderRadius:'999px',border:'none',background:'#16A34A',fontSize:'14px',fontWeight:600,color:'#fff',fontFamily:'inherit',cursor:'pointer',display:'flex',alignItems:'center',gap:'6px',transition:'opacity 0.15s'}}
                   onMouseEnter={e => { e.currentTarget.style.opacity = '0.85' }}
                   onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
-                  onClick={() => { window.location.href = window.__HOME_OVERRIDE__ }}
+                  onClick={() => { setShowApproveDialog(true) }}
                 >
                   <span className="material-symbols-outlined" style={{fontSize:'18px'}}>check</span>
                   Approve
                 </button>
               </>
+            ) : haApprovalRequested ? (
+              <button
+                disabled
+                style={{padding:'0 18px',height:'40px',borderRadius:'999px',border:'1.5px solid #E5E7EB',background:'#F9FAFB',fontSize:'14px',fontWeight:500,color:'#9CA3AF',fontFamily:'inherit',cursor:'default',display:'flex',alignItems:'center',gap:'6px'}}
+              >
+                <span className="material-symbols-outlined" style={{fontSize:'18px'}}>lock</span>
+                Awaiting approval
+              </button>
             ) : (
               <>
                 {repMode && (
                   <button
                     className={styles.sendToBuyerBtn}
-                    disabled={!repItemUpdated}
+                    disabled={(!repItemUpdated && !approved) || haDiscoveredExcessive}
                   >
                     Send to Buyer
                   </button>
@@ -2711,7 +2764,7 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                         const offending = liveItems.find(it => it.disc > 20)
                         setChatMessages(prev => [...prev, {
                           type: 'ai',
-                          text: `**Rule triggered: Maximum Discount Exceeded.**\n\nWhile validating the order, I found that **${offending?.name || 'one item'}** has a **${offending?.disc ?? 21}% discount**, which goes over the **20% limit** allowed for Sales Reps.\n\nDiscounts above this threshold can't be applied on your own — they need sign-off from your Sales Manager.\n\nI'll submit this order to **Amanda Garcia** to review and approve. Just add a short note explaining the discount, and click **Request Approval** to send it.`
+                          text: `**Rule triggered: Maximum Discount Exceeded.**\n\nWhile validating the order, I found that **${offending?.name || 'one item'}** has a **${offending?.disc ?? 21}% discount**, which goes over the **20% limit** allowed for Sales Reps.\n\nDiscounts above this threshold can't be applied on your own — they need sign-off from your Sales Manager.\n\nWant to request approval from **Amanda Garcia**? I can help you draft a note if you'd like.`
                         }])
                       }, 1600)
                     }
@@ -2752,10 +2805,16 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                     <div style={{fontSize:'13px',color:'#6B7280',lineHeight:'1.5'}}>Your request has been submitted to <strong style={{color:'#374151'}}>Amanda Garcia</strong>. You'll be notified once it's reviewed.</div>
                   </div>
                 </div>
-                <button
-                  style={{padding:'11px 20px',borderRadius:'999px',border:'none',background:'#0366DD',fontSize:'14px',fontWeight:600,color:'#fff',fontFamily:'inherit',cursor:'pointer',width:'100%'}}
-                  onClick={() => { window.location.href = (haHomeUrl) }}
-                >Go to Home</button>
+                <div style={{display:'flex',flexDirection:'column',gap:'10px'}}>
+                  <button
+                    style={{padding:'11px 20px',borderRadius:'999px',border:'none',background:'#0366DD',fontSize:'14px',fontWeight:600,color:'#fff',fontFamily:'inherit',cursor:'pointer',width:'100%'}}
+                    onClick={() => { window.location.href = (haHomeUrl) }}
+                  >Go to Home</button>
+                  <button
+                    style={{padding:'11px 20px',borderRadius:'999px',border:'1.5px solid #D1D5DB',background:'transparent',fontSize:'14px',fontWeight:600,color:'#374151',fontFamily:'inherit',cursor:'pointer',width:'100%'}}
+                    onClick={() => { setShowApprovalDialog(false); setApprovalSent(false) }}
+                  >Back to order</button>
+                </div>
               </>
             ) : (
               <>
@@ -2796,13 +2855,163 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                     onClick={() => {
                       if (approvalSending) return
                       setApprovalSending(true)
-                      setTimeout(() => { setApprovalSending(false); setApprovalSent(true); setApprovalNote('') }, 1600)
+                      setTimeout(() => { setApprovalSending(false); setApprovalSent(true); setHaApprovalRequested(true); setApprovalNote('') }, 1600)
                     }}
                   >
                     {approvalSending && (
                       <span className="fab-spinner" style={{position:'absolute',width:'18px',height:'18px',borderWidth:'2px',borderColor:'rgba(255,255,255,0.35)',borderTopColor:'#fff'}} />
                     )}
                     <span style={{visibility: approvalSending ? 'hidden' : 'visible'}}>Send Request</span>
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Reject Order Dialog */}
+      {showRejectDialog && (
+        <div style={{position:'fixed',inset:0,zIndex:9999,display:'flex',alignItems:'center',justifyContent:'center',background:'rgba(0,0,0,0.4)',animation:'haBackdropIn 0.2s ease'}} onClick={() => { if (!rejectSent && !rejectSending) { setShowRejectDialog(false) } }}>
+          <div style={{background:'#fff',borderRadius:'16px',padding:'28px 28px 24px',width:'400px',maxWidth:'90vw',boxShadow:'0 8px 32px rgba(0,0,0,0.18)',display:'flex',flexDirection:'column',gap:'20px',animation:'haDialogIn 0.22s cubic-bezier(0.34,1.56,0.64,1)'}} onClick={e => e.stopPropagation()}>
+            {rejectSent ? (
+              <>
+                {/* Success state */}
+                <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'16px',padding:'8px 0 4px',textAlign:'center'}}>
+                  <div style={{width:'52px',height:'52px',borderRadius:'50%',background:'#FEF2F2',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                    <span className="material-symbols-outlined" style={{color:'#DC2626',fontSize:'28px',fontVariationSettings:"'FILL' 1"}}>cancel</span>
+                  </div>
+                  <div>
+                    <div style={{fontWeight:700,fontSize:'17px',color:'#111',marginBottom:'6px'}}>Order denied</div>
+                    <div style={{fontSize:'13px',color:'#6B7280',lineHeight:'1.5'}}><strong style={{color:'#374151'}}>Andrew Miller</strong> will be notified with your feedback so the order can be revised.</div>
+                  </div>
+                </div>
+                <button
+                  style={{padding:'11px 20px',borderRadius:'999px',border:'none',background:'#0366DD',fontSize:'14px',fontWeight:600,color:'#fff',fontFamily:'inherit',cursor:'pointer',width:'100%'}}
+                  onClick={() => { window.location.href = (haHomeUrl) }}
+                >Go to Home</button>
+              </>
+            ) : (
+              <>
+                {/* Header */}
+                <div>
+                  <div style={{fontWeight:700,fontSize:'17px',color:'#111',marginBottom:'4px'}}>Deny order</div>
+                  <div style={{fontSize:'13px',color:'#6B7280'}}>Let the Sales Rep know why this order can't be approved.</div>
+                </div>
+                {/* Sales Rep */}
+                <div style={{display:'flex',alignItems:'center',gap:'12px',padding:'12px 14px',background:'#F9FAFB',borderRadius:'10px',border:'1px solid #E5E7EB'}}>
+                  <img src={asset('/avatar-andrew.png')} alt="Andrew Miller" style={{width:'40px',height:'40px',borderRadius:'50%',objectFit:'cover',flexShrink:0}} />
+                  <div>
+                    <div style={{fontWeight:600,fontSize:'14px',color:'#111'}}>Andrew Miller</div>
+                    <div style={{fontSize:'12px',color:'#6B7280'}}>Sales Rep · Stellar Global</div>
+                  </div>
+                </div>
+                {/* Note */}
+                <div>
+                  <label style={{fontSize:'13px',fontWeight:500,color:'#374151',display:'block',marginBottom:'6px'}}>Reason for denial</label>
+                  <textarea
+                    value={rejectNote}
+                    onChange={e => setRejectNote(e.target.value)}
+                    placeholder="Explain why this order is being denied..."
+                    rows={3}
+                    style={{width:'100%',boxSizing:'border-box',padding:'10px 12px',borderRadius:'8px',border:'1.5px solid #D1D5DB',fontSize:'13px',fontFamily:'inherit',resize:'vertical',outline:'none',color:'#111'}}
+                  />
+                </div>
+                {/* Actions */}
+                <div style={{display:'flex',gap:'10px',justifyContent:'flex-end'}}>
+                  <button
+                    disabled={rejectSending}
+                    style={{padding:'9px 20px',borderRadius:'999px',border:'1.5px solid #D1D5DB',background:'transparent',fontSize:'14px',fontWeight:500,color:'#374151',fontFamily:'inherit',cursor:rejectSending?'default':'pointer',opacity:rejectSending?0.5:1}}
+                    onClick={() => { if(rejectSending) return; setShowRejectDialog(false) }}
+                  >Cancel</button>
+                  <button
+                    disabled={rejectSending || !rejectNote.trim()}
+                    style={{position:'relative',display:'flex',alignItems:'center',justifyContent:'center',padding:'9px 20px',borderRadius:'999px',border:'none',background:'#DC2626',fontSize:'14px',fontWeight:500,color:'#fff',fontFamily:'inherit',cursor:(rejectSending||!rejectNote.trim())?'default':'pointer',opacity:(rejectSending||!rejectNote.trim())?0.5:1}}
+                    onClick={() => {
+                      if (rejectSending || !rejectNote.trim()) return
+                      setRejectSending(true)
+                      setTimeout(() => { setRejectSending(false); setRejectSent(true) }, 1600)
+                    }}
+                  >
+                    {rejectSending && (
+                      <span className="fab-spinner" style={{position:'absolute',width:'18px',height:'18px',borderWidth:'2px',borderColor:'rgba(255,255,255,0.35)',borderTopColor:'#fff'}} />
+                    )}
+                    <span style={{visibility: rejectSending ? 'hidden' : 'visible'}}>Deny order</span>
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Approve Order Dialog */}
+      {showApproveDialog && (
+        <div style={{position:'fixed',inset:0,zIndex:9999,display:'flex',alignItems:'center',justifyContent:'center',background:'rgba(0,0,0,0.4)',animation:'haBackdropIn 0.2s ease'}} onClick={() => { if (!approveSent && !approveSending) { setShowApproveDialog(false) } }}>
+          <div style={{background:'#fff',borderRadius:'16px',padding:'28px 28px 24px',width:'400px',maxWidth:'90vw',boxShadow:'0 8px 32px rgba(0,0,0,0.18)',display:'flex',flexDirection:'column',gap:'20px',animation:'haDialogIn 0.22s cubic-bezier(0.34,1.56,0.64,1)'}} onClick={e => e.stopPropagation()}>
+            {approveSent ? (
+              <>
+                {/* Success state */}
+                <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'16px',padding:'8px 0 4px',textAlign:'center'}}>
+                  <div style={{width:'52px',height:'52px',borderRadius:'50%',background:'#ECFDF5',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                    <span className="material-symbols-outlined" style={{color:'#16A34A',fontSize:'28px',fontVariationSettings:"'FILL' 1"}}>check_circle</span>
+                  </div>
+                  <div>
+                    <div style={{fontWeight:700,fontSize:'17px',color:'#111',marginBottom:'6px'}}>Order approved</div>
+                    <div style={{fontSize:'13px',color:'#6B7280',lineHeight:'1.5'}}><strong style={{color:'#374151'}}>Andrew Miller</strong> will be notified and can proceed with the order.</div>
+                  </div>
+                </div>
+                <button
+                  style={{padding:'11px 20px',borderRadius:'999px',border:'none',background:'#0366DD',fontSize:'14px',fontWeight:600,color:'#fff',fontFamily:'inherit',cursor:'pointer',width:'100%'}}
+                  onClick={() => { window.location.href = (haHomeUrl) }}
+                >Go to Home</button>
+              </>
+            ) : (
+              <>
+                {/* Header */}
+                <div>
+                  <div style={{fontWeight:700,fontSize:'17px',color:'#111',marginBottom:'4px'}}>Approve order</div>
+                  <div style={{fontSize:'13px',color:'#6B7280'}}>Confirm the discount and let the Sales Rep proceed with the order.</div>
+                </div>
+                {/* Sales Rep */}
+                <div style={{display:'flex',alignItems:'center',gap:'12px',padding:'12px 14px',background:'#F9FAFB',borderRadius:'10px',border:'1px solid #E5E7EB'}}>
+                  <img src={asset('/avatar-andrew.png')} alt="Andrew Miller" style={{width:'40px',height:'40px',borderRadius:'50%',objectFit:'cover',flexShrink:0}} />
+                  <div>
+                    <div style={{fontWeight:600,fontSize:'14px',color:'#111'}}>Andrew Miller</div>
+                    <div style={{fontSize:'12px',color:'#6B7280'}}>Sales Rep · Stellar Global</div>
+                  </div>
+                </div>
+                {/* Note */}
+                <div>
+                  <label style={{fontSize:'13px',fontWeight:500,color:'#374151',display:'block',marginBottom:'6px'}}>Note for the Sales Rep <span style={{color:'#9CA3AF',fontWeight:400}}>(optional)</span></label>
+                  <textarea
+                    value={approveNote}
+                    onChange={e => setApproveNote(e.target.value)}
+                    placeholder="Add a note about this approval..."
+                    rows={3}
+                    style={{width:'100%',boxSizing:'border-box',padding:'10px 12px',borderRadius:'8px',border:'1.5px solid #D1D5DB',fontSize:'13px',fontFamily:'inherit',resize:'vertical',outline:'none',color:'#111'}}
+                  />
+                </div>
+                {/* Actions */}
+                <div style={{display:'flex',gap:'10px',justifyContent:'flex-end'}}>
+                  <button
+                    disabled={approveSending}
+                    style={{padding:'9px 20px',borderRadius:'999px',border:'1.5px solid #D1D5DB',background:'transparent',fontSize:'14px',fontWeight:500,color:'#374151',fontFamily:'inherit',cursor:approveSending?'default':'pointer',opacity:approveSending?0.5:1}}
+                    onClick={() => { if(approveSending) return; setShowApproveDialog(false) }}
+                  >Cancel</button>
+                  <button
+                    disabled={approveSending}
+                    style={{position:'relative',display:'flex',alignItems:'center',justifyContent:'center',padding:'9px 20px',borderRadius:'999px',border:'none',background:'#16A34A',fontSize:'14px',fontWeight:500,color:'#fff',fontFamily:'inherit',cursor:approveSending?'default':'pointer',opacity:approveSending?0.85:1}}
+                    onClick={() => {
+                      if (approveSending) return
+                      setApproveSending(true)
+                      setTimeout(() => { setApproveSending(false); setApproveSent(true) }, 1600)
+                    }}
+                  >
+                    {approveSending && (
+                      <span className="fab-spinner" style={{position:'absolute',width:'18px',height:'18px',borderWidth:'2px',borderColor:'rgba(255,255,255,0.35)',borderTopColor:'#fff'}} />
+                    )}
+                    <span style={{visibility: approveSending ? 'hidden' : 'visible'}}>Approve order</span>
                   </button>
                 </div>
               </>
