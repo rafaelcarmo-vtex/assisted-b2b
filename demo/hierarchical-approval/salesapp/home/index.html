@@ -8157,6 +8157,17 @@
     </div>
     <button class="ar-toast-close" id="arToastClose" aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button>
   </div>
+  <div class="ar-toast" id="arApprovedToast" role="status">
+    <div class="ar-toast-icon" style="background:rgba(34,197,94,0.16);"><span class="material-symbols-outlined" style="color:#4ADE80;font-variation-settings:'FILL' 1;">check_circle</span></div>
+    <div class="ar-toast-body">
+      <span class="ar-toast-title">Quote approved</span>
+      <span class="ar-toast-sub"><strong>Amanda Garcia</strong> approved your request · Stellar Global · <strong>$32,812.39</strong></span>
+      <div class="ar-toast-actions">
+        <button class="ar-toast-view" id="arApprovedView">View<span class="material-symbols-outlined">arrow_forward</span></button>
+      </div>
+    </div>
+    <button class="ar-toast-close" id="arApprovedClose" aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button>
+  </div>
   <script>
     (function() {
       var toast = document.getElementById('arToast');
@@ -8174,6 +8185,26 @@
       document.getElementById('arToastView')?.addEventListener('click', function() {
         hideToast();
         fadeNavigate('/assisted-b2b/demo/hierarchical-approval/salesapp/orderbuilder?repMode=true&pendingApproval=true');
+      });
+
+      // Sales Rep side: quote-approved notification (after manager approves)
+      var aToast = document.getElementById('arApprovedToast');
+      var buyerBtn = document.getElementById('ftBuyerBtn');
+      var aTimer = null;
+      function showApproved() {
+        if (!aToast) return;
+        aToast.classList.add('visible');
+        clearTimeout(aTimer);
+        aTimer = setTimeout(hideApproved, 8000);
+      }
+      function hideApproved() { if (aToast) aToast.classList.remove('visible'); clearTimeout(aTimer); }
+      if (buyerBtn) buyerBtn.addEventListener('click', function() {
+        if (sessionStorage.getItem('ha_quote_approved') === '1') { setTimeout(showApproved, 220); }
+      });
+      document.getElementById('arApprovedClose')?.addEventListener('click', hideApproved);
+      document.getElementById('arApprovedView')?.addEventListener('click', function() {
+        hideApproved();
+        fadeNavigate('/assisted-b2b/demo/hierarchical-approval/salesapp/orderbuilder?repMode=true&approved=true');
       });
     })();
   </script>

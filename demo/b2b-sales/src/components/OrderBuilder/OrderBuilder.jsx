@@ -2963,7 +2963,7 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                 </div>
                 <button
                   style={{padding:'11px 20px',borderRadius:'999px',border:'none',background:'#0366DD',fontSize:'14px',fontWeight:600,color:'#fff',fontFamily:'inherit',cursor:'pointer',width:'100%'}}
-                  onClick={() => { window.location.href = (haHomeUrl) }}
+                  onClick={() => { try { sessionStorage.setItem('ha_quote_approved', '1') } catch(e){}; window.location.href = (haHomeUrl) }}
                 >Go to Home</button>
               </>
             ) : (
