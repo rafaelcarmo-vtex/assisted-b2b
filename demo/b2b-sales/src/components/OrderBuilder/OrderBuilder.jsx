@@ -429,6 +429,7 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
   }, [ccDropdownOpen])
 
   const mockOrders = Array.from({ length: 12 }, (_, i) => `ORD-2026-XYZ-${789 + i}`)
+  const orderStatuses = ['Draft', 'Draft', 'Pending approval', 'Draft', 'Draft', 'Pending approval', 'Draft', 'Draft', 'Denied', 'Draft', 'Draft', 'Draft']
 
 
   function handleSend() {
@@ -1507,9 +1508,23 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
         <div className={styles.drawerSection}>
           <span className={styles.drawerSectionLabel}>Orders</span>
           <div className={styles.drawerOrderList}>
-            {mockOrders.map((order) => (
-              <button key={order} className={styles.drawerOrderItem}>{order}</button>
-            ))}
+            {mockOrders.map((order, i) => {
+              const st = orderStatuses[i]
+              const c = st === 'Pending approval' ? '#E8920A' : st === 'Denied' ? '#D31A15' : '#ADADAD'
+              return (
+                <button
+                  key={order}
+                  className={`${styles.drawerOrderItem}${i === 0 ? ' ' + styles.drawerOrderItemActive : ''}`}
+                  aria-current={i === 0 ? 'true' : undefined}
+                >
+                  <span>{order}</span>
+                  <span className={styles.statusWrap}>
+                    <span className={styles.statusLabel}>{st}</span>
+                    <span className={styles.statusDot} style={{background:c}} />
+                  </span>
+                </button>
+              )
+            })}
           </div>
         </div>
         <div className={styles.drawerFooter}>
