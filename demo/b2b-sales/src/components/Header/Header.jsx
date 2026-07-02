@@ -47,7 +47,7 @@ export default function Header() {
         {/* ── Top row ── */}
         <div className={styles.topRow}>
           <div className={styles.logoWrap}>
-            <a href="/storefrontb2b" className={styles.logo}>Demo Store</a>
+            <a href={asset('/storefrontb2b')} className={styles.logo}>Demo Store</a>
           </div>
 
           <div className={styles.searchWrap} ref={bulkRef}>
@@ -94,7 +94,7 @@ export default function Header() {
               <span className={styles.accountAvatar}><img src={asset('/logo-stellarglobal.png')} alt="Stellar Global" /></span>
               <span className={styles.accountName}>Stellar Global</span>
             </button>
-            <button className={styles.cartBtn} type="button" aria-label="Shopping cart" onClick={() => window.location.href = '/storefrontb2b/cart'}>
+            <button className={styles.cartBtn} type="button" aria-label="Shopping cart" onClick={() => window.location.href = asset('/storefrontb2b/cart')}>
               <span className="material-symbols-outlined">shopping_cart</span>
               <span className={styles.cartCount}>10</span>
             </button>

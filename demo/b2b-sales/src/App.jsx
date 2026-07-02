@@ -4,6 +4,7 @@ import Header from './components/Header/Header'
 import StoreFront from './components/StoreFront/StoreFront'
 import OrderBuilder from './components/OrderBuilder/OrderBuilder'
 import FloatingToggle from './components/FloatingToggle/FloatingToggle'
+import { asset } from './utils/asset'
 import './App.css'
 
 
@@ -79,7 +80,7 @@ function BuyerHome() {
     if (mode === 'sales') {
       setPageVisible(false)
       setTimeout(() => {
-        window.location.href = window.__HOME_OVERRIDE__ || '/salesapp/home'
+        window.location.href = window.__HOME_OVERRIDE__ || asset('/salesapp/home/')
       }, 180)
     } else if (mode === 'buyer') {
       if (window.__HOME_OVERRIDE__) {
@@ -146,7 +147,7 @@ function BuyerHome() {
             : 'toastIn 0.22s cubic-bezier(0.2,0,0,1) both',
         }}>
           <span className="material-symbols-outlined" style={{ fontSize: '17px', color: '#4ADE80' }}>check_circle</span>
-          <span>Quote saved as draft. Go to&nbsp;<button onClick={() => { dismissToast(); window.location.href = '/storefrontb2b/account/quotes'; }} style={{ background: 'none', border: 'none', color: '#60A5FA', fontWeight: 600, fontSize: '13px', cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}>Quotes</button>&nbsp;to access it.</span>
+          <span>Quote saved as draft. Go to&nbsp;<button onClick={() => { dismissToast(); window.location.href = asset('/storefrontb2b/account/quotes'); }} style={{ background: 'none', border: 'none', color: '#60A5FA', fontWeight: 600, fontSize: '13px', cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}>Quotes</button>&nbsp;to access it.</span>
         </div>
       )}
     </>

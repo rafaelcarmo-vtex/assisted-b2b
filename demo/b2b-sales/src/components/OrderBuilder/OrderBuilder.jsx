@@ -68,7 +68,7 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
   const calcItemSub = (item) => item.unitNum * (typeof item.qty === 'number' ? item.qty : 0) * (1 - item.disc / 100)
   const liveSubtotalNum = useMemo(() => liveItems.reduce((s, it) => s + calcItemSub(it), 0), [liveItems])
   const haExcessiveDiscount = useMemo(() => !approved && window.__HOME_OVERRIDE__ && liveItems.some(it => it.disc > 20), [liveItems, approved])
-  const haHomeUrl = window.__HOME_OVERRIDE__ || '/salesapp/home'
+  const haHomeUrl = window.__HOME_OVERRIDE__ || asset('/salesapp/home/')
   const liveBostonSubNum = useMemo(() => liveItems.filter(it => it.ship?.includes('Boston')).reduce((s, it) => s + calcItemSub(it), 0), [liveItems])
   const liveStateTaxNum = useMemo(() => liveSubtotalNum * STATE_TAX_RATE, [liveSubtotalNum])
   const liveCityTaxNum = useMemo(() => liveBostonSubNum * CITY_TAX_RATE, [liveBostonSubNum])
@@ -1770,7 +1770,7 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                         </div>
                         <div style={{display:'flex', justifyContent:'center', marginTop:'12px'}}>
                           <button
-                            onClick={() => fadeNavigate('/storefrontb2b')}
+                            onClick={() => fadeNavigate(asset('/storefrontb2b'))}
                             style={{padding:'7px 12px',background:'none',border:'1.5px solid #D0D0D0',borderRadius:'100px',fontSize:'12px',fontWeight:'600',color:'#3D3D3D',cursor:'pointer',display:'inline-flex',alignItems:'center',gap:'5px',transition:'border-color 0.15s, color 0.15s',fontFamily:'inherit'}}
                             onMouseEnter={e=>{e.currentTarget.style.borderColor='#1F1F1F';e.currentTarget.style.color='#1F1F1F'}}
                             onMouseLeave={e=>{e.currentTarget.style.borderColor='#D0D0D0';e.currentTarget.style.color='#3D3D3D'}}
@@ -2768,7 +2768,7 @@ export default function OrderBuilder({ onClose, repMode = false, newOrder = fals
                         }])
                       }, 1600)
                     }
-                    else if (repMode) { window.location.href = (window.__HOME_OVERRIDE__ || '/salesapp/order-summary') }
+                    else if (repMode) { window.location.href = (window.__HOME_OVERRIDE__ || asset('/salesapp/order-summary/')) }
                   }}
                 >
                   {haCheckoutValidating && (
